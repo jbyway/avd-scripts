@@ -1,0 +1,590 @@
+<!-- saved from url=(0014)about:internet -->
+ <!DOCTYPE html>
+ <html><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="revised" content="2021-12-02 11:23:47"><title>AVD Connection Stats</title><link type="text/css" rel="stylesheet preload prefetch" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" as="style"/><link type="text/css" rel="stylesheet preload prefetch" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" comment="font-awesome" as="style"/><script type="text/javascript" comment="jquery" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script><link type="text/css" rel="stylesheet preload prefetch" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" as="style"/><link type="text/css" rel="stylesheet preload prefetch" href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css" as="style"/><script type="text/javascript" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script><script type="text/javascript" src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script><script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.25/sorting/datetime-moment.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20180112/classList.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn@1.0.0/findIndex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/apexcharts@3.27.0/dist/apexcharts.min.js"></script><link type="text/css" rel="stylesheet preload prefetch" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" as="style"/><script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script><script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script><link type="text/css" rel="stylesheet preload prefetch" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css" as="style"/><script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script><link type="text/css" rel="stylesheet preload prefetch" href="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/CSS/dataTables.searchBuilder.min.css" as="style"/><script type="text/javascript" src="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/JS/dataTables.searchBuilder.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/JS/hideSection.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vis-data@7.1.2/peer/umd/vis-data.min.js"></script><link type="text/css" rel="stylesheet preload prefetch" href="https://cdn.jsdelivr.net/npm/vis-network@9.0.4/styles/vis-network.min.css" as="style"/><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vis-network@9.0.4/peer/umd/vis-network.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/JS/vis-networkLoadDiagram.min.js"></script><link type="text/css" rel="stylesheet preload prefetch" href="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/CSS/vis-network.loadingbar.min.css" as="style"/><style type="text/css">body {    font-family: 'Roboto Condensed', sans-serif;    font-size: 8pt;    margin: 0px;}input {    font-size: 8pt;}.main-section {    margin-top: 0px;}</style><style type="text/css">div.dataTables_wrapper {    margin: 5px;}button.dt-button {    line-height: 1 !important;    color: blue !important;    border-radius: 5px;}td::before, td.sorting_1::before {    background-color: #007bff !important;}thead input {    padding: -3px;    width: 100%;    box-sizing: border-box;}td {    height: 14px;}tfoot input {    padding: -3px;    width: 100%;    box-sizing: border-box;}</style><noscript><style type="text/css">table {
+    border-collapse: collapse;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+table td {
+    border-width: 1px;
+    padding: 4px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+}
+
+table thead th {
+    text-align: center;
+    font-weight: bold;
+    padding: 4px 17px;
+    border-bottom: 1px solid #111;
+    background-color: white;
+    color: black;
+}
+
+table tfoot th {
+    text-align: center;
+    font-weight: bold;
+    padding: 4px 17px;
+    border-top: 1px solid #111;
+    background-color: white;
+    color: black;
+}
+
+table tr:nth-of-type(odd) {
+    background-color: #F6F6F5;
+}
+
+table tr:nth-of-type(even) {
+    background-color: white;
+}
+
+table td, table th {
+    border: 1px solid black;
+}</style></noscript><style type="text/css">div.dt-button-collection {    margin-bottom: 10px !important;    position: relative;    width: auto !important;    margin-top: 10px !important;}</style><style type="text/css">.defaultPanel {    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);    transition: 0.3s;    border-radius: 5px;    margin: 5px;}</style><style type="text/css">@media all and (-ms-high-contrast:active) {.defaultSection {    display: flex;}}.defaultSection {    flex-direction: column;    border: 1px solid #bbbbbb;    padding-bottom: 0px;    margin: 5px;    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);    transition: 0.3s;    border-radius: 5px;}.defaultSectionHead {    display: flex;    justify-content: center;    padding: 5px;    margin: 0px 0px 0px 0px;    font-weight: bold;    background-color: #00bfff;    color: #ffffff;}</style><style type="text/css">.sectionHide {    width: auto;    min-width: 1.4rem;}.sectionShow {    width: 100%;}</style><style type="text/css">.overflowHidden {    overflow: hidden;    overflow-x: hidden;    overflow-y: hidden;}.flexParent {    display: flex;    justify-content: space-between;}.flexParentInvisible {    display: flex;    justify-content: space-between;}.flexElement {    flex-basis: 100%;    max-width: 100%;}.flexPanel {    flex-basis: 100%;    max-width: 100%;}.flex-grid {    display: flex;}</style><style type="text/css">.diagram {    min-height: 400px;    width: 100%;    height: 100%;    border: 0px solid unset;}.vis-network:focus {    outline: none;}</style><script type="text/javascript">var diagramTracker = {};</script></head><body><div class="main-section"><div class="defaultSection overflowHidden " style="flex-basis:100%"><div class="defaultSectionHead"><div class="defaultSectionText"><a name="AVD Gateway Details">AVD Gateway Details </a>&nbsp;<a id="show_anchor-jmu7ast" href="javascript:void(0)" onclick="show('anchor-jmu7ast'); " style="display:none">(Show)</a><a id="hide_anchor-jmu7ast" href="javascript:void(0)" onclick="hide('anchor-jmu7ast'); " style="display:none">(Hide)</a></div></div><div name="anchor-jmu7ast" id="anchor-jmu7ast" class="flexParent flexElement overflowHidden defaultSectionContent"><div class="flexParent flexElement overflowHidden defaultSectionContent collapsable" id="anchor-jmu7ast"></div></div></div><div class="defaultSection overflowHidden " style="flex-basis:100%"><div class="defaultSectionHead"><div class="defaultSectionText"><a name="RTT latency to AVD Gateway">RTT latency to AVD Gateway </a>&nbsp;<a id="show_anchor-5cjtf6o" href="javascript:void(0)" onclick="show('anchor-5cjtf6o'); " style="display:none">(Show)</a><a id="hide_anchor-5cjtf6o" href="javascript:void(0)" onclick="hide('anchor-5cjtf6o'); ">(Hide)</a></div></div><div name="anchor-5cjtf6o" id="anchor-5cjtf6o" class="flexParent flexElement overflowHidden defaultSectionContent"><div class="flexParent flexElement overflowHidden defaultSectionContent collapsable" id="anchor-5cjtf6o"><script>                $(document).ready(function() {
+                    $.fn.dataTable.moment( 'L' );
+                    
+                    
+                    
+                    //  Table code
+                    var table = $('#DT-mXMXlxKb').DataTable(
+                        {
+"dom":"ABfrtip",
+"searchFade":false,
+"scrollCollapse":false,
+"ordering":true,
+"order":[],
+"rowGroup":"",
+"info":true,
+"procesing":true,
+"select":true,
+"searching":true,
+"stateSave":true,
+"paging":true,
+"pagingType":["full_numbers"],
+"lengthMenu":[[15,25,50,100,-1],[15,25,50,100,"All"]],
+"buttons":[{
+"extend":"copyHtml5"},{
+"extend":"excelHtml5",
+"exportOptions":{
+"format":    {
+        body: function (data, row, column, node) {
+            data = $('<p>' + data + '</p>').text(); return $.isNumeric(data.replace(',', '.')) ? data.replace(',', '.') : data;
+        }
+    }}},{
+"extend":"csvHtml5"},{
+"extend":"pdfHtml5",
+"pageSize":"A3",
+"orientation":"landscape"},{
+"extend":"pageLength"},{
+"extend":"searchBuilder",
+"config":{
+}}],
+"responsive":{
+"details":{
+"type":"inline"}},
+"rowCallback": function (row, data) {     var css = {
+  "color": "#ffffff",
+  "background-color": "#008000"
+};     var failCss = undefined;     var conditionsContainer = [{
+"logic":"AND",
+"conditions":[{
+"columnName":"Latency",
+"columnId":3,
+"operator":"lt",
+"type":"number",
+"value":40,
+"valueDate":"",
+"dataStore":"HTML",
+"caseSensitive":false,
+"dateTimeFormat":"",
+"reverseCondition":false}]}];     dataTablesConditionalFormatting(row, data, conditionsContainer, [3], css, failCss);     var css = {
+  "color": "#ffffff",
+  "background-color": "#f28e1c"
+};     var failCss = undefined;     var conditionsContainer = [{
+"logic":"AND",
+"conditions":[{
+"columnName":"Latency",
+"columnId":3,
+"operator":"ge",
+"type":"number",
+"value":40,
+"valueDate":"",
+"dataStore":"HTML",
+"caseSensitive":false,
+"dateTimeFormat":"",
+"reverseCondition":false}]}];     dataTablesConditionalFormatting(row, data, conditionsContainer, [3], css, failCss);     var css = {
+  "color": "#ffffff",
+  "background-color": "#ff033e"
+};     var failCss = undefined;     var conditionsContainer = [{
+"logic":"AND",
+"conditions":[{
+"columnName":"Latency",
+"columnId":3,
+"operator":"ge",
+"type":"number",
+"value":60,
+"valueDate":"",
+"dataStore":"HTML",
+"caseSensitive":false,
+"dateTimeFormat":"",
+"reverseCondition":false}]}];     dataTablesConditionalFormatting(row, data, conditionsContainer, [3], css, failCss); }}
+                    );
+                    
+                    
+                    
+                });</script><div class="flexElement overflowHidden"><table class="dataTables display compact" id="DT-mXMXlxKb" width="100%"><thead><tr><th>Ping</th><th>Source</th><th>Destination</th><th>Latency</th><th>Address</th><th>Status</th></tr></thead><tbody><tr><td>1</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>4</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>2</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>5</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>3</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>4</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>4</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>4</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>5</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>4</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>6</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>3</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>7</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>4</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>8</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>4</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>9</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>6</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>10</td><td>DESKTOP-4IJOG2K</td><td>ARCHER_VR600V</td><td>4</td><td>10.1.1.1</td><td>Success</td></tr><tr><td>1</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>11</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>2</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>10</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>3</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>12</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>4</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>11</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>5</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>11</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>6</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>18</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>7</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>11</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>8</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>10</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>9</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>12</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>10</td><td>DESKTOP-4IJOG2K</td><td>loop180150880.bng.per.aussiebb.net</td><td>11</td><td>180.150.88.1</td><td>Success</td></tr><tr><td>1</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>15</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>2</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>11</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>3</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>11</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>4</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>11</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>5</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>10</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>6</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>10</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>7</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>13</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>8</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>11</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>9</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>11</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>10</td><td>DESKTOP-4IJOG2K</td><td>HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net</td><td>11</td><td>202.142.143.46</td><td>Success</td></tr><tr><td>1</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>11</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>2</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>10</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>3</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>12</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>4</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>11</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>5</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>10</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>6</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>13</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>7</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>10</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>8</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>11</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>9</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>11</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>10</td><td>DESKTOP-4IJOG2K</td><td>be2.core1.nextdc-p1.per.aussiebb.net</td><td>10</td><td>202.142.143.151</td><td>Success</td></tr><tr><td>1</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>12</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>2</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>14</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>3</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>14</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>4</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>13</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>5</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>35</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>6</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>12</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>7</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>13</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>8</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>12</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>9</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>13</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>10</td><td>DESKTOP-4IJOG2K</td><td>ae22-0.ear02.per30.ntwk.msn.net</td><td>13</td><td>104.44.234.234</td><td>Success</td></tr><tr><td>1</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>74</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>2</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>57</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>3</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>61</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>4</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>58</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>5</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>58</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>6</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>66</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>7</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>57</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>8</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>58</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>9</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>59</td><td>104.44.20.22</td><td>Success</td></tr><tr><td>10</td><td>DESKTOP-4IJOG2K</td><td>ae120-0.icr01.sg3.ntwk.msn.net</td><td>57</td><td>104.44.20.22</td><td>Success</td></tr></tbody><tfoot><tr><th>Ping</th><th>Source</th><th>Destination</th><th>Latency</th><th>Address</th><th>Status</th></tr></tfoot></table></div><div class="flexPanel overflowHidden defaultPanel" id="anchor-3uel4x2"><div id="ChartID-r8ukz4xc" class="flexElement"></div></div></div></div></div><hr/><div class="defaultSection overflowHidden " style="flex-basis:100%"><div class="defaultSectionHead"><div class="defaultSectionText"><a name="Hops to AVD Gateway">Hops to AVD Gateway </a>&nbsp;<a id="show_anchor-2d9qzei" href="javascript:void(0)" onclick="show('anchor-2d9qzei'); " style="display:none">(Show)</a><a id="hide_anchor-2d9qzei" href="javascript:void(0)" onclick="hide('anchor-2d9qzei'); ">(Hide)</a></div></div><div name="anchor-2d9qzei" id="anchor-2d9qzei" class="flexParent flexElement overflowHidden defaultSectionContent"><div class="flexParent flexElement overflowHidden defaultSectionContent collapsable" id="anchor-2d9qzei"><div class="diagramWrapper"><div class="diagram" style="position:relative"><div class="diagram diagramObject" style="position:absolute" id="Diagram-m1kxpo5h"></div></div><div id="Diagram-m1kxpo5h-diagramLoadingBar" class="diagramLoadingBar"><div class="diagramOuterBorder"><div id="Diagram-m1kxpo5h-diagramText" class="diagramText">0%</div><div class="diagramBorder"><div id="Diagram-m1kxpo5h-diagramBar" class="diagramBar"></div></div></div></div></div></div></div></div><hr/><div class="defaultSection overflowHidden " style="flex-basis:100%"><div class="defaultSectionHead"><div class="defaultSectionText"><a name="Hops to AVD Gateway">Hops to AVD Gateway </a>&nbsp;<a id="show_anchor-v2cq83f" href="javascript:void(0)" onclick="show('anchor-v2cq83f'); " style="display:none">(Show)</a><a id="hide_anchor-v2cq83f" href="javascript:void(0)" onclick="hide('anchor-v2cq83f'); ">(Hide)</a></div></div><div name="anchor-v2cq83f" id="anchor-v2cq83f" class="flexParent flexElement overflowHidden defaultSectionContent"><div class="flexParent flexElement overflowHidden defaultSectionContent collapsable" id="anchor-v2cq83f"><div class="diagramWrapper"><div class="diagram" style="position:relative"><div class="diagram diagramObject" style="position:absolute" id="Diagram-yb5wquc4"></div></div><div id="Diagram-yb5wquc4-diagramLoadingBar" class="diagramLoadingBar"><div class="diagramOuterBorder"><div id="Diagram-yb5wquc4-diagramText" class="diagramText">0%</div><div class="diagramBorder"><div id="Diagram-yb5wquc4-diagramBar" class="diagramBar"></div></div></div></div></div></div></div></div><script>var options = {
+"chart":{
+"id":"ChartID-r8ukz4xc",
+"height":"350px",
+"type":"line"},
+"title":{
+"text":"RTT Latency (ms)",
+"align":"center"},
+"xaxis":{
+"type":"category",
+"categories":[1,2,3,4,5,6,7,8,9,10],
+"title":{
+"text":"Count"}},
+"series":[{
+"name":"ARCHER_VR600V",
+"type":"line",
+"data":[4,5,4,4,4,3,4,4,6,4]},{
+"name":"ae120-0.icr01.sg3.ntwk.msn.net",
+"type":"line",
+"data":[74,57,61,58,58,66,57,58,59,57]},{
+"name":"ae22-0.ear02.per30.ntwk.msn.net",
+"type":"line",
+"data":[12,14,14,13,35,12,13,12,13,13]},{
+"name":"loop180150880.bng.per.aussiebb.net",
+"type":"line",
+"data":[11,10,12,11,11,18,11,10,12,11]},{
+"name":"be2.core1.nextdc-p1.per.aussiebb.net",
+"type":"line",
+"data":[11,10,12,11,10,13,10,11,11,10]},{
+"name":"HundredGigE0-0-0-7.core1.vdc01.per.aussiebb.net",
+"type":"line",
+"data":[15,11,11,11,10,10,13,11,11,11]}],
+"stroke":{
+"curve":["smooth","smooth","smooth","smooth","smooth","smooth"],
+"lineCap":["round","round","round","round","round","round"]},
+"dataLabels":{
+"enabled":true}}
+var chart = new ApexCharts(document.querySelector('#ChartID-r8ukz4xc'),
+            options
+        );
+chart.render();
+</script><script>// create an array with nodes
+var nodes = new vis.DataSet([{
+"id":"10\.1\.1\.1",
+"label":"10\.1\.1\.1",
+"title":"ARCHER_VR600V",
+"shape":"icon",
+"icon":{
+"face":'"Font Awesome 5 Free"',
+"weight":"bold",
+"code":"\uf0c2"}}, {
+"id":"180\.150\.88\.1",
+"label":"180\.150\.88\.1",
+"title":"loop180150880\.bng\.per\.aussiebb\.net",
+"shape":"icon",
+"icon":{
+"face":'"Font Awesome 5 Free"',
+"weight":"bold",
+"code":"\uf5fc"}}, {
+"id":"202\.142\.143\.46",
+"label":"202\.142\.143\.46",
+"title":"HundredGigE0-0-0-7\.core1\.vdc01\.per\.aussiebb\.net",
+"shape":"icon",
+"icon":{
+"face":'"Font Awesome 5 Free"',
+"weight":"bold",
+"code":"\uf6ff"}}, {
+"id":"AVD Gateway",
+"label":"AVD Gateway",
+"title":"rdgateway\.wvd\.microsoft\.com",
+"shape":"circularImage",
+"image":"https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png"}]); 
+// create an array with edges
+var edges = new vis.DataSet([{
+"length":"350",
+"from":"10\.1\.1\.1",
+"to":"180\.150\.88\.1",
+"label":"12",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"12",
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"length":"350",
+"from":"180\.150\.88\.1",
+"to":"202\.142\.143\.46",
+"label":"11",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"11",
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"https",
+"smooth":{
+"enabled":true,
+"type":"dynamic"},
+"to":"AVD Gateway",
+"from":"202\.142\.143\.46",
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"https",
+"smooth":{
+"enabled":true,
+"type":"dynamic"},
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}]); 
+// create a network
+var container = document.getElementById('Diagram-m1kxpo5h'); 
+var data = { 
+   nodes: nodes, 
+   edges: edges
+ }; 
+var options = {
+  "autoResize": true
+}; 
+var network = loadDiagramWithFonts(container, data, options, 'Diagram-m1kxpo5h', true , true);
+diagramTracker['Diagram-m1kxpo5h'] = network;
+
+</script><script>// create an array with nodes
+var nodes = new vis.DataSet([{
+"id":"10\.1\.1\.1",
+"label":"10\.1\.1\.1",
+"title":"ARCHER_VR600V",
+"shape":"icon",
+"icon":{
+"face":'"Font Awesome 5 Free"',
+"weight":"bold",
+"code":"\uf0c2"}}, {
+"id":"180\.150\.88\.1",
+"label":"180\.150\.88\.1",
+"title":"loop180150880\.bng\.per\.aussiebb\.net",
+"shape":"icon",
+"icon":{
+"face":'"Font Awesome 5 Free"',
+"weight":"bold",
+"code":"\uf5fc"}}, {
+"id":"202\.142\.143\.46",
+"label":"202\.142\.143\.46",
+"title":"HundredGigE0-0-0-7\.core1\.vdc01\.per\.aussiebb\.net",
+"shape":"icon",
+"icon":{
+"face":'"Font Awesome 5 Free"',
+"weight":"bold",
+"code":"\uf6ff"}}, {
+"id":"AVD Gateway",
+"label":"AVD Gateway",
+"title":"rdgateway\.wvd\.microsoft\.com",
+"shape":"circularImage",
+"image":"https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png"}]); 
+// create an array with edges
+var edges = new vis.DataSet([{
+"length":"350",
+"from":"10\.1\.1\.1",
+"to":"180\.150\.88\.1",
+"label":"12",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"12",
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"length":"350",
+"from":"180\.150\.88\.1",
+"to":"202\.142\.143\.46",
+"label":"11",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"11",
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"https",
+"smooth":{
+"enabled":true,
+"type":"dynamic"},
+"to":"AVD Gateway",
+"from":"202\.142\.143\.46",
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}, {
+"label":"https",
+"smooth":{
+"enabled":true,
+"type":"dynamic"},
+"length":"350",
+"arrows":{
+"to":{
+"enabled":true}}}]); 
+// create a network
+var container = document.getElementById('Diagram-yb5wquc4'); 
+var data = { 
+   nodes: nodes, 
+   edges: edges
+ }; 
+var options = {
+  "autoResize": true
+}; 
+var network = loadDiagramWithFonts(container, data, options, 'Diagram-yb5wquc4', true , true);
+diagramTracker['Diagram-yb5wquc4'] = network;
+
+</script></div><footer><script type="text/javascript">function isEmptyOrSpaces(str) {
+    return !str || str.trim() === '';
+}
+function dataTablesCheckCondition(condition, data) {
+    var columnName = condition['columnName'];
+    var reverseCondition = condition['reverseCondition'];
+    var columnId = condition['columnId'];
+    var operator = condition['operator'].toLowerCase();
+    if (condition['dataStore'].toLowerCase() != 'html') {
+        var columnExists = false;
+        // we need to find whether the column name exists or not, and to make sure we know the column name exact case (it's case sensitive) just in case user provided it wrong
+        Object.getOwnPropertyNames(data).forEach(
+            function (val) {
+                if (val.toLowerCase() == columnName.toLowerCase()) {
+                    columnName = val;
+                    columnExists = true;
+                    return
+                }
+            }
+        );
+        if (!columnExists) {
+            return false;
+        }
+        var columnValue = data[columnName];
+    } else {
+        // check if columnid is set - if it's not set it means the column doesn't exists so we dont' proceed
+        if (columnId == -1) {
+            return false;
+        }
+        var columnValue = data[columnId];
+    }
+    var conditionValue = condition['value'];
+
+    //console.log('before: ' + conditionValue + ' || ' + columnValue + ' type: ' + condition['type']);
+    if (condition['type'] == 'bool') {
+        columnValue = columnValue.toString().toLowerCase();
+        conditionValue = conditionValue.toString().toLowerCase();
+    } else if (condition['type'] == 'string') {
+        if (!condition['caseSensitive']) {
+            columnValue = columnValue.toString().toLowerCase();
+            conditionValue = conditionValue.toString().toLowerCase();
+        }
+    } else if (condition['type'] == 'number') {
+        if (Array.isArray(conditionValue)) {
+            // this will be used for between, betweenInclusive
+            // if its an array we need to make sure to convert conditionValue within an array
+            var conditionValueTemporary = [];
+
+            for (var i = 0; i < conditionValue.length; i++) {
+                //for (let value of conditionValue) {
+                if (!isEmptyOrSpaces(conditionValue[i].toString())) {
+                    conditionValueTemporary.push(Number(conditionValue[i]));
+                } else {
+                    conditionValueTemporary.push(undefined);
+                }
+            }
+            conditionValue = conditionValueTemporary;
+            if (!isEmptyOrSpaces(columnValue.toString())) {
+                columnValue = Number(columnValue);
+            } else {
+                columnValue = undefined;
+            }
+        } else {
+            // This logic is to get rid of empty string which is normally treated as 0
+            if (!isEmptyOrSpaces(conditionValue.toString())) {
+                conditionValue = Number(conditionValue);
+            } else {
+                conditionValue = undefined;
+            }
+            if (!isEmptyOrSpaces(columnValue.toString())) {
+                columnValue = Number(columnValue);
+            } else {
+                columnValue = undefined;
+            }
+        }
+    } else if (condition['type'] == 'date') {
+        if (Array.isArray(condition['valueDate'])) {
+            var conditionValueTemporary = [];
+            for (var i = 0; i < condition['valueDate'].length; i++) {
+                //for (let value of condition['valueDate']) {
+                var valueDate = condition['valueDate'][i];
+                conditionValueTemporary.push(new Date(valueDate.year, valueDate.month - 1, valueDate.day, valueDate.hours, valueDate.minutes, valueDate.seconds));
+            }
+            conditionValue = conditionValueTemporary;
+        } else {
+            // bring conditionValue to proper date
+            var valueDate = condition['valueDate'];
+            conditionValue = new Date(valueDate.year, valueDate.month - 1, valueDate.day, valueDate.hours, valueDate.minutes, valueDate.seconds);
+        }
+        // bring columnValue based on dateTimeFormat provided
+        var momentConversion = moment(columnValue, condition['dateTimeFormat']);
+        columnValue = new Date(momentConversion);
+    }
+
+    if (reverseCondition) {
+        var sideLeft = conditionValue;
+        var sideRight = columnValue;
+    } else {
+        var sideLeft = columnValue;
+        var sideRight = conditionValue;
+    }
+    //console.log('after: ' + conditionValue + ' || ' + columnValue);
+    if (operator == 'eq') {
+        if (sideLeft == sideRight) {
+            return true;
+        }
+    } else if (operator == 'ne') {
+        if (sideLeft != sideRight) {
+            return true;
+        }
+    } else if (operator == 'gt') {
+        if (sideLeft > sideRight) {
+            return true;
+        }
+    } else if (operator == 'lt') {
+        if (sideLeft < sideRight) {
+            return true;
+        }
+    } else if (operator == 'le') {
+        if (sideLeft <= sideRight) {
+            return true;
+        }
+    } else if (operator == 'ge') {
+        if (sideLeft >= sideRight) {
+            return true;
+        }
+    } else if (operator == 'in') {
+        if (sideRight.indexOf(sideLeft) != -1) {
+            return true;
+        }
+    } else if (operator == 'notin') {
+        if (sideRight.indexOf(sideLeft) == -1) {
+            return true;
+        }
+    } else if (operator == 'contains' || operator == 'like') {
+        //var compareValue = conditionValue.replace('*', '.*')
+        var regex = new RegExp(sideRight);
+        if (regex.test(sideLeft)) {
+            return true;
+        }
+    } else if (operator == 'notcontains' || operator == 'notlike') {
+        //var compareValue = conditionValue.replace('*', '.*')
+        var regex = new RegExp(sideRight)
+        if (!regex.test(sideLeft)) {
+            return true;
+        }
+    } else if (operator == 'betweeninclusive') {
+        if (Array.isArray(sideRight) && sideLeft >= sideRight[0] && sideLeft <= sideRight[1]) {
+            return true;
+        }
+    } else if (operator == 'between') {
+        if (Array.isArray(sideRight) && sideLeft > sideRight[0] && sideLeft < sideRight[1]) {
+            return true;
+        }
+    }
+    return false;
+}
+function dataTablesConditionalFormatting(row, data, conditionsContainer, highlightColumn, css, failCss) {
+    var conditionsMatch = [];
+    var found = false;
+    for (var i = 0; i < conditionsContainer.length; i++) {
+        var container = conditionsContainer[i];
+        for (var k = 0; k < container['conditions'].length; k++) {
+            var condition = container['conditions'][k];
+            conditionsMatch.push(
+                dataTablesCheckCondition(condition, data)
+            );
+        }
+        if (container['logic'] == 'AND') {
+            // if (conditionsMatch.every(value => value === true)) {
+            //     found = true;
+            // }
+
+            for (var a = 0; a < conditionsMatch.length; a++) {
+                if (conditionsMatch[a] !== true) {
+                    found = false;
+                    break;
+                } else {
+                    found = true;
+                }
+            }
+
+
+        } else if (container['logic'] == 'OR') {
+            //if (conditionsMatch.some(value => value === true)) {
+            //    found = true;
+            //}
+
+            for (var a = 0; a < conditionsMatch.length; a++) {
+                if (conditionsMatch[a] === true) {
+                    found = true;
+                    break;
+                }
+            }
+
+        } else if (container['logic'] == 'NONE') {
+            // if (conditionsMatch.every(value => value != true)) {
+            //    found = true;
+            //}
+
+            for (var a = 0; a < conditionsMatch.length; a++) {
+                if (conditionsMatch[a] !== false) {
+                    found = false;
+                    break;
+                } else {
+                    found = true;
+                }
+            }
+        }
+    }
+    if (found) {
+        if (highlightColumn == null) {
+            $('td', row).css(css);
+        } else {
+            for (var a = 0; a < highlightColumn.length; a++) {
+                var column = highlightColumn[a];
+                //for (let column of highlightColumn) {
+                $("td:eq(" + column + ")", row).css(css);
+
+                //if (data.Type == "group") {
+                //    $('td:eq(6)', row).html('<b>A</b>');
+                //}
+            }
+        }
+    } else {
+        if (failCss) {
+            if (highlightColumn == null) {
+                $('td', row).css(failCss);
+            } else {
+                for (var a = 0; a < highlightColumn.length; a++) {
+                    var column = highlightColumn[a];
+                    //for (let column of highlightColumn) {
+                    $("td:eq(" + column + ")", row).css(failCss);
+                }
+            }
+        }
+    }
+}</script> <script type="text/javascript">function escapeRegExp(string) {
+    return string.toString().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+};</script> <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/JS/redrawObjects.min.js"></script></footer></body></html>

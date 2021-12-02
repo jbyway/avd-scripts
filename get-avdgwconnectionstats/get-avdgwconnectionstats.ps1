@@ -171,17 +171,17 @@ function get-hopstoavdmap {
 # Defining -q will allow you to specify the number of pings to perform on each hop of the traceroute. Default = 5 pings
 # Larger -q value will take longer to perform but provide more accurate results
 function Invoke-PathPing {
-    param([string]$RemoteHost,
+    param([string]$avdgwip,
         [int]$q = 100 
     )
     
     $PathPingStats = @() # Array to hold the results of the traceroute
 
-    PATHPING -q $q -4 -n $RemoteHost | ForEach-Object {
+    PATHPING -q $q -4 -n $avdgwip | ForEach-Object {
         if ($_.Trim() -match "Tracing route to .*") {
             Write-Host $_ -ForegroundColor Yellow
         } 
-        elseif ($_.Trim() -match "^\d{1,3}\s+\d{1,3}ms|^\d{1,2}\s+---") {
+        elseif ($_.Trim() -match "^\d{1,}\s+\d{1,}ms|^\d{1,}\s+---") {  # Match the statistics output of pathping for each hop
             # Match the output of the pathping command for the hop number and stats
             Write-Host $_ -ForegroundColor Green
             $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '') -split "\s{1,}" | where-object {$_}
@@ -192,7 +192,8 @@ function Invoke-PathPing {
                 S2HLSPercent = $s2hlsperc;
                 S2LLS        = $s2lls;
                 S2LLSPercent = $s2llsperc;
-                HopIP        = $hopip.Trim('[',']')
+                HopIP        = $hopip.Trim('[',']');
+                HopName      = ([System.Net.Dns]::GetHostEntry($hopip).HostName)
             }
             $PathPingStats += New-Object psobject -Property $PathPingStatistics # Add the hop statistics to the array
         }
@@ -225,7 +226,7 @@ function Invoke-TestConnection {
     return $hoprtt      
 }
 
-function get-htmlreport {
+function Get-HTMLReport {
     param (
         [cmdletbinding()]
         [Parameter(Mandatory = $true)]
@@ -299,14 +300,14 @@ function get-htmlreport {
 }
 
 
-# HTML Report Module 
+# HTML Report Module you need to install the following modules prior to running this script
 # Install-Module -Name PSWriteHTML -AllowClobber -Force
 
 $avdgwip, $msrdcpid = get-msrdcavdgwip
 $avdgwapi = get-avdgwapi -avdgwip $avdgwip[0]
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
-$PathPingStats = Invoke-PathPing -RemoteHost $avdgwip.RemoteAddress -q 30
+$PathPingStats = Invoke-PathPing -avdgwip $avdgwip.RemoteAddress -q 4
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats
 
-get-htmlreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip -avdgwapi $avdgwapi
+Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip -avdgwapi $avdgwapi
 
