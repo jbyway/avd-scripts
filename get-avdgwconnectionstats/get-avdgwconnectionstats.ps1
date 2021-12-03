@@ -253,7 +253,7 @@ function Get-HTMLReport {
 
     New-HTML -TitleText "AVD Connection Stats" -Online -FilePath .\avd-connection-stats.html {
         New-HTMLSection -HeaderText 'AVD Gateway Details' {
-                 
+
         }
         
         #Generate report with table and line graph for displaying the results of the traceroute to the AVD Gateway
@@ -283,6 +283,15 @@ function Get-HTMLReport {
             }
         }
     
+        New-HTMLHorizontalLine
+        New-HTMLSection -HeaderText 'PathPing Stats to Gateway' -CanCollapse {
+            New-HTMLTable -DataTable ($PathPingStats | Select-Object -Property Hop, RTT, S2HLS, S2HLSPercent, S2LLS, S2LLSPercent, HopIP, SampleCount, HopName) {
+                New-HTMLTableCondition -Name 'S2HLS' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
+                New-HTMLTableCondition -Name 'S2HLS' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White
+                New-HTMLTableCondition -Name 'S2LLS' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
+                New-HTMLTableCondition -Name 'S2LLS' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White
+            }
+        }
        
         #Plot hops of traceroute to AVD Gateway as a graphic
 
@@ -318,7 +327,7 @@ function Get-HTMLReport {
 $avdgwip, $msrdcpid = get-msrdcavdgwip
 $avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0]  # For now only use the first IP address of any connections found
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
-$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 4
+$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats
 
 Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi
