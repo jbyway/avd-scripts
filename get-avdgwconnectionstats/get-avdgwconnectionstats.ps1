@@ -13,13 +13,13 @@ function get-msrdcavdgwip {
     Write-Verbose "[Discovering current MSRD Process ID]"
     try {
         $msrdcpid = (Get-Process -Name msrdc).id
-    Write-Verbose "[Process ID of MSRDC]"
-    $msrdcpid | ForEach-Object { Write-Verbose "$_ `r`n" }
+        Write-Verbose "[Process ID of MSRDC]"
+        $msrdcpid | ForEach-Object { Write-Verbose "$_ `r`n" }
 
-    Write-Verbose "[Discovering currently established AVD Gateway IP(s)]"
-    $avdgwip = (Get-NetTCPConnection -OwningProcess $msrdcpid -state Established) | select-object -Unique
-        }
-       catch {
+        Write-Verbose "[Discovering currently established AVD Gateway IP(s)]"
+        $avdgwip = (Get-NetTCPConnection -OwningProcess $msrdcpid -state Established) | select-object -Unique
+    }
+    catch {
         "No active connections found for MSRDC"
         Write-Verbose "[No MSRDC processes found]"
     }
@@ -57,8 +57,18 @@ function get-avdgwapi {
     "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-verbose -verbose
     "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-verbose -verbose
     "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-verbose -verbose
-   
-    return $avdgwapi
+    
+    # Obtain the locations of Azure Edge Locations
+    $azureedgelist = Invoke-WebRequest -uri https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/master/includes/front-door-edge-locations-by-abbreviation.md
+    
+    $edgelocations = $azureedgelist.Content -split "`n" | foreach-object {
+        if ($_ -notmatch "^\|\s+[A-Z]{2,3}\s+\|") { [void]::Continue } # Filter out starting lines and only return the lines with the actual data
+        else {
+            $_.TrimStart('|').TrimEnd('|') -replace ',', '|' | ConvertFrom-Csv -Delimiter '|' -header 'RegionCode', 'City', 'Country', 'AzureRegion', 'Geography'
+        }
+    }
+
+    return $avdgwapi, $edgelocations
 }
 
 # This function is not currently used however may be useful in the future
@@ -181,10 +191,11 @@ function Invoke-PathPing {
         if ($_.Trim() -match "Tracing route to .*") {
             Write-Host $_ -ForegroundColor Yellow
         } 
-        elseif ($_.Trim() -match "^\d{1,}\s+\d{1,}ms|^\d{1,}\s+---") {  # Match the statistics output of pathping for each hop
+        elseif ($_.Trim() -match "^\d{1,}\s+\d{1,}ms|^\d{1,}\s+---") {
+            # Match the statistics output of pathping for each hop
             # Match the output of the pathping command for the hop number and stats
             Write-Host $_ -ForegroundColor Green
-            $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '') -split "\s{1,}" | where-object {$_}
+            $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '') -split "\s{1,}" | where-object { $_ }
             $PathPingStatistics = @{
                 Hop          = $hop;
                 RTT          = $RTT;
@@ -192,7 +203,8 @@ function Invoke-PathPing {
                 S2HLSPercent = $s2hlsperc;
                 S2LLS        = $s2lls;
                 S2LLSPercent = $s2llsperc;
-                HopIP        = $hopip.Trim('[',']');
+                HopIP        = $hopip.Trim('[', ']');
+                SampleCount  = $q;
                 HopName      = ([System.Net.Dns]::GetHostEntry($hopip).HostName)
             }
             $PathPingStats += New-Object psobject -Property $PathPingStatistics # Add the hop statistics to the array
@@ -220,7 +232,8 @@ function Invoke-TestConnection {
     
     $hoprtt = @()
     Write-Host "Beginning Test-Connection for each hop..." -ForegroundColor Green
-    foreach ($i in $PathPingStats.Where({ "100%" -ne $_.S2LLSPercent })) { # Filter out any hops that don't respond to ICMP
+    foreach ($i in $PathPingStats.Where({ "100%" -ne $_.S2LLSPercent })) {
+        # Filter out any hops that don't respond to ICMP
         $hoprtt += $i.HopIP | ForEach-Object { Test-Connection -TargetName $i.HopIP -Count $count -ResolveDestination -OutVariable h }
     }  
     return $hoprtt      
@@ -235,7 +248,9 @@ function Get-HTMLReport {
         [array]$avdgwip,
         [array]$avdgwapi
     )
-    
+    $i = ""
+    $n = 1
+
     New-HTML -TitleText "AVD Connection Stats" -Online -FilePath .\avd-connection-stats.html {
         New-HTMLSection -HeaderText 'AVD Gateway Details' {
             
@@ -274,7 +289,7 @@ function Get-HTMLReport {
         New-HTMLSection -HeaderText 'Hops to AVD Gateway' -CanCollapse {
             New-HTMLDiagram {
                 New-DiagramNode -Label $hoprtt[9].Address.IPAddressToString -IconSolid cloud -Title $hoprtt[9].Destination
-                New-DiagramNode -LABEL $hoprtt[12].Address.IPAddressToString -IconSolid laptop-code -Title $hoprtt[12].Destination
+                New-DiagramNode -Label $hoprtt[12].Address.IPAddressToString -IconSolid laptop-code -Title $hoprtt[12].Destination
                 New-DiagramNode -Label $hoprtt[28].Address.IPAddressToString -IconSolid network-wired -Title $hoprtt[28].Destination
                 #New-DiagramNode -label "AVD Gateway" -IconBrands windows -Title "rdgateway.wvd.microsoft.com"
                 New-DiagramNode -label "AVD Gateway" -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Title "rdgateway.wvd.microsoft.com"
@@ -283,18 +298,27 @@ function Get-HTMLReport {
                 New-DiagramLink -from $hoprtt[28].Address.IPAddressToString -to "AVD Gateway" -label https -ArrowsToEnabled $true -Length 350 -SmoothType dynamic
             } }
     
-    New-HTMLHorizontalLine
-    New-HTMLSection -HeaderText 'Hops to AVD Gateway' -CanCollapse {
-        New-HTMLDiagram {
-            New-DiagramNode -Label $hoprtt[9].Address.IPAddressToString -IconSolid cloud -Title $hoprtt[9].Destination
-            New-DiagramNode -LABEL $hoprtt[12].Address.IPAddressToString -IconSolid laptop-code -Title $hoprtt[12].Destination
-            New-DiagramNode -Label $hoprtt[28].Address.IPAddressToString -IconSolid network-wired -Title $hoprtt[28].Destination
-            #New-DiagramNode -label "AVD Gateway" -IconBrands windows -Title "rdgateway.wvd.microsoft.com"
-            New-DiagramNode -label "AVD Gateway" -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Title "rdgateway.wvd.microsoft.com"
-            New-DiagramLink -from $hoprtt[9].Address.IPAddressToString -to $hoprtt[12].Address.IPAddressToString -label $hoprtt[12].Latency -ArrowsToEnabled $true -Length 350
-            New-DiagramLink -from $hoprtt[12].Address.IPAddressToString -to $hoprtt[28].Address.IPAddressToString -label $hoprtt[28].Latency -ArrowsToEnabled $true -Length 350
-            New-DiagramLink -from $hoprtt[28].Address.IPAddressToString -to "AVD Gateway" -label https -ArrowsToEnabled $true -Length 350 -SmoothType dynamic
-        } }
+        New-HTMLHorizontalLine
+        New-HTMLSection -HeaderText 'Traceroute to AVD Gateway' -CanCollapse {
+            New-HTMLDiagram -Height 'calc(100vh - 20px)' -Width 'calc(100vw - 20px)' {
+                New-DiagramOptionsLinks -ArrowsToEnabled $true -ArrowsToType arrow -ArrowsToScaleFactor 1 -FontSize 14 -WidthConstraint 100 -length 100 -FontAlign center -FontBackground White
+                New-DiagramOptionsNodes -Margin 10 -Shape box -WidthConstraintMaximum 120 <# 250 #> -FontSize 14 -FontMulti $true
+                New-DiagramOptionsPhysics -Enabled $true
+                New-DiagramOptionsInteraction -Hover $true
+                
+                New-DiagramOptionsLayout -HierarchicalSortMethod directed -HierarchicalDirection FromLeftToRight -HierarchicalLevelSeparation 550 #120
+                New-DiagramNode -ID 'Client' -Label $env:COMPUTERNAME -IconSolid laptop-code -Level 0  #-To $PathPingStats[0].Hop  
+                
+                foreach ($PathPingStat in $PathPingStats) {
+                    New-DiagramNode -ID $PathPingStat.Hop -Level 1 <# $n #> -Label $PathPingStat.HopName -To $PathPingStats[$n].Hop -Title $PathPingStat.HopIP 
+                    New-DiagramLink -From 'Client' -To $PathPingStat.Hop -Label ('RTT: ' + $PathPingStat.RTT) -Dashes $true -Color Grey -FontBackground white -FontColor Black
+                    $n++
+                }     
+                New-DiagramNode -ID $PathPingStats[-1].Hop -Label $PathPingStats[-1].HopName -To 'AVD GW' -Level 1 <# ($n -1) #> 
+                New-DiagramNode -ID 'AVD GW' -Label 'AVD GW' -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Level 1 <# $n #>
+                       
+            }
+        }
     } -ShowHTML
 
 }
@@ -304,10 +328,10 @@ function Get-HTMLReport {
 # Install-Module -Name PSWriteHTML -AllowClobber -Force
 
 $avdgwip, $msrdcpid = get-msrdcavdgwip
-$avdgwapi = get-avdgwapi -avdgwip $avdgwip[0]
+$avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0]  # For now only use the first IP address of any connections found
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
-$PathPingStats = Invoke-PathPing -avdgwip $avdgwip.RemoteAddress -q 4
+$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 4
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats
 
-Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip -avdgwapi $avdgwapi
+Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi
 

@@ -1,0 +1,293 @@
+<!-- saved from url=(0014)about:internet -->
+ <!DOCTYPE html>
+ <html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1" name="viewport"><meta content="2021-12-03 18:30:46" name="revised"><title>My diagram</title><link type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" as="style" rel="stylesheet preload prefetch"/><link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" as="style" comment="font-awesome" rel="stylesheet preload prefetch"/><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" type="text/javascript"></script><script src="https://cdn.jsdelivr.net/npm/vis-data@7.1.2/peer/umd/vis-data.min.js" type="text/javascript"></script><link type="text/css" href="https://cdn.jsdelivr.net/npm/vis-network@9.0.4/styles/vis-network.min.css" as="style" rel="stylesheet preload prefetch"/><script src="https://cdn.jsdelivr.net/npm/vis-network@9.0.4/peer/umd/vis-network.min.js" type="text/javascript"></script><script src="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/JS/vis-networkLoadDiagram.min.js" type="text/javascript"></script><link type="text/css" href="https://cdn.jsdelivr.net/gh/evotecit/cdn@0.0.12/CSS/vis-network.loadingbar.min.css" as="style" rel="stylesheet preload prefetch"/><style type="text/css">body {    font-family: 'Roboto Condensed', sans-serif;    font-size: 8pt;    margin: 0px;}input {    font-size: 8pt;}.main-section {    margin-top: 0px;}</style><style type="text/css">.overflowHidden {    overflow: hidden;    overflow-x: hidden;    overflow-y: hidden;}.flexParent {    display: flex;    justify-content: space-between;}.flexParentInvisible {    display: flex;    justify-content: space-between;}.flexElement {    flex-basis: 100%;    max-width: 100%;}.flexPanel {    flex-basis: 100%;    max-width: 100%;}.flex-grid {    display: flex;}</style><style type="text/css">.diagram {    min-height: 400px;    width: 100%;    height: 100%;    border: 0px solid unset;}.vis-network:focus {    outline: none;}</style><script type="text/javascript">var diagramTracker = {};</script></head><body><div class="main-section"><div class="diagramWrapper"><div class="diagram" style="position:relative;width:calc(100vw - 20px);height:calc(100vh - 20px)"><div class="diagram diagramObject" style="position:absolute" id="Diagram-bmyljsc6"></div></div><div class="diagramLoadingBar" id="Diagram-bmyljsc6-diagramLoadingBar"><div class="diagramOuterBorder"><div class="diagramText" id="Diagram-bmyljsc6-diagramText">0%</div><div class="diagramBorder"><div class="diagramBar" id="Diagram-bmyljsc6-diagramBar"></div></div></div></div></div><script>// create an array with nodes
+var nodes = new vis.DataSet([{
+"id":"Client",
+"label":"DESKTOP-4IJOG2K",
+"shape":"icon",
+"icon":{
+"code":"\uf5fc",
+"face":'"Font Awesome 5 Free"',
+"weight":"bold"},
+"level":0}, {
+"id":"1",
+"label":"ARCHER_VR600V",
+"title":"10\.1\.1\.1",
+"level":1}, {
+"id":"2",
+"label":"loop180150880\.bng\.per\.aussiebb\.net",
+"title":"180\.150\.88\.1",
+"level":1}, {
+"id":"3",
+"label":"HundredGigE0-0-0-7\.core1\.vdc01\.per\.aussiebb\.net",
+"title":"202\.142\.143\.46",
+"level":1}, {
+"id":"4",
+"label":"be2\.core1\.nextdc-p1\.per\.aussiebb\.net",
+"title":"202\.142\.143\.151",
+"level":1}, {
+"id":"5",
+"label":"as8075\.wa\.ix\.asn\.au",
+"title":"198\.32\.212\.95",
+"level":1}, {
+"id":"6",
+"label":"ae22-0\.ear02\.per30\.ntwk\.msn\.net",
+"title":"104\.44\.234\.234",
+"level":1}, {
+"id":"7",
+"label":"be-20-0\.ibr02\.per30\.ntwk\.msn\.net",
+"title":"104\.44\.32\.153",
+"level":1}, {
+"id":"8",
+"label":"be-7-0\.ibr02\.sg2\.ntwk\.msn\.net",
+"title":"104\.44\.19\.164",
+"level":1}, {
+"id":"9",
+"label":"be-1-0\.ibr02\.sg3\.ntwk\.msn\.net",
+"title":"104\.44\.7\.18",
+"level":1}, {
+"id":"10",
+"label":"ae120-0\.icr01\.sg3\.ntwk\.msn\.net",
+"level":1}, {
+"id":"AVD GW",
+"label":"AVD GW",
+"shape":"circularImage",
+"image":"https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png",
+"level":1}]); 
+// create an array with edges
+var edges = new vis.DataSet([{
+"from":"1",
+"to":"2"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 4ms",
+"color":{
+"color":"#808080"},
+"to":"1",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 4ms",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"2",
+"to":"3"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 12ms",
+"color":{
+"color":"#808080"},
+"to":"2",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 12ms",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"3",
+"to":"4"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 12ms",
+"color":{
+"color":"#808080"},
+"to":"3",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 12ms",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"4",
+"to":"5"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 11ms",
+"color":{
+"color":"#808080"},
+"to":"4",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 11ms",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"5",
+"to":"6"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"color":{
+"color":"#808080"},
+"to":"5",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"6",
+"to":"7"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 13ms",
+"color":{
+"color":"#808080"},
+"to":"6",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 13ms",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"7",
+"to":"8"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"color":{
+"color":"#808080"},
+"to":"7",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"8",
+"to":"9"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"color":{
+"color":"#808080"},
+"to":"8",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"9",
+"to":"10"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"color":{
+"color":"#808080"},
+"to":"9",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: ---",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 58ms",
+"color":{
+"color":"#808080"},
+"to":"10",
+"dashes":true,
+"from":"Client"}, {
+"font":{
+"color":"#000000",
+"background":"#ffffff"},
+"label":"RTT: 58ms",
+"dashes":true,
+"color":{
+"color":"#808080"}}, {
+"from":"10",
+"to":"AVD GW"}]); 
+// create a network
+var container = document.getElementById('Diagram-bmyljsc6'); 
+var data = { 
+   nodes: nodes, 
+   edges: edges
+ }; 
+var options = {
+  "physics": {
+    "enabled": true,
+    "solver": "barnesHut"
+  },
+  "interaction": {
+    "hover": true
+  },
+  "nodes": {
+    "font": {
+      "size": 14,
+      "multi": "True"
+    },
+    "shape": "box",
+    "widthConstraint": {
+      "maximum": 120
+    },
+    "margin": 10
+  },
+  "autoResize": true,
+  "layout": {
+    "hierarchical": {
+      "levelSeparation": 550,
+      "direction": "LR",
+      "sortMethod": "directed"
+    }
+  },
+  "edges": {
+    "arrows": {
+      "to": {
+        "enabled": true,
+        "scaleFactor": 1,
+        "type": "arrow"
+      }
+    },
+    "font": {
+      "size": 14,
+      "background": "#ffffff",
+      "align": "center"
+    },
+    "widthConstraint": 100
+  }
+}; 
+var network = loadDiagramWithFonts(container, data, options, 'Diagram-bmyljsc6', true , true);
+diagramTracker['Diagram-bmyljsc6'] = network;
+
+</script></div><footer><script type="text/javascript">function escapeRegExp(string) {
+    return string.toString().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+};</script></footer></body></html>
