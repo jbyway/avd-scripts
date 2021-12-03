@@ -253,7 +253,7 @@ function Get-HTMLReport {
 
     New-HTML -TitleText "AVD Connection Stats" -Online -FilePath .\avd-connection-stats.html {
         New-HTMLSection -HeaderText 'AVD Gateway Details' {
-            
+                 
         }
         
         #Generate report with table and line graph for displaying the results of the traceroute to the AVD Gateway
@@ -283,21 +283,9 @@ function Get-HTMLReport {
             }
         }
     
+       
         #Plot hops of traceroute to AVD Gateway as a graphic
 
-        New-HTMLHorizontalLine
-        New-HTMLSection -HeaderText 'Hops to AVD Gateway' -CanCollapse {
-            New-HTMLDiagram {
-                New-DiagramNode -Label $hoprtt[9].Address.IPAddressToString -IconSolid cloud -Title $hoprtt[9].Destination
-                New-DiagramNode -Label $hoprtt[12].Address.IPAddressToString -IconSolid laptop-code -Title $hoprtt[12].Destination
-                New-DiagramNode -Label $hoprtt[28].Address.IPAddressToString -IconSolid network-wired -Title $hoprtt[28].Destination
-                #New-DiagramNode -label "AVD Gateway" -IconBrands windows -Title "rdgateway.wvd.microsoft.com"
-                New-DiagramNode -label "AVD Gateway" -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Title "rdgateway.wvd.microsoft.com"
-                New-DiagramLink -from $hoprtt[9].Address.IPAddressToString -to $hoprtt[12].Address.IPAddressToString -label $hoprtt[12].Latency -ArrowsToEnabled $true -Length 350
-                New-DiagramLink -from $hoprtt[12].Address.IPAddressToString -to $hoprtt[28].Address.IPAddressToString -label $hoprtt[28].Latency -ArrowsToEnabled $true -Length 350
-                New-DiagramLink -from $hoprtt[28].Address.IPAddressToString -to "AVD Gateway" -label https -ArrowsToEnabled $true -Length 350 -SmoothType dynamic
-            } }
-    
         New-HTMLHorizontalLine
         New-HTMLSection -HeaderText 'Traceroute to AVD Gateway' -CanCollapse {
             New-HTMLDiagram -Height 'calc(100vh - 20px)' -Width 'calc(100vw - 20px)' {
