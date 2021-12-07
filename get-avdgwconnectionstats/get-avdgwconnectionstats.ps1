@@ -38,22 +38,24 @@ function get-msrdcavdgwip {
 function get-avdgwapi {
     [CmdletBinding()]Param(
         [Parameter(Mandatory = $true)]
-        [array]$avdgwip
+        [array]$avdgwip,
+        [string]$avdgwenvironment = "wvd"
     )
     
     # Retrieve the current AVD Gateway and region from Header
     $ip = $avdgwip.RemoteAddress
-    $avdgwapi = Invoke-WebRequest  -Uri https://$ip/api/health -Headers @{Host = "rdgateway.wvd.microsoft.com" } #Potential to make this support Azure GovCloud by making variable
+    $avdgwapi = Invoke-WebRequest  -Uri https://$ip/api/health -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
     
        
     # Get AVD Gateway IP address and location details
     
-    $avdgwinfo = ConvertFrom-Json $avdgwapi.Content
-    $avdgwapi.Headers.'X-AS-CurrentLoad'
+    
+   # $avdgwapi.Headers.'X-AS-CurrentLoad'
     $avdgwapi.Headers.'x-ms-wvd-service-region'
 
     Write-Verbose "[AVD Gateway Details]"
-    "AVD Gateway IP: " + $avdgwip.Address | Write-Verbose -Verbose
+    $avdgwinfo = ConvertFrom-Json $avdgwapi.Content
+    "AVD Gateway IP: " + $avdgwip.RemoteAddress | Write-Verbose -Verbose
     "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-verbose -verbose
     "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-verbose -verbose
     "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-verbose -verbose
@@ -94,7 +96,7 @@ function Invoke-PSPingtoAVDGW {
     
     # Obtain the Gateway Region for this particular AVD Gateway IP
     $web = Invoke-WebRequest -Uri https://$avdgwip/api/health -Headers @{Host = "rdgateway.wvd.microsoft.com" }
-    write-Output "Remote Gateway IP: $avdgwip"
+    #write-Output "Remote Gateway IP: $avdgwip"
     $gwurl = $web.Content | ConvertFrom-Json | select-object -expandproperty 'RegionUrl'
     Write-Output "Gateway URL: $gwurl"
     
@@ -248,7 +250,6 @@ function Get-HTMLReport {
         [array]$avdgwip,
         [array]$avdgwapi
     )
-    $i = ""
     $n = 1
 
     New-HTML -TitleText "AVD Connection Stats" -Online -FilePath .\avd-connection-stats.html {
@@ -320,15 +321,30 @@ function Get-HTMLReport {
 
 }
 
+function get-clienttrafficpath {
+    param (
+        [cmdletbinding()]
+        [Parameter(Mandatory = $false)]
+        [array]$PathPingStats,
+        [array]$hoprtt,
+        [array]$avdgwip,
+        [array]$avdgwapi
+    )
+    # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
+    $avdgwapi.Headers.'x-ms-wvd-service-region'
+
+}
 
 # HTML Report Module you need to install the following modules prior to running this script
 # Install-Module -Name PSWriteHTML -AllowClobber -Force
 
 $avdgwip, $msrdcpid = get-msrdcavdgwip
-$avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0]  # For now only use the first IP address of any connections found
+$avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment "wvd" # For now only use the first IP address of any connections found
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
-$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress
+$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 4
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats
+
+$hoplocations = get-hoplocations -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
 Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi
 
