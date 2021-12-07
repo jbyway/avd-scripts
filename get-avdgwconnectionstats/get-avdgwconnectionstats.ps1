@@ -70,114 +70,20 @@ function get-avdgwapi {
         }
     }
 
-    return $avdgwapi, $edgelocations
+    # Get the location of the AVD Gateway
+    $avdgwlocation = $edgelocations | where-object { $_.AzureRegion -like $avdgwinfo.Region } | select-object -ExpandProperty Geography
+
+   return $avdgwapi
 }
 
 # This function is not currently used however may be useful in the future
-function Invoke-PSPingtoAVDGW {
-    param(
-        [cmdletbinding()]
-        [Parameter(Mandatory = $true)]
-        [string]$avdgwip
-    )
-    
-    # Obtain latency of MSRDC connection to remote AVD gateway for any open session
-    Write-Verbose "[Begin PSPing to AVD Gateway IP: $avdgwip]`r`n" -Verbose
-    
-    if ($VerbosePreference -eq 'SilentlyContinue') {
-        $latency = .\psping.exe -q ($avdgwip + ":443")
-    }
-    else {
-        $latency = .\psping.exe ($avdgwip + ":443") | write-verbose -Verbose *>&1
-    }
-    
-    $pspingstats = ($latency[-2] -split ',').trim()
-    $pspinglatency = ($latency[-1] -split ',').trim()
-    
-    # Obtain the Gateway Region for this particular AVD Gateway IP
-    $web = Invoke-WebRequest -Uri https://$avdgwip/api/health -Headers @{Host = "rdgateway.wvd.microsoft.com" }
-    #write-Output "Remote Gateway IP: $avdgwip"
-    $gwurl = $web.Content | ConvertFrom-Json | select-object -expandproperty 'RegionUrl'
-    Write-Output "Gateway URL: $gwurl"
-    
-    write-output "PSPing Attempts : $pspingstats"
-    write-output "PSPing Latency : $pspinglatency"
-    Write-Output ""
 
-    # Trace route to the AVD Gateway up to 20 hops
-    Write-Output "Gathering Traceroute information. This will take a minute"
-    $tracecmd = (TRACERT.EXE -h 3 -w 1500 $avdgwip.RemoteAddress)
-
-    #Write-Output $tracert
-    $regex = ‘\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b’
-    $tracertips = $tracert | select-string -Pattern $regex -AllMatches | % { $_.Matches } | % { $_.Value } # Get all IP addresses from traceroute output
-    $tracertarray += $tracertips
-
-}
 
 #This function is not currently in use
-function get-avdgwlatency {
-    param(
-        [cmdletbinding()]
-        [Parameter(Mandatory = $true)]
-        [string]$avdgwip
-    )
-    
-    # Obtain latency of MSRDC connection to remote AVD gateway for any open session
 
-    Write-Verbose "[Begin tcpping to AVD Gateway IP: $avdgwip]`r`n" -Verbose
-    Write-Verbose "[Ping Gateway IP: $avdgwip]`r`n" -Verbose
-    $latency = (.\tcping.exe -n 6 -j -h -f $avdgwip 443)
-
-    $h = @('TCP RTT'
-        'TCP Jitter'
-        'HTTP RTT'
-        'HTTP Jitter')
-    # These are the tcping output columns we are looking for
-    $numbers = @(-7
-        -3
-        -5
-        -1)
-    $i = 0
-    $avdgwrtt = @()
-    # Obtain the Min, Max, Avg values for the tcp ping results and feed to array
-    foreach ($a in $numbers) {
-        $avdgwrtt += $latency[$a] | ConvertFrom-CSV -header 'Minimum', 'Maximum', 'Average' |`
-            foreach-object { [PSCustomObject]@{ 'Gateway IP' = $avdgwip
-                'Test Result'                                = $h[$i]
-                'Minimum (ms)'                               = [decimal]$_.Minimum.Trim('Minimum = ').trimend("ms")
-                'Maximum (ms)'                               = [decimal]$_.Maximum.Trim("Maximum = ").trimend("ms")
-                'Average (ms)'                               = [decimal]$_.Average.Trim("Average = ").trimend("ms") 
-            } }
-        $i++
-    }
-
-    return $latency, $avdgwrtt
-   
-}
 
 #This function is not currently in use
-function get-hopstoavdmap {
-    param(
-        [cmdletbinding()]
-        [Parameter(Mandatory = $false)]
-        [string]$avdgwip
-    )
-    
-    # Gather local IP of client and location details
-    $clientIP = Invoke-WebRequest -Uri http://ipinfo.io/json | ConvertFrom-Json | select-object -expandproperty 'ip'
-    Write-Output "Client Public IP: $clientIP"
-    $clientlocation = Invoke-WebRequest -Uri http://ipinfo.io/json | ConvertFrom-Json | select-object -expandproperty 'loc'
-    
 
-    # Create array of unique IPs of client and tracert and write to file
-    $userIP = $clientIP.Content | ConvertFrom-Json | select-object -expandproperty 'ip'
-    $map = @($avdgwip, $userIP, $tracertarray)
-    set-content .\ips.txt $map
-
-    # Use ipinfo to get location details of client and display on map
-    .\ipinfo.exe map .\ips.txt
-}
 
 # Invoke-PathPing performs a pathping to the AVD Gateway IP passed in as $RemoteHost parameter
 # Defining -q will allow you to specify the number of pings to perform on each hop of the traceroute. Default = 5 pings
@@ -321,7 +227,7 @@ function Get-HTMLReport {
 
 }
 
-function get-clienttrafficpath {
+function get-avdtrafficpath {
     param (
         [cmdletbinding()]
         [Parameter(Mandatory = $false)]
@@ -333,18 +239,24 @@ function get-clienttrafficpath {
     # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
     $avdgwapi.Headers.'x-ms-wvd-service-region'
 
+
+    return $avdtrafficpath
 }
 
 # HTML Report Module you need to install the following modules prior to running this script
 # Install-Module -Name PSWriteHTML -AllowClobber -Force
-
+$avdgwip = @()
+$edgelocations = @()
 $avdgwip, $msrdcpid = get-msrdcavdgwip
 $avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment "wvd" # For now only use the first IP address of any connections found
+$data = get-avdgwapi -avdgwip $avdgwip[0]
+
+
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
 $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 4
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats
 
-$hoplocations = get-hoplocations -avdgwapi $avdgwapi -PathpingStats $PathPingStats
+$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
 Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi
 

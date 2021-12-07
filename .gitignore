@@ -1,2 +1,4 @@
 *.html
 *.exe
+/.vscode
+alternatepingoptions.ps1
