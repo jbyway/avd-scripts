@@ -41,7 +41,7 @@ function get-avdgwapi {
         [array]$avdgwip,
         [string]$avdgwenvironment = "wvd"
     )
-    
+    $avdgwapi = @()
     # Retrieve the current AVD Gateway and region from Header
     $ip = $avdgwip.RemoteAddress
     $avdgwapi = Invoke-WebRequest  -Uri https://$ip/api/health -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
@@ -50,7 +50,7 @@ function get-avdgwapi {
     # Get AVD Gateway IP address and location details
     
     
-   # $avdgwapi.Headers.'X-AS-CurrentLoad'
+    # $avdgwapi.Headers.'X-AS-CurrentLoad'
     $avdgwapi.Headers.'x-ms-wvd-service-region'
 
     Write-Verbose "[AVD Gateway Details]"
@@ -61,29 +61,21 @@ function get-avdgwapi {
     "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-verbose -verbose
     
     # Obtain the locations of Azure Edge Locations
+    $edgelocations = @()
     $azureedgelist = Invoke-WebRequest -uri https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/master/includes/front-door-edge-locations-by-abbreviation.md
     
-    $edgelocations = $azureedgelist.Content -split "`n" | foreach-object {
+    $azureedgelist.Content -split "`n" | foreach-object {
         if ($_ -notmatch "^\|\s+[A-Z]{2,3}\s+\|") { [void]::Continue } # Filter out starting lines and only return the lines with the actual data
         else {
-            $_.TrimStart('|').TrimEnd('|') -replace ',', '|' | ConvertFrom-Csv -Delimiter '|' -header 'RegionCode', 'City', 'Country', 'AzureRegion', 'Geography'
+            $edgelocations += ($_.TrimStart('|')).TrimEnd('|') -replace ',', '|' | ConvertFrom-Csv -Delimiter '|' -header 'RegionCode', 'City', 'Country', 'AzureRegion', 'Geography' | where RegionCode -match "ZRH"
         }
     }
 
     # Get the location of the AVD Gateway
-    $avdgwlocation = $edgelocations | where-object { $_.AzureRegion -like $avdgwinfo.Region } | select-object -ExpandProperty Geography
-
-   return $avdgwapi
+    #$avdgwlocation = $edgelocations | where-object { $_.AzureRegion -like $avdgwinfo.Region } | select-object -ExpandProperty Geography
+    # $gw = $edgelocations | Select-Object -Property *, @{Name = 'gw'; Expression = {$_.RegionCode -match "PER"}}
+    return $avdgwapi, $edgelocations
 }
-
-# This function is not currently used however may be useful in the future
-
-
-#This function is not currently in use
-
-
-#This function is not currently in use
-
 
 # Invoke-PathPing performs a pathping to the AVD Gateway IP passed in as $RemoteHost parameter
 # Defining -q will allow you to specify the number of pings to perform on each hop of the traceroute. Default = 5 pings
@@ -103,17 +95,18 @@ function Invoke-PathPing {
             # Match the statistics output of pathping for each hop
             # Match the output of the pathping command for the hop number and stats
             Write-Host $_ -ForegroundColor Green
-            $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '') -split "\s{1,}" | where-object { $_ }
+            $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '').Replace('---', 0) -split "\s{1,}" | where-object { $_ }
+            $hopname = Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly -ErrorAction SilentlyContinue
             $PathPingStatistics = @{
-                Hop          = $hop;
-                RTT          = $RTT;
+                HopCount     = [int]$hop;
+                RTTms        = [int]$RTT.Trim('ms');
                 S2HLS        = $s2hls;
-                S2HLSPercent = $s2hlsperc;
+                S2HLSPercent = [int]$s2hlsperc.Trim('%');
                 S2LLS        = $s2lls;
-                S2LLSPercent = $s2llsperc;
-                HopIP        = $hopip.Trim('[', ']');
-                SampleCount  = $q;
-                HopName      = ([System.Net.Dns]::GetHostEntry($hopip).HostName)
+                S2LLSPercent = [int]$s2llsperc.Trim('%');
+                HopIP        = [string]$hopip.Trim('[', ']');
+                SampleCount  = [int]$q;
+                HopName      = [string]$hopname.NameHost #(Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly -ErrorAction SilentlyContinue | Select-Object NameHost | Out-String)
             }
             $PathPingStats += New-Object psobject -Property $PathPingStatistics # Add the hop statistics to the array
         }
@@ -142,7 +135,8 @@ function Invoke-TestConnection {
     Write-Host "Beginning Test-Connection for each hop..." -ForegroundColor Green
     foreach ($i in $PathPingStats.Where({ "100%" -ne $_.S2LLSPercent })) {
         # Filter out any hops that don't respond to ICMP
-        $hoprtt += $i.HopIP | ForEach-Object { Test-Connection -TargetName $i.HopIP -Count $count -ResolveDestination -OutVariable h }
+        # Need to account for when DNS is not resolved
+        $hoprtt += $i.HopIP | ForEach-Object { Test-Connection -ComputerName $i.HopIP -Count $count -ResolveDestination -ErrorAction SilentlyContinue }
     }  
     return $hoprtt      
 }
@@ -167,7 +161,7 @@ function Get-HTMLReport {
         #Highlight values that are outside of the acceptable range for latency
         #Values are in milliseconds and currently set low for testing purposes
 
-        New-HTMLSection -HeaderText 'RTT latency to AVD Gateway' -CanCollapse {
+        New-HTMLSection -HeaderText 'RTT (ms) latency to AVD Gateway' -CanCollapse {
             New-HTMLTable -DataTable ($hoprtt | Select-Object -Property Ping, Source, Destination, Latency, Address, Status) {
                 New-HTMLTableCondition -Name 'Latency' -ComparisonType number -Operator lt -Value 40 -BackgroundColor Green -Color White
                 New-HTMLTableCondition -Name 'Latency' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
@@ -244,19 +238,28 @@ function get-avdtrafficpath {
 }
 
 # HTML Report Module you need to install the following modules prior to running this script
+
+# Requires Admin
 # Install-Module -Name PSWriteHTML -AllowClobber -Force
+
+#Local user permissions only
+# Install-Module -Name PSWriteHTML -Scope CurrentUser -AllowClobber -Force
+
 $avdgwip = @()
+$avdgwapi = @()
 $edgelocations = @()
 $avdgwip, $msrdcpid = get-msrdcavdgwip
 $avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment "wvd" # For now only use the first IP address of any connections found
-$data = get-avdgwapi -avdgwip $avdgwip[0]
 
 
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
 $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 4
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats
 
-$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
+#$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
 Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi
+
+
+
 
