@@ -71,179 +71,178 @@
         "RegionName": "North Central US",
         "Geography": "USA"
     },
-},
-{
-    "RegionCode": "WUS",
-    "AzureRegion": "westus",
-    "RegionName": "West US",
-    "Geography": "USA"
-},
-{
-    "RegionCode": "SAN",
-    "AzureRegion": "southafricanorth",
-    "RegionName": "South Africa North",
-    "Geography": "South Africa"
-},
-{
-    "RegionCode": "CIN",
-    "AzureRegion": "centralindia",
-    "RegionName": "Central India",
-    "Geography": "India"
-},
-{
-    "RegionCode": "EAS",
-    "AzureRegion": "eastasia",
-    "RegionName": "East Asia",
-    "Geography": "Hong Kong"
-},
-{
-    "RegionCode": "JPE",
-    "AzureRegion": "japaneast",
-    "RegionName": "Japan East",
-    "Geography": "Japan"
-},
-{
-    "RegionCode": "KRC",
-    "AzureRegion": "koreacentral",
-    "RegionName": "Korea Central",
-    "Geography": "South Korea"
-},
-{
-    "RegionCode": "CAC",
-    "AzureRegion": "canadacentral",
-    "RegionName": "Canada Central",
-    "Geography": "Canada"
-},
-{
-    "RegionCode": "FRC",
-    "AzureRegion": "francecentral",
-    "RegionName": "France Central",
-    "Geography": "France"
-},
-{
-    "RegionCode": "GWC",
-    "AzureRegion": "germanywestcentral",
-    "RegionName": "Germany West Central",
-    "Geography": "Germany"
-},
-{
-    "RegionCode": "NOE",
-    "AzureRegion": "norwayeast",
-    "RegionName": "Norway East",
-    "Geography": "Norway"
-},
-{
-    "RegionCode": "CHNO",
-    "AzureRegion": "switzerlandnorth",
-    "RegionName": "Switzerland North",
-    "Geography": "Switzerland"
-},
-{
-    "RegionCode": "UAEN",
-    "AzureRegion": "uaenorth",
-    "RegionName": "UAE North",
-    "Geography": "UAE"
-},
-{
-    "RegionCode": "BRS",
-    "AzureRegion": "brazilsouth",
-    "RegionName": "Brazil South",
-    "Geography": "Brazil"
-},
-{
-    "RegionCode": "C1E2",
-    "AzureRegion": "eastus2euap",
-    "RegionName": "East US2euap",
-    "Geography": "USA"
-},
-{
-    "RegionCode": "WCUS",
-    "AzureRegion": "westcentralus",
-    "RegionName": "West Central US",
-    "Geography": "USA"
-},
-{
-    "RegionCode": "SAW",
-    "AzureRegion": "southafricawest",
-    "RegionName": "South Africa West",
-    "Geography": "South Africa"
-},
-{
-    "RegionCode": "AUC",
-    "AzureRegion": "australiacentral",
-    "RegionName": "Australia Central",
-    "Geography": "Australia"
-},
-{
-    "RegionCode": "AUC2",
-    "AzureRegion": "australiacentral2",
-    "RegionName": "Australia Central 2",
-    "Geography": "Australia"
-},
-{
-    "RegionCode": "AUSE",
-    "AzureRegion": "australiasoutheast",
-    "RegionName": "Australia Southeast",
-    "Geography": "Australia"
-},
-{
-    "RegionCode": "JPW",
-    "AzureRegion": "japanwest",
-    "RegionName": "Japan West",
-    "Geography": "Japan"
-},
-{
-    "RegionCode": "KRS",
-    "AzureRegion": "koreasouth",
-    "RegionName": "Korea South",
-    "Geography": "South Korea"
-},
-{
-    "RegionCode": "SIN",
-    "AzureRegion": "southindia",
-    "RegionName": "South India",
-    "Geography": "India"
-},
-{
-    "RegionCode": "WIN",
-    "AzureRegion": "westindia",
-    "RegionName": "West India",
-    "Geography": "India"
-},
-{
-    "RegionCode": "CAE",
-    "AzureRegion": "canadaeast",
-    "RegionName": "Canada East",
-    "Geography": "Canada"
-},
-{
-    "RegionCode": "FRS",
-    "AzureRegion": "francesouth",
-    "RegionName": "France South",
-    "Geography": "France"
-},
-{
-    "RegionCode": "GRN",
-    "AzureRegion": "germanynorth",
-    "RegionName": "Germany North",
-    "Geography": "Germany"
-},
-{
-    "RegionCode": "NWW",
-    "AzureRegion": "norwaywest",
-    "RegionName": "Norway West",
-    "Geography": "Norway"
-},
-{
-    "RegionCode": "UKW",
-    "AzureRegion": "ukwest",
-    "RegionName": "UK West",
-    "Geography": "United Kingdom"
-},
-{
-    "RegionCode": "UAEC",
-    "AzureRegion": "uaecentral",
-    "RegionName": "UAE Central",
-    "Geography": "UAE"
-}
+    {
+        "RegionCode": "WUS",
+        "AzureRegion": "westus",
+        "RegionName": "West US",
+        "Geography": "USA"
+    },
+    {
+        "RegionCode": "SAN",
+        "AzureRegion": "southafricanorth",
+        "RegionName": "South Africa North",
+        "Geography": "South Africa"
+    },
+    {
+        "RegionCode": "CIN",
+        "AzureRegion": "centralindia",
+        "RegionName": "Central India",
+        "Geography": "India"
+    },
+    {
+        "RegionCode": "EAS",
+        "AzureRegion": "eastasia",
+        "RegionName": "East Asia",
+        "Geography": "Hong Kong"
+    },
+    {
+        "RegionCode": "JPE",
+        "AzureRegion": "japaneast",
+        "RegionName": "Japan East",
+        "Geography": "Japan"
+    },
+    {
+        "RegionCode": "KRC",
+        "AzureRegion": "koreacentral",
+        "RegionName": "Korea Central",
+        "Geography": "South Korea"
+    },
+    {
+        "RegionCode": "CAC",
+        "AzureRegion": "canadacentral",
+        "RegionName": "Canada Central",
+        "Geography": "Canada"
+    },
+    {
+        "RegionCode": "FRC",
+        "AzureRegion": "francecentral",
+        "RegionName": "France Central",
+        "Geography": "France"
+    },
+    {
+        "RegionCode": "GWC",
+        "AzureRegion": "germanywestcentral",
+        "RegionName": "Germany West Central",
+        "Geography": "Germany"
+    },
+    {
+        "RegionCode": "NOE",
+        "AzureRegion": "norwayeast",
+        "RegionName": "Norway East",
+        "Geography": "Norway"
+    },
+    {
+        "RegionCode": "CHNO",
+        "AzureRegion": "switzerlandnorth",
+        "RegionName": "Switzerland North",
+        "Geography": "Switzerland"
+    },
+    {
+        "RegionCode": "UAEN",
+        "AzureRegion": "uaenorth",
+        "RegionName": "UAE North",
+        "Geography": "UAE"
+    },
+    {
+        "RegionCode": "BRS",
+        "AzureRegion": "brazilsouth",
+        "RegionName": "Brazil South",
+        "Geography": "Brazil"
+    },
+    {
+        "RegionCode": "C1E2",
+        "AzureRegion": "eastus2euap",
+        "RegionName": "East US2euap",
+        "Geography": "USA"
+    },
+    {
+        "RegionCode": "WCUS",
+        "AzureRegion": "westcentralus",
+        "RegionName": "West Central US",
+        "Geography": "USA"
+    },
+    {
+        "RegionCode": "SAW",
+        "AzureRegion": "southafricawest",
+        "RegionName": "South Africa West",
+        "Geography": "South Africa"
+    },
+    {
+        "RegionCode": "AUC",
+        "AzureRegion": "australiacentral",
+        "RegionName": "Australia Central",
+        "Geography": "Australia"
+    },
+    {
+        "RegionCode": "AUC2",
+        "AzureRegion": "australiacentral2",
+        "RegionName": "Australia Central 2",
+        "Geography": "Australia"
+    },
+    {
+        "RegionCode": "AUSE",
+        "AzureRegion": "australiasoutheast",
+        "RegionName": "Australia Southeast",
+        "Geography": "Australia"
+    },
+    {
+        "RegionCode": "JPW",
+        "AzureRegion": "japanwest",
+        "RegionName": "Japan West",
+        "Geography": "Japan"
+    },
+    {
+        "RegionCode": "KRS",
+        "AzureRegion": "koreasouth",
+        "RegionName": "Korea South",
+        "Geography": "South Korea"
+    },
+    {
+        "RegionCode": "SIN",
+        "AzureRegion": "southindia",
+        "RegionName": "South India",
+        "Geography": "India"
+    },
+    {
+        "RegionCode": "WIN",
+        "AzureRegion": "westindia",
+        "RegionName": "West India",
+        "Geography": "India"
+    },
+    {
+        "RegionCode": "CAE",
+        "AzureRegion": "canadaeast",
+        "RegionName": "Canada East",
+        "Geography": "Canada"
+    },
+    {
+        "RegionCode": "FRS",
+        "AzureRegion": "francesouth",
+        "RegionName": "France South",
+        "Geography": "France"
+    },
+    {
+        "RegionCode": "GRN",
+        "AzureRegion": "germanynorth",
+        "RegionName": "Germany North",
+        "Geography": "Germany"
+    },
+    {
+        "RegionCode": "NWW",
+        "AzureRegion": "norwaywest",
+        "RegionName": "Norway West",
+        "Geography": "Norway"
+    },
+    {
+        "RegionCode": "UKW",
+        "AzureRegion": "ukwest",
+        "RegionName": "UK West",
+        "Geography": "United Kingdom"
+    },
+    {
+        "RegionCode": "UAEC",
+        "AzureRegion": "uaecentral",
+        "RegionName": "UAE Central",
+        "Geography": "UAE"
+    }
 ]
