@@ -6,12 +6,6 @@
         "Geography": "USA"
     },
     {
-        "RegionCode": "EUS",
-        "AzureRegion": "eastus",
-        "RegionName": "East US",
-        "Geography": "USA"
-    },
-    {
         "RegionCode": "EUS2",
         "AzureRegion": "eastus2",
         "RegionName": "East US 2",
