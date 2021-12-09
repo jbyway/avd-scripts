@@ -41,10 +41,10 @@ function get-avdgwapi {
         [array]$avdgwip,
         [string]$avdgwenvironment = "wvd"
     )
-    $avdgwapi = @()
+    
     # Retrieve the current AVD Gateway and region from Header
-    $ip = $avdgwip.RemoteAddress
-    $avdgwapi = Invoke-WebRequest  -Uri https://$ip/api/health -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
+    
+    $avdgwapi = $avdgwip.RemoteAddress | Invoke-WebRequest  -Uri ('https://' + $avdgwip.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
     
        
     # Get AVD Gateway IP address and location details
@@ -85,8 +85,9 @@ function Invoke-PathPing {
         [int]$q = 100 
     )
     
-    $PathPingStats = @() # Array to hold the results of the traceroute
 
+    # [System.Collections.ArrayList]$PathPingStats = @()
+    
     PATHPING -q $q -4 -n $avdgwip | ForEach-Object {
         if ($_.Trim() -match "Tracing route to .*") {
             Write-Host $_ -ForegroundColor Yellow
@@ -96,8 +97,11 @@ function Invoke-PathPing {
             # Match the output of the pathping command for the hop number and stats
             Write-Host $_ -ForegroundColor Green
             $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '').Replace('---', 0) -split "\s{1,}" | where-object { $_ }
-            $hopname = Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly -ErrorAction SilentlyContinue
-            $PathPingStatistics = @{
+            
+            Try { $hopname = Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly } #-ErrorAction SilentlyContinue} # Attempt to resolve each hops PTR record but return the IP if unable
+            catch { $hopname = $hopip }
+
+            [PSCustomObject]@{
                 HopCount     = [int]$hop;
                 RTTms        = [int]$RTT.Trim('ms');
                 S2HLS        = $s2hls;
@@ -106,9 +110,8 @@ function Invoke-PathPing {
                 S2LLSPercent = [int]$s2llsperc.Trim('%');
                 HopIP        = [string]$hopip.Trim('[', ']');
                 SampleCount  = [int]$q;
-                HopName      = [string]$hopname.NameHost #(Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly -ErrorAction SilentlyContinue | Select-Object NameHost | Out-String)
-            }
-            $PathPingStats += New-Object psobject -Property $PathPingStatistics # Add the hop statistics to the array
+                HopName      = [string]$hopname[0].NameHost
+            } # Add the hop statistics to the array as a custom object
         }
         elseif ($_.Trim() -match "^\d{1,2}\s+") {
             # Display the initial hops of the traceroute and the hop address
@@ -118,9 +121,6 @@ function Invoke-PathPing {
             Write-Host $_ -ForegroundColor Yellow
         } 
     }
-    
-    # Return the sorted array of pathping statistics to the caller
-    return $PathPingStats
 }
 
 function Invoke-TestConnection {
@@ -133,11 +133,17 @@ function Invoke-TestConnection {
     
     $hoprtt = @()
     Write-Host "Beginning Test-Connection for each hop..." -ForegroundColor Green
-    foreach ($i in $PathPingStats.Where({ "100%" -ne $_.S2LLSPercent })) {
+    foreach ($i in $PathPingStats.Where({ 100 -ne $_.S2LLSPercent })) {
         # Filter out any hops that don't respond to ICMP
-        # Need to account for when DNS is not resolved
-        $hoprtt += $i.HopIP | ForEach-Object { Test-Connection -ComputerName $i.HopIP -Count $count -ResolveDestination -ErrorAction SilentlyContinue }
-    }  
+        
+        #$hoprtt += Test-Connection -ComputerName $i.HopIP -ResolveDestination -Count $count
+        $TestConnection = (Test-Connection -ComputerName $i.HopIP -Count $count)
+        
+        $hoprtt += [PSCustomObject]@{
+            
+        }# Test-Connection -ComputerName $i.HopIP -Count $count
+    } 
+    Write-Host "Test-Connection complete" -ForegroundColor Green
     return $hoprtt      
 }
 
@@ -254,7 +260,8 @@ $avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment
 
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
 $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 4
-$hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats
+
+#$hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 10
 
 #$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
