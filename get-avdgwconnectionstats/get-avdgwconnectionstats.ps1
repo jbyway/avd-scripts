@@ -122,7 +122,7 @@ function Invoke-TestConnection {
     #        $TestConnection = (Test-Connection -ComputerName $i.HopIP -Count $count)
     #$PathPingStats | Where-Object S2LLSPercent -ne 100 |` # ForEach-Object { 
     #Write-host $_.HopIP -ForegroundColor Green 
-    Test-Connection -ComputerName ($PathPingStats | Where-object S2LLSPercent -ne 100).HopIP -Count $count | ForEach-Object  {
+    Test-Connection -ComputerName ($PathPingStats | Where-object S2LLSPercent -ne 100).HopIP -Count $count | ForEach-Object {
             
         [PSCustomObject]@{
             'Ping'                 = $_.Ping;
@@ -173,7 +173,7 @@ function Get-HTMLReport {
         #Values are in milliseconds and currently set low for testing purposes
 
         New-HTMLSection -HeaderText 'RTT (ms) latency to AVD Gateway' -CanCollapse {
-            New-HTMLTable -DataTable ($hoprtt | Select-Object -Property Ping, Source, Destination, @{L='RTT (ms)'; E={$_.RTT}}, HopIP, Status) {
+            New-HTMLTable -DataTable ($hoprtt | Select-Object -Property Ping, Source, Destination, @{L = 'RTT (ms)'; E = { $_.RTT } }, HopIP, Status) {
                 New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator lt -Value 40 -BackgroundColor LimeGreen -Color White
                 New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
                 New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White 
@@ -200,7 +200,7 @@ function Get-HTMLReport {
         New-HTMLHorizontalLine
         New-HTMLSection -HeaderText 'PathPing Stats to Gateway' -CanCollapse {
             New-HTMLTableStyle -TextAlign center
-            New-HTMLTable -DataTable ($PathPingStats | Select-Object -Property HopCount, @{L='RTT (ms)'; E={$_.RTT}}, @{L='Source to Here - Lost/Sent'; E={$_.S2HLS}}, @{L='Source to Here - % Lost'; E={$_.S2HLSPercent}}, @{L='This Node/Link'; E={$_.S2LLS}}, @{L='This Node/Link - % Lost'; E={$_.S2LLSPercent}}, SampleCount, HopIP, HopName) {
+            New-HTMLTable -DataTable ($PathPingStats | Select-Object -Property HopCount, @{L = 'RTT (ms)'; E = { $_.RTT } }, @{L = 'Source to Here - Lost/Sent'; E = { $_.S2HLS } }, @{L = 'Source to Here - % Lost'; E = { $_.S2HLSPercent } }, @{L = 'This Node/Link'; E = { $_.S2LLS } }, @{L = 'This Node/Link - % Lost'; E = { $_.S2LLSPercent } }, SampleCount, HopIP, HopName) {
                 New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
                 New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White
                 New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator eq -Value 100 -BackgroundColor LightGrey 
@@ -216,21 +216,26 @@ function Get-HTMLReport {
         New-HTMLSection -HeaderText 'Traceroute to AVD Gateway' -CanCollapse {
             New-HTMLDiagram -Height 'calc(100vh - 20px)' -Width 'calc(100vw - 20px)' {
                 New-DiagramOptionsLinks -ArrowsToEnabled $true -ArrowsToType arrow -ArrowsToScaleFactor 1 -FontSize 14 -WidthConstraint 100 -length 100 -FontAlign center #-FontBackground White
-                New-DiagramOptionsNodes -Margin 10 -Shape box -WidthConstraintMaximum 120 <# 250 #> -FontSize 14 -FontMulti $true
+                New-DiagramOptionsNodes -Margin 10 -Shape box -WidthConstraintMaximum 120 -FontSize 14 -FontMulti $true
                 New-DiagramOptionsPhysics -Enabled $true
                 New-DiagramOptionsInteraction -Hover $true
                 
                 New-DiagramOptionsLayout -HierarchicalSortMethod directed -HierarchicalDirection FromLeftToRight -HierarchicalLevelSeparation 550 #120
-                New-DiagramNode -ID 'Client' -Label $env:COMPUTERNAME -IconSolid laptop-code -Level 0  #-To $PathPingStats[0].Hop  
+                New-DiagramNode -ID 'Client' -Label $env:COMPUTERNAME -IconSolid laptop-code -Level 0 
                 
                 foreach ($PathPingStat in $PathPingStats) {
-                    New-DiagramNode -ID $PathPingStat.HopCount -Level 1 <# $n #> -Label $PathPingStat.HopName -To $PathPingStats[$n].HopCount -Title $PathPingStat.HopIP 
+                    New-DiagramNode -ID $PathPingStat.HopCount -Level 1 -Label $PathPingStat.HopName -To $PathPingStats[$n].HopCount -Title $PathPingStat.HopIP 
                     New-DiagramLink -From 'Client' -To $PathPingStat.HopCount -Label ('RTT: ' + $PathPingStat.RTT + 'ms') -Dashes $true -Color Grey -FontColor Black
+                    
+                    New-DiagramNode -ID ('EdgeLocation-' + $PathPingStat.HopIP) -Label ("Edge Location - `n" + ((get-azureedgelocation -PathPingStats $PathPingStat.HopName).City)) -Level 2
+                    New-DiagramEdge -From $PathPingStat.HopCount -To ('EdgeLocation-' + $PathPingStat.HopIP) -Label ((get-azureedgelocation -PathPingStats $PathPingStat.HopName).Country) -Color Grey -FontColor Black -ArrowsToType circle -Length 20 -Dashes $true
                     $n++
                 }     
-                New-DiagramNode -ID $PathPingStats[-1].HopCount -Label $PathPingStats[-1].HopName -To 'AVD GW' -Level 1 <# ($n -1) #> 
-                New-DiagramNode -ID 'AVD GW' -Label 'AVD GW' -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Level 1 <# $n #>
-                New-DiagramNode -ID 'AVDGWRegion' -Label ((get-avdgwlocation -avdgwapi $avdgwapi).RegionName) -Level 3
+                New-DiagramNode -ID $PathPingStats[-1].HopCount -Label $PathPingStats[-1].HopName -To 'AVD GW' -Level 1 -Title $PathPingStats[-1].HopIP 
+                New-DiagramNode -ID 'AVD GW' -Label ("AVD GW -`n" + ((get-avdgwlocation -avdgwapi $avdgwapi).RegionName)) -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Level 1 
+                
+                New-DiagramNode -ID 'AVDGWRegion' -Label ((get-avdgwlocation -avdgwapi $avdgwapi).RegionName) -Level 2
+                New-DiagramEdge -To 'AVDGWRegion' -From 'AVD GW' -Label 'AVD GW Region' -Color Grey -FontColor Black -ArrowsToType circle -Length 20 -Dashes $true
                        
             }
         }
@@ -249,10 +254,52 @@ function get-avdgwlocation {
     )
     # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
     #$avdgwapi.Headers.'x-ms-wvd-service-region'
-    Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
-    #$avdgwregion = Get-Content .\avdgatewaylocations.json | convertfrom-json  | where { $_.RegionCode -eq $avdgwapi.Headers.'x-ms-wvd-service-region' }
+    if (-not(Test-Path -Path .\avdgatewaylocations.json -PathType Leaf)) {
+        try {
+            Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
+        }
+        catch {
+            Write-Host "Error: Unable to retrieve Azure Edge Locations"
+            throw $_.Exception.Message
+        }
+    }
     Get-Content .\avdgatewaylocations.json | convertfrom-json  | where { $_.RegionCode -eq $avdgwapi.Headers.'x-ms-wvd-service-region' }
 }
+
+function get-azureedgelocation {
+    param (
+        [cmdletbinding()]
+        [Parameter(Mandatory = $false)]
+        [array]$PathPingStats,
+        [array]$hoprtt
+    )
+    # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
+    #$avdgwapi.Headers.'x-ms-wvd-service-region'
+    
+
+    
+    if (-not(Test-Path -Path .\azureedgelocations.json -PathType Leaf)) {
+        try {
+            Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
+        }
+        catch {
+            Write-Host "Error: Unable to retrieve Azure Edge Locations"
+            throw $_.Exception.Message
+        }
+    }
+    If (($PathPingStats -match "ntwk.msn.net").Count -eq 1) {
+        $edgecode = (($PathPingStats -split {$_ -eq "."})[-4]) -replace('\d{1,3}', "")
+        $edgenodelocation = Get-Content .\azureedgelocations.json | Convertfrom-json | where { $_.RegionCode -eq $edgecode }
+        return $edgenodelocation
+        
+     
+    }
+    else {
+        $edgenodelocation = "Not and Azure Edge Node"
+        return $edgenodelocation
+    }
+}
+
 
 # HTML Report Module you need to install the following modules prior to running this script
 
@@ -270,10 +317,10 @@ $avdgwapi = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment "wvd" # For now
 
 
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
-$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress #-q 4
+$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 50
 
-$hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 100
-$hoprtt = Invoke-TestConnection -PathPingStats 202.142.143.151 -count 100
+$hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 20
+
 
 #$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
