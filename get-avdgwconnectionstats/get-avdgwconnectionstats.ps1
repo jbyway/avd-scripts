@@ -45,11 +45,9 @@ function get-avdgwapi {
     # Retrieve the current AVD Gateway and region from Header
     
     $avdgwapi = $avdgwip.RemoteAddress | Invoke-WebRequest  -Uri ('https://' + $avdgwip.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
-    
-       
-    # Get AVD Gateway IP address and location details
-    
-    
+    Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
+    Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
+
     # $avdgwapi.Headers.'X-AS-CurrentLoad'
     $avdgwapi.Headers.'x-ms-wvd-service-region'
 
@@ -59,22 +57,8 @@ function get-avdgwapi {
     "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-verbose -verbose
     "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-verbose -verbose
     "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-verbose -verbose
-    
-    # Obtain the locations of Azure Edge Locations
-    $edgelocations = @()
-    $azureedgelist = Invoke-WebRequest -uri https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/master/includes/front-door-edge-locations-by-abbreviation.md
-    
-    $azureedgelist.Content -split "`n" | foreach-object {
-        if ($_ -notmatch "^\|\s+[A-Z]{2,3}\s+\|") { [void]::Continue } # Filter out starting lines and only return the lines with the actual data
-        else {
-            $edgelocations += ($_.TrimStart('|')).TrimEnd('|') -replace ',', '|' | ConvertFrom-Csv -Delimiter '|' -header 'RegionCode', 'City', 'Country', 'AzureRegion', 'Geography' | where RegionCode -match "ZRH"
-        }
-    }
 
-    # Get the location of the AVD Gateway
-    #$avdgwlocation = $edgelocations | where-object { $_.AzureRegion -like $avdgwinfo.Region } | select-object -ExpandProperty Geography
-    # $gw = $edgelocations | Select-Object -Property *, @{Name = 'gw'; Expression = {$_.RegionCode -match "PER"}}
-    return $avdgwapi, $edgelocations
+    return $avdgwapi
 }
 
 # Invoke-PathPing performs a pathping to the AVD Gateway IP passed in as $RemoteHost parameter
@@ -84,9 +68,6 @@ function Invoke-PathPing {
     param([string]$avdgwip,
         [int]$q = 100 
     )
-    
-
-    # [System.Collections.ArrayList]$PathPingStats = @()
     
     PATHPING -q $q -4 -n $avdgwip | ForEach-Object {
         if ($_.Trim() -match "Tracing route to .*") {
@@ -98,19 +79,19 @@ function Invoke-PathPing {
             Write-Host $_ -ForegroundColor Green
             $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '').Replace('---', 0) -split "\s{1,}" | where-object { $_ }
             
-            Try { $hopname = Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly } #-ErrorAction SilentlyContinue} # Attempt to resolve each hops PTR record but return the IP if unable
-            catch { $hopname = $hopip }
+            # Try { $hopname = Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly } #-ErrorAction SilentlyContinue} # Attempt to resolve each hops PTR record but return the IP if unable
+            # catch { $hopname = $hopip }
 
             [PSCustomObject]@{
                 HopCount     = [int]$hop;
-                RTTms        = [int]$RTT.Trim('ms');
+                RTT          = [int]$RTT.Trim('ms');
                 S2HLS        = $s2hls;
                 S2HLSPercent = [int]$s2hlsperc.Trim('%');
                 S2LLS        = $s2lls;
                 S2LLSPercent = [int]$s2llsperc.Trim('%');
                 HopIP        = [string]$hopip.Trim('[', ']');
                 SampleCount  = [int]$q;
-                HopName      = [string]$hopname[0].NameHost
+                HopName      = (Get-Hostname -ip $hopip)
             } # Add the hop statistics to the array as a custom object
         }
         elseif ($_.Trim() -match "^\d{1,2}\s+") {
@@ -131,20 +112,43 @@ function Invoke-TestConnection {
         [int]$count = 10
     )
     
-    $hoprtt = @()
+    #$hoprtt = @()
     Write-Host "Beginning Test-Connection for each hop..." -ForegroundColor Green
-    foreach ($i in $PathPingStats.Where({ 100 -ne $_.S2LLSPercent })) {
-        # Filter out any hops that don't respond to ICMP
+    #foreach ($i in $PathPingStats.Where({ 100 -ne $_.S2LLSPercent })) {
+    # Filter out any hops that don't respond to ICMP
         
-        #$hoprtt += Test-Connection -ComputerName $i.HopIP -ResolveDestination -Count $count
-        $TestConnection = (Test-Connection -ComputerName $i.HopIP -Count $count)
-        
-        $hoprtt += [PSCustomObject]@{
+    #$hoprtt += Test-Connection -ComputerName $i.HopIP -ResolveDestination -Count $count
+    #        $TestConnection = (Test-Connection -ComputerName $i.HopIP -Count $count)
+    #$PathPingStats | Where-Object S2LLSPercent -ne 100 |` # ForEach-Object { 
+    #Write-host $_.HopIP -ForegroundColor Green 
+    Test-Connection -ComputerName ($PathPingStats | Where-object S2LLSPercent -ne 100).HopIP -Count $count | ForEach-Object  {
             
-        }# Test-Connection -ComputerName $i.HopIP -Count $count
-    } 
+        [PSCustomObject]@{
+            'Ping'                 = $_.Ping;
+            'Source'               = $_.Source;
+            'HopIP'                = $_.DisplayAddress;
+            'RTT'                  = $_.Latency;
+            'Destination'          = (Get-Hostname -ip $_.Destination);
+            'Status'               = $_.Status;
+            'StandardDeviationRTT' = ([Math]::Round(($_.Latency | Measure-Object -StandardDeviation).StandardDeviation, 2)); # Std Deviation of all the latency values and round to 2 decimal places
+            'AverageRTT'           = ([Math]::Round(($_.Latency | Measure-Object -Average).Average, 2)) # Average of all the latency values and round to 2 decimal places
+        }
+    }
     Write-Host "Test-Connection complete" -ForegroundColor Green
-    return $hoprtt      
+}
+    
+
+function Get-Hostname {
+    param (
+        [string]$ip
+    )
+    Try {
+        (Resolve-DnsName $ip -QuickTimeout -Type PTR -TcpOnly)[0].NameHost
+    }
+    Catch {
+        $ip
+    }
+    
 }
 
 function Get-HTMLReport {
@@ -168,22 +172,24 @@ function Get-HTMLReport {
         #Values are in milliseconds and currently set low for testing purposes
 
         New-HTMLSection -HeaderText 'RTT (ms) latency to AVD Gateway' -CanCollapse {
-            New-HTMLTable -DataTable ($hoprtt | Select-Object -Property Ping, Source, Destination, Latency, Address, Status) {
-                New-HTMLTableCondition -Name 'Latency' -ComparisonType number -Operator lt -Value 40 -BackgroundColor Green -Color White
-                New-HTMLTableCondition -Name 'Latency' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
-                New-HTMLTableCondition -Name 'Latency' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White            
+            New-HTMLTable -DataTable ($hoprtt | Select-Object -Property Ping, Source, Destination, @{L='RTT (ms)'; E={$_.RTT}}, HopIP, Status) {
+                New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator lt -Value 40 -BackgroundColor LimeGreen -Color White
+                New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
+                New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White 
+                
+                #New-HTMLTableHeader -Name 'RTT (ms)' -Title 'RTT (ms)' -
             }
             New-HTMLPanel {
                 New-HTMLChart -Title 'RTT Latency (ms)' -TitleAlignment center {
-                    $hopcount = $hoprtt.Ping | select-object -Unique
-                    New-ChartAxisX -Name $hopcount -TitleText 'Count'
-                    #$hoprtt | Select-Object Ping, Address, Latency, Status | Foreach-Object {
-                    $hoprtt.Where({ $null -ne $_.Address }) | Group-Object -property Address | Foreach-Object {
+                    $PingCount = $hoprtt.Ping | select-object -Unique
+                    New-ChartAxisX -Name $PingCount -TitleText 'Count'
+                    
+                    $hoprtt.Where({ $null -ne $_.Destination }) | Group-Object -property HopIP | Foreach-Object {
                         if ($_.Group.Status -eq 'Success') {       
-                            New-ChartLine -Name $_.Group[0].Destination -Value $_.Group.Latency -Curve smooth -Cap round
+                            New-ChartLine -Name $_.Group[0].Destination -Value $_.Group.RTT -Curve smooth -Cap round
                         }
                         else {
-                            Write-Host "Ping timed out"
+                            [void]
                         }           
                     }
                 }
@@ -192,11 +198,14 @@ function Get-HTMLReport {
     
         New-HTMLHorizontalLine
         New-HTMLSection -HeaderText 'PathPing Stats to Gateway' -CanCollapse {
-            New-HTMLTable -DataTable ($PathPingStats | Select-Object -Property Hop, RTT, S2HLS, S2HLSPercent, S2LLS, S2LLSPercent, HopIP, SampleCount, HopName) {
-                New-HTMLTableCondition -Name 'S2HLS' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
-                New-HTMLTableCondition -Name 'S2HLS' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White
-                New-HTMLTableCondition -Name 'S2LLS' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
-                New-HTMLTableCondition -Name 'S2LLS' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White
+            New-HTMLTableStyle -TextAlign center
+            New-HTMLTable -DataTable ($PathPingStats | Select-Object -Property HopCount, @{L='RTT (ms)'; E={$_.RTT}}, @{L='Source to Here - Lost/Sent'; E={$_.S2HLS}}, @{L='Source to Here - % Lost'; E={$_.S2HLSPercent}}, @{L='This Node/Link'; E={$_.S2LLS}}, @{L='This Node/Link - % Lost'; E={$_.S2LLSPercent}}, SampleCount, HopIP, HopName) {
+                New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
+                New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White
+                New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator eq -Value 100 -BackgroundColor LightGrey 
+                New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
+                New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator ge -Value 60 -BackgroundColor TorchRed -Color White
+                New-HTMLTableCondition -Name 'Source to Here - % Lost' -ComparisonType number -Operator eq -Value 100 -BackgroundColor LightGrey
             }
         }
        
@@ -205,7 +214,7 @@ function Get-HTMLReport {
         New-HTMLHorizontalLine
         New-HTMLSection -HeaderText 'Traceroute to AVD Gateway' -CanCollapse {
             New-HTMLDiagram -Height 'calc(100vh - 20px)' -Width 'calc(100vw - 20px)' {
-                New-DiagramOptionsLinks -ArrowsToEnabled $true -ArrowsToType arrow -ArrowsToScaleFactor 1 -FontSize 14 -WidthConstraint 100 -length 100 -FontAlign center -FontBackground White
+                New-DiagramOptionsLinks -ArrowsToEnabled $true -ArrowsToType arrow -ArrowsToScaleFactor 1 -FontSize 14 -WidthConstraint 100 -length 100 -FontAlign center #-FontBackground White
                 New-DiagramOptionsNodes -Margin 10 -Shape box -WidthConstraintMaximum 120 <# 250 #> -FontSize 14 -FontMulti $true
                 New-DiagramOptionsPhysics -Enabled $true
                 New-DiagramOptionsInteraction -Hover $true
@@ -214,11 +223,11 @@ function Get-HTMLReport {
                 New-DiagramNode -ID 'Client' -Label $env:COMPUTERNAME -IconSolid laptop-code -Level 0  #-To $PathPingStats[0].Hop  
                 
                 foreach ($PathPingStat in $PathPingStats) {
-                    New-DiagramNode -ID $PathPingStat.Hop -Level 1 <# $n #> -Label $PathPingStat.HopName -To $PathPingStats[$n].Hop -Title $PathPingStat.HopIP 
-                    New-DiagramLink -From 'Client' -To $PathPingStat.Hop -Label ('RTT: ' + $PathPingStat.RTT) -Dashes $true -Color Grey -FontBackground white -FontColor Black
+                    New-DiagramNode -ID $PathPingStat.HopCount -Level 1 <# $n #> -Label $PathPingStat.HopName -To $PathPingStats[$n].HopCount -Title $PathPingStat.HopIP 
+                    New-DiagramLink -From 'Client' -To $PathPingStat.HopCount -Label ('RTT: ' + $PathPingStat.RTT + 'ms') -Dashes $true -Color Grey -FontColor Black
                     $n++
                 }     
-                New-DiagramNode -ID $PathPingStats[-1].Hop -Label $PathPingStats[-1].HopName -To 'AVD GW' -Level 1 <# ($n -1) #> 
+                New-DiagramNode -ID $PathPingStats[-1].HopCount -Label $PathPingStats[-1].HopName -To 'AVD GW' -Level 1 <# ($n -1) #> 
                 New-DiagramNode -ID 'AVD GW' -Label 'AVD GW' -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Level 1 <# $n #>
                        
             }
@@ -259,9 +268,9 @@ $avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment
 
 
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
-$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 4
+$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress #-q 4
 
-#$hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 10
+$hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 100
 
 #$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
