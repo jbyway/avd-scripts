@@ -45,14 +45,14 @@ function get-avdgwapi {
     # Retrieve the current AVD Gateway and region from Header
     
     $avdgwapi = $avdgwip.RemoteAddress | Invoke-WebRequest  -Uri ('https://' + $avdgwip.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
-    Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
-    Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
+    #Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
+    #Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
 
     # $avdgwapi.Headers.'X-AS-CurrentLoad'
-    $avdgwapi.Headers.'x-ms-wvd-service-region'
+    #$avdgwapi.Headers.'x-ms-wvd-service-region'
 
     Write-Verbose "[AVD Gateway Details]"
-    $avdgwinfo = ConvertFrom-Json $avdgwapi.Content
+    #$avdgwinfo = ConvertFrom-Json $avdgwapi.Content
     "AVD Gateway IP: " + $avdgwip.RemoteAddress | Write-Verbose -Verbose
     "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-verbose -verbose
     "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-verbose -verbose
@@ -77,8 +77,9 @@ function Invoke-PathPing {
             # Match the statistics output of pathping for each hop
             # Match the output of the pathping command for the hop number and stats
             Write-Host $_ -ForegroundColor Green
-            $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace('/   ', '/').Replace('=', '').Replace('|', '').Replace('---', 0) -split "\s{1,}" | where-object { $_ }
-            
+            #$hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace(([regex]::Escape('\/\s{0,3}')), '/').Replace('=', '').Replace('|', '').Replace('---', 0) -split "\s{1,}" | where-object { $_ }
+            $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()) -Replace '\/\s{0,3}', '/' -Replace '=', '' -Replace '|', '' -Replace '---', 0 -split "\s{1,}" | where-object { $_ }
+
             # Try { $hopname = Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly } #-ErrorAction SilentlyContinue} # Attempt to resolve each hops PTR record but return the IP if unable
             # catch { $hopname = $hopip }
 
@@ -229,6 +230,7 @@ function Get-HTMLReport {
                 }     
                 New-DiagramNode -ID $PathPingStats[-1].HopCount -Label $PathPingStats[-1].HopName -To 'AVD GW' -Level 1 <# ($n -1) #> 
                 New-DiagramNode -ID 'AVD GW' -Label 'AVD GW' -Image "https://www.ciraltos.com/wp-content/uploads/2020/05/WVD.png" -Level 1 <# $n #>
+                New-DiagramNode -ID 'AVDGWRegion' -Label ((get-avdgwlocation -avdgwapi $avdgwapi).RegionName) -Level 3
                        
             }
         }
@@ -236,7 +238,7 @@ function Get-HTMLReport {
 
 }
 
-function get-avdtrafficpath {
+function get-avdgwlocation {
     param (
         [cmdletbinding()]
         [Parameter(Mandatory = $false)]
@@ -246,10 +248,10 @@ function get-avdtrafficpath {
         [array]$avdgwapi
     )
     # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
-    $avdgwapi.Headers.'x-ms-wvd-service-region'
-
-
-    return $avdtrafficpath
+    #$avdgwapi.Headers.'x-ms-wvd-service-region'
+    Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
+    #$avdgwregion = Get-Content .\avdgatewaylocations.json | convertfrom-json  | where { $_.RegionCode -eq $avdgwapi.Headers.'x-ms-wvd-service-region' }
+    Get-Content .\avdgatewaylocations.json | convertfrom-json  | where { $_.RegionCode -eq $avdgwapi.Headers.'x-ms-wvd-service-region' }
 }
 
 # HTML Report Module you need to install the following modules prior to running this script
@@ -262,15 +264,16 @@ function get-avdtrafficpath {
 
 $avdgwip = @()
 $avdgwapi = @()
-$edgelocations = @()
+
 $avdgwip, $msrdcpid = get-msrdcavdgwip
-$avdgwapi, $edgelocations = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment "wvd" # For now only use the first IP address of any connections found
+$avdgwapi = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment "wvd" # For now only use the first IP address of any connections found
 
 
 #$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
 $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress #-q 4
 
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 100
+$hoprtt = Invoke-TestConnection -PathPingStats 202.142.143.151 -count 100
 
 #$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
