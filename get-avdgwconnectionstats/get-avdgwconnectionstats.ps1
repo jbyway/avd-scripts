@@ -1,6 +1,13 @@
 $ErrorActionPreference = 'Stop'
 
 # Determines the current MSRDC processes and returns any active AVD Gateway IPs and the Process ID of the MSRDC Client
+function get-avdconnectiondiagnostics {
+    [cmdletbinding()]
+    Param()
+
+
+}
+
 
 function get-msrdcavdgwip {
     [cmdletbinding()]
@@ -43,11 +50,22 @@ function get-avdgwapi {
     )
     
     # Retrieve the current AVD Gateway and region from Header
+    $avdgwip | foreach-object -ErrorAction Continue {
+        If ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -ne 200) {
+            Write-Verbose "[AVD Gateway API health endpoint not available]"
+            Write-Verbose "[Remote IP: $_.RemoteAddress] [Status Code: $_.StatusCode] [Status Description: $_.StatusDescription] [Response: $_.Response]"
+        }
+        elseif ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -eq 200) {
+            [PSCustomObject]@{
+                RemoteAddress = $_.RemoteAddress
+                AVDRegionCode = $_.Headers.'x-ms-wvd-service-region'
+                Content       = $_.Content
+                RegionURL     = (ConvertFrom-Json $_.Content).RegionUrl
+            }
+        }
+    }
+    #$avdgwapi = $avdgwip.RemoteAddress | Invoke-WebRequest  -Uri ('https://' + $avdgwip.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
     
-    $avdgwapi = $avdgwip.RemoteAddress | Invoke-WebRequest  -Uri ('https://' + $avdgwip.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } #avdgwenvironment can be used to define whether service is Azure Public, Gov, or China
-    #Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
-    #Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
-
     # $avdgwapi.Headers.'X-AS-CurrentLoad'
     #$avdgwapi.Headers.'x-ms-wvd-service-region'
 
@@ -59,6 +77,31 @@ function get-avdgwapi {
     "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-verbose -verbose
 
     return $avdgwapi
+}
+
+# Tests each IP from the MSRDC process and determines if a valid AVD Gateway or not and returns each result. Temporary solution to test multiple AVD Gateways. 
+function test-avdgwapi { #not implemented
+    Param(
+        [Object]$avdgwip
+    )
+    $ErrorActionPreference = 'SilentlyContinue'
+    Invoke-WebRequest  -Uri ('https://' + $avdgwip.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.wvd.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue
+}
+
+# Provides the call to the test-avdgwapi function and returns the results using the IPs of each connection by the MSRDC process - temporary function
+function get-avdgwapichoice { #Not implemented
+    Param (
+        [Object]$avdgwip
+    )
+
+    $a = @()
+    $avdgwip | ForEach-Object {
+        $a += test-avdgwapi -avdgwip $_.
+        $a
+    }
+
+
+
 }
 
 # Invoke-PathPing performs a pathping to the AVD Gateway IP passed in as $RemoteHost parameter
@@ -80,8 +123,6 @@ function Invoke-PathPing {
             #$hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()).Replace(([regex]::Escape('\/\s{0,3}')), '/').Replace('=', '').Replace('|', '').Replace('---', 0) -split "\s{1,}" | where-object { $_ }
             $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()) -Replace '\/\s{0,3}', '/' -Replace '=', '' -Replace '|', '' -Replace '---', 0 -split "\s{1,}" | where-object { $_ }
 
-            # Try { $hopname = Resolve-DnsName $hopip -QuickTimeout -Type PTR -TcpOnly } #-ErrorAction SilentlyContinue} # Attempt to resolve each hops PTR record but return the IP if unable
-            # catch { $hopname = $hopip }
 
             [PSCustomObject]@{
                 HopCount     = [int]$hop;
@@ -113,30 +154,31 @@ function Invoke-TestConnection {
         [int]$count = 10
     )
     
-    #$hoprtt = @()
+    
     Write-Host "Beginning Test-Connection for each hop..." -ForegroundColor Green
-    #foreach ($i in $PathPingStats.Where({ 100 -ne $_.S2LLSPercent })) {
-    # Filter out any hops that don't respond to ICMP
-        
-    #$hoprtt += Test-Connection -ComputerName $i.HopIP -ResolveDestination -Count $count
-    #        $TestConnection = (Test-Connection -ComputerName $i.HopIP -Count $count)
-    #$PathPingStats | Where-Object S2LLSPercent -ne 100 |` # ForEach-Object { 
-    #Write-host $_.HopIP -ForegroundColor Green 
-    Test-Connection -ComputerName ($PathPingStats | Where-object S2LLSPercent -ne 100).HopIP -Count $count | ForEach-Object {
+    
+    Try {
+        Test-Connection -ComputerName ($PathPingStats | Where-object S2LLSPercent -ne 100).HopIP -Count $count | ForEach-Object {
             
-        [PSCustomObject]@{
-            'Ping'                 = $_.Ping;
-            'Source'               = $_.Source;
-            'HopIP'                = $_.DisplayAddress;
-            'RTT'                  = $_.Latency;
-            'Destination'          = (Get-Hostname -ip $_.Destination);
-            'Status'               = $_.Status;
-            'StandardDeviationRTT' = ([Math]::Round(($_.Latency | Measure-Object -StandardDeviation).StandardDeviation, 2)); # Std Deviation of all the latency values and round to 2 decimal places
-            'AverageRTT'           = ([Math]::Round(($_.Latency | Measure-Object -Average).Average, 2)) # Average of all the latency values and round to 2 decimal places
+            [PSCustomObject]@{
+                'Ping'                 = $_.Ping;
+                'Source'               = $_.Source;
+                'HopIP'                = $_.DisplayAddress;
+                'RTT'                  = $_.Latency;
+                'Destination'          = (Get-Hostname -ip $_.Destination);
+                'Status'               = $_.Status;
+                'StandardDeviationRTT' = ([Math]::Round(($_.Latency | Measure-Object -StandardDeviation).StandardDeviation, 2)); # Std Deviation of all the latency values and round to 2 decimal places
+                'AverageRTT'           = ([Math]::Round(($_.Latency | Measure-Object -Average).Average, 2)) # Average of all the latency values and round to 2 decimal places
+            }
         }
+        Write-Host "Test-Connection complete" -ForegroundColor Green
     }
-    Write-Host "Test-Connection complete" -ForegroundColor Green
+    Catch {
+        Write-Host "Test-Connection failed" -ForegroundColor Red
+        Throw.$_.Error.ExceptionMessage
+    }
 }
+
     
 
 function Get-Hostname {
@@ -144,10 +186,11 @@ function Get-Hostname {
         [string]$ip
     )
     Try {
-        (Resolve-DnsName $ip -QuickTimeout -Type PTR -TcpOnly)[0].NameHost
+        (Resolve-DnsName $ip -QuickTimeout -Type PTR -TcpOnly)[0].NameHost # Get the hostname for the IP address return first result
     }
     Catch {
-        $ip
+        $ip # Return the IP address if the hostname lookup fails 
+
     }
     
 }
@@ -163,6 +206,26 @@ function Get-HTMLReport {
     )
     $n = 1
 
+    # Check that the necessary PSWriteHTML module is available and if not then install it
+    Try {
+        $HTMLModule = "PSWriteHTML"
+        Write-Host "Checking for PSWriteHTML Module and loading it if it is not already loaded" -ForegroundColor Green
+        If (-not(Get-Module -name $HTMLModule)) {
+            If (Get-Module -ListAvailable | Where-Object { $_.Name -eq $HTMLModule }) {
+                Import-Module -Name $HTMLModule -Scope CurrentUser
+            }
+            else {
+                Install-Module -Name PSWriteHTML -Scope CurrentUser -AllowClobber -Force
+            } 
+        }
+    }
+    Catch {
+        Write-Host "PSWriteHTML module not installed" -ForegroundColor Red
+        Throw.ExceptionMessage 
+    }
+
+
+    # Create the HTML report
     New-HTML -TitleText "AVD Connection Stats" -Online -FilePath .\avd-connection-stats.html {
         New-HTMLSection -HeaderText 'AVD Gateway Details' {
 
@@ -288,15 +351,22 @@ function get-azureedgelocation {
         }
     }
     If (($PathPingStats -match "ntwk.msn.net").Count -eq 1) {
-        $edgecode = (($PathPingStats -split {$_ -eq "."})[-4]) -replace('\d{1,3}', "")
+        $edgecode = (($PathPingStats -split { $_ -eq "." })[-4]) -replace ('\d{1,3}', "")
         $edgenodelocation = Get-Content .\azureedgelocations.json | Convertfrom-json | where { $_.RegionCode -eq $edgecode }
         return $edgenodelocation
         
      
     }
     else {
-        $edgenodelocation = "Not and Azure Edge Node"
-        return $edgenodelocation
+        $edgenodelocation = [PSCustomObject]@{
+            RegionCode = "NA"
+            RegionName = "NA"
+            Country = "NA"
+            City = "NA"
+        }
+        
+        #$edgenodelocation = "Not an Azure Edge Node"
+        #return $edgenodelocation
     }
 }
 
@@ -307,7 +377,7 @@ function get-azureedgelocation {
 # Install-Module -Name PSWriteHTML -AllowClobber -Force
 
 #Local user permissions only
-# Install-Module -Name PSWriteHTML -Scope CurrentUser -AllowClobber -Force
+# 
 
 $avdgwip = @()
 $avdgwapi = @()
@@ -325,7 +395,5 @@ $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 20
 #$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
 
 Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi
-
-
 
 
