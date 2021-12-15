@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
 # Determines the current MSRDC processes and returns any active AVD Gateway IPs and the Process ID of the MSRDC Client
-function get-avdconnectiondiagnostics {
+function get-avdconnectiondiagnostics { #Not implemented
     [cmdletbinding()]
     Param()
 
@@ -371,14 +371,6 @@ function get-azureedgelocation {
 }
 
 
-# HTML Report Module you need to install the following modules prior to running this script
-
-# Requires Admin
-# Install-Module -Name PSWriteHTML -AllowClobber -Force
-
-#Local user permissions only
-# 
-
 $avdgwip = @()
 $avdgwapi = @()
 
@@ -386,13 +378,13 @@ $avdgwip, $msrdcpid = get-msrdcavdgwip
 $avdgwapi = get-avdgwapi -avdgwip $avdgwip[0] #-avdgwenvironment "wvd" # For now only use the first IP address of any connections found
 
 
-#$latency, $avdgwrtt = get-avdgwlatency -avdgwip $avdgwip[0].RemoteAddress
+
 $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0].RemoteAddress -q 50
 
 $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 20
 
 
-#$avdtrafficpath = get-avdtrafficpath -avdgwapi $avdgwapi -PathpingStats $PathPingStats
+
 
 Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi
 
