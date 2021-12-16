@@ -1,0 +1,1283 @@
+**********************
+PowerShell transcript start
+Start time: 20211215181817
+Username: SOUTHPACIFIC\jbyway
+RunAs User: SOUTHPACIFIC\jbyway
+Configuration Name: 
+Machine: DESKTOP-4IJOG2K (Microsoft Windows NT 10.0.22000.0)
+Host Application: C:\Program Files\WindowsApps\Microsoft.PowerShell_7.2.0.0_x64__8wekyb3d8bbwe\pwsh.dll
+Process ID: 39780
+PSVersion: 7.2.0
+PSEdition: Core
+GitCommitId: 7.2.0
+OS: Microsoft Windows 10.0.22000
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.10032.0, 6.0.0, 6.1.0, 6.2.0, 7.0.0, 7.1.0, 7.2.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is .\log.txt
+VERBOSE: AVD Gateway IP: 52.189.233.158
+VERBOSE: AVD Gateway Region:
+VERBOSE: AVD Gateway Region URL:
+VERBOSE: AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+ 10     *
+**********************
+Command start time: 20211215181823
+**********************
+PS>TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215181851
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1 -verbose
+Transcript started, output file is .\log.txt
+VERBOSE: AVD Gateway IP: 52.189.233.158
+VERBOSE: AVD Gateway Region:
+VERBOSE: AVD Gateway Region URL:
+VERBOSE: AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+**********************
+Command start time: 20211215181857
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215182231
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1 -verbose
+Transcript started, output file is .\log.txt
+AVD Gateway IP: 52.189.233.158
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+ 10     *        *        *
+Computing statistics for 112 seconds...
+**********************
+Command start time: 20211215182302
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215191839
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158 40.78.250.74
+**********************
+Command start time: 20211215191839
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "A parameter cannot be found that matches parameter name 'avdgwip'."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+ 10     *        *        *
+Computing statistics for 112 seconds...
+  0                                           10.1.1.28
+  1    4ms     0/  50 =  0%     0/  50 =  0%  10.1.1.1
+  2   15ms     0/  50 =  0%     0/  50 =  0%  180.150.88.1
+  3   12ms     0/  50 =  0%     0/  50 =  0%  202.142.143.46
+  4   12ms     0/  50 =  0%     0/  50 =  0%  202.142.143.151
+  5  ---      50/  50 =100%    50/  50 =100%  198.32.212.95
+  6   15ms     0/  50 =  0%     0/  50 =  0%  104.44.234.166
+  7  ---      50/  50 =100%    50/  50 =100%  104.44.32.149
+  8  ---      50/  50 =100%    50/  50 =100%  104.44.19.158
+  9   51ms     0/  50 =  0%     0/  50 =  0%  104.44.11.172
+Beginning Test-Connection for each hop...
+**********************
+Command start time: 20211215192208
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215192210
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215192211
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "A parameter cannot be found that matches parameter name 'avdregioncode'."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+ 10     *        *        *
+Computing statistics for 112 seconds...
+**********************
+Command start time: 20211215192234
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215192235
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215192235
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "A parameter cannot be found that matches parameter name 'avdregioncode'."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+**********************
+Command start time: 20211215192237
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215192319
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215192320
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+**********************
+Command start time: 20211215192323
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215192418
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215192419
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "A parameter cannot be found that matches parameter name 'AVDregioncode'."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+**********************
+Command start time: 20211215192420
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215192534
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215192535
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+**********************
+Command start time: 20211215192536
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215192750
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215192752
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+**********************
+Command start time: 20211215192755
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215193024
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> .\get-avdgwconnectionstats.ps1
+Transcript started, output file is .\log.txt
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158 40.78.250.74
+**********************
+Command start time: 20211215193024
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+Tracing route to 52.189.233.158 over a maximum of 30 hops
+  0  10.1.1.28
+  1  10.1.1.1
+  2  180.150.88.1
+  3  202.142.143.46
+  4  202.142.143.151
+  5  198.32.212.95
+  6  104.44.234.166
+  7  104.44.32.149
+  8  104.44.19.158
+  9  104.44.11.172
+**********************
+Command start time: 20211215193026
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215193036
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> "AVD Gateway Region: " + (get-avdgwlocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureRegion | Write-Host -ForegroundColor Green
+
+get-avdgwlocation: The term 'get-avdgwlocation' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+get-avdgwlocation: The term 'get-avdgwlocation' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+**********************
+Command start time: 20211215193051
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> function get-avdgwlocation {
+    param (
+        [cmdletbinding()]
+        [Parameter(Mandatory = $true)]
+        [string]$avdgwregioncode
+    )
+    # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
+    #$avdgwapi.Headers.'x-ms-wvd-service-region'
+    if (-not(Test-Path -Path .\avdgatewaylocations.json -PathType Leaf)) {
+        try {
+            Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
+        }
+        catch {
+            Write-Error "Error: Unable to retrieve Azure Gateway Locations" 
+            throw $_.Exception.Message
+            throw $_.ErrorDetails.Message
+        }
+    }
+    Get-Content .\avdgatewaylocations.json | convertfrom-json  | where { $_.RegionCode -eq $avdgwregioncode }
+}
+**********************
+Command start time: 20211215193054
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> "AVD Gateway Region: " + (get-avdgwlocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureRegion | Write-Host -ForegroundColor Green
+>> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+
+get-avdgwlocation: Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+
+get-avdgwlocation: Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+**********************
+Command start time: 20211215193112
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> "AVD Gateway Region: " + (get-avdgwlocation -avdgwregioncode 'SEAS').AzureRegion | Write-Host -ForegroundColor Green
+AVD Gateway Region: southeastasia
+**********************
+Command start time: 20211215193256
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> function get-avdgwip {
+    [cmdletbinding()]
+    Param()
+
+    $avdgwip = @()
+    $msrdcpid = @()
+
+    # Get Process ID of MSRDC and IP address of the AVD Gateway in use by any sessions
+    Write-Verbose "[Discovering current MSRD Process ID]"
+    try {
+        $msrdcpid = (Get-Process -Name msrdc).id
+        Write-Verbose "[Process ID of MSRDC]"
+        $msrdcpid | ForEach-Object { Write-Verbose "$_ `r`n" }
+
+        Write-Verbose "[Discovering currently established AVD Gateway IP(s)]"
+        $avdgwip = (Get-NetTCPConnection -OwningProcess (Get-Process -Name msrdc).id -state Established -ErrorAction Continue) | select-object -Unique
+    }
+    catch {
+        Write-Error "No active connections found for MSRDC - Script will end"
+        Throw $_.Exception.Message
+        Throw $_.Exception.StackTrace
+        
+    }
+    Write-Host "[AVD Gateway Details]`n" -ForegroundColor Green
+    "AVD Gateway IP: " + $avdgwip.RemoteAddress | Write-Host -ForegroundColor Green
+    return $avdgwip
+}
+**********************
+Command start time: 20211215193259
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+LocalAddress                        LocalPort RemoteAddress                       RemotePort State       AppliedSetting
+------------                        --------- -------------                       ---------- -----       --------------
+10.1.1.28                           61742     52.189.233.158                      443        Established Internet
+
+**********************
+Command start time: 20211215193312
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip.RemoteAddress
+
+get-avdgwip.RemoteAddress: The term 'get-avdgwip.RemoteAddress' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+get-avdgwip.RemoteAddress: The term 'get-avdgwip.RemoteAddress' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+**********************
+Command start time: 20211215193322
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+52.189.233.158
+**********************
+Command start time: 20211215193404
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwlocation -avdgwregioncode SEAS
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+get-avdgwlocation: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+
+get-avdgwlocation: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+
+RegionCode       : SEAS
+AzureRegion      : southeastasia
+RegionName       : Southeast Asia
+Geography        : Singapore
+PhysicalLocation : Singapore
+
+
+**********************
+Command start time: 20211215193652
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+52.189.233.158
+**********************
+Command start time: 20211215193656
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+52.189.233.158
+**********************
+Command start time: 20211215193712
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapi
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+get-avdgwapi: The term 'get-avdgwapi' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+get-avdgwapi: The term 'get-avdgwapi' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+**********************
+Command start time: 20211215193733
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapifunction get-avdgwapi {
+    [CmdletBinding()]Param(
+        [Parameter(Mandatory = $true)]
+        [array]$avdgwip,
+        [string]$avdgwenvironment = "wvd"
+    )
+    
+    # Retrieve the current AVD Gateway and region from Header
+    $avdgwip | foreach-object -ErrorAction Continue {
+        If ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -ne 200) {
+            Write-Verbose "[AVD Gateway API health endpoint not available]"
+            Write-Verbose "[Remote IP: $_.RemoteAddress] [Status Code: $_.StatusCode] [Status Description: $_.StatusDescription] [Response: $_.Response]"
+        }
+        elseif ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -eq 200) {
+            [PSCustomObject]@{
+                RemoteAddress = $_.RemoteAddress
+                AVDRegionCode = $_.Headers.'x-ms-wvd-service-region'
+                Content       = $_.Content
+                RegionURL     = (ConvertFrom-Json $_.Content).RegionUrl
+            }
+        }
+        "AVD Gateway Region: " + (get-avdgwlocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureRegion | Write-Host -ForegroundColor Green
+    }
+
+    
+    "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-Host -ForegroundColor Green
+    "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-Host -ForegroundColor Green
+    "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-Host -ForegroundColor Green
+
+    return $avdgwapi
+}
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+get-avdgwapifunction: The term 'get-avdgwapifunction' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+get-avdgwapifunction: The term 'get-avdgwapifunction' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+**********************
+Command start time: 20211215193740
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> function get-avdgwapi {
+    [CmdletBinding()]Param(
+        [Parameter(Mandatory = $true)]
+        [array]$avdgwip,
+        [string]$avdgwenvironment = "wvd"
+    )
+    
+    # Retrieve the current AVD Gateway and region from Header
+    $avdgwip | foreach-object -ErrorAction Continue {
+        If ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -ne 200) {
+            Write-Verbose "[AVD Gateway API health endpoint not available]"
+            Write-Verbose "[Remote IP: $_.RemoteAddress] [Status Code: $_.StatusCode] [Status Description: $_.StatusDescription] [Response: $_.Response]"
+        }
+        elseif ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -eq 200) {
+            [PSCustomObject]@{
+                RemoteAddress = $_.RemoteAddress
+                AVDRegionCode = $_.Headers.'x-ms-wvd-service-region'
+                Content       = $_.Content
+                RegionURL     = (ConvertFrom-Json $_.Content).RegionUrl
+            }
+        }
+        "AVD Gateway Region: " + (get-avdgwlocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureRegion | Write-Host -ForegroundColor Green
+    }
+
+    
+    "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-Host -ForegroundColor Green
+    "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-Host -ForegroundColor Green
+    "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-Host -ForegroundColor Green
+
+    return $avdgwapi
+}
+**********************
+Command start time: 20211215193746
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapi
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215193748
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215193759
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapi -avdgwip
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215193759
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwapi): "Missing an argument for parameter 'avdgwip'. Specify a parameter of type 'System.Array' and try again."
+
+get-avdgwapi: Missing an argument for parameter 'avdgwip'. Specify a parameter of type 'System.Array' and try again.
+
+get-avdgwapi: Missing an argument for parameter 'avdgwip'. Specify a parameter of type 'System.Array' and try again.
+**********************
+Command start time: 20211215193805
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapi -avdgwip $_
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215193805
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215193830
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapi -avdgwip $avdgwip[0]
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+InvalidOperation: Cannot index into a null array.
+
+InvalidOperation: Cannot index into a null array.
+**********************
+Command start time: 20211215193834
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $avdgwip
+**********************
+Command start time: 20211215193838
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapi -avdgwip $avdgwip
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215193838
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215193849
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress | get-avdgwapi -PipelineVariable
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215193849
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwapi): "Missing an argument for parameter 'PipelineVariable'. Specify a parameter of type 'System.String' and try again."
+
+get-avdgwapi: Missing an argument for parameter 'PipelineVariable'. Specify a parameter of type 'System.String' and try again.
+
+get-avdgwapi: Missing an argument for parameter 'PipelineVariable'. Specify a parameter of type 'System.String' and try again.
+**********************
+Command start time: 20211215193908
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwapi -PipelineVariable (get-avdgwip).RemoteAddress
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215193912
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215193917
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwapi -PipelineVariable | (get-avdgwip).RemoteAddress
+At line:1 char:34
++ get-avdgwapi -PipelineVariable | (get-avdgwip).RemoteAddress
++                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Expressions are only allowed as the first element of a pipeline.
+
+ParserError:
+Line |
+   1 |  get-avdgwapi -PipelineVariable | (get-avdgwip).RemoteAddress
+     |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Expressions are only allowed as the first element of a pipeline.
+
+**********************
+Command start time: 20211215193955
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip -PipelineVariable RemoteAddress 
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+LocalAddress                        LocalPort RemoteAddress                       RemotePort State       AppliedSetting
+------------                        --------- -------------                       ---------- -----       --------------
+10.1.1.28                           61742     52.189.233.158                      443        Established Internet
+
+**********************
+Command start time: 20211215194018
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip -PipelineVariable RemoteAddress | get-avdgwapi -avdgwip RemoteAddress
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+get-avdgwapi: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+
+get-avdgwapi: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+**********************
+Command start time: 20211215194018
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(Invoke-WebRequest): "Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed.""
+
+Invoke-WebRequest: 
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+
+Invoke-WebRequest:
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+>> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+
+get-avdgwlocation: 
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+
+get-avdgwlocation:
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+**********************
+Command start time: 20211215194021
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip -PipelineVariable RemoteAddress | get-avdgwapi -avdgwip $RemoteAddress
+>> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215194056
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi -PipelineVariable
+At line:1 char:29
++ (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi -Pipe …
++                             ~~~~~~~~~~~~
+Unexpected token '-outvariable' in expression or statement.
+
+At line:1 char:42
++ (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi -Pipe …
++                                          ~~~~~~~
+Unexpected token 'address' in expression or statement.
+
+ParserError:
+Line |
+   1 |  (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi -Pipe …
+     |                              ~~~~~~~~~~~~
+     | Unexpected token '-outvariable' in expression or statement.
+
+**********************
+Command start time: 20211215194104
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi
+At line:1 char:29
++ (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi
++                             ~~~~~~~~~~~~
+Unexpected token '-outvariable' in expression or statement.
+
+At line:1 char:42
++ (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi
++                                          ~~~~~~~
+Unexpected token 'address' in expression or statement.
+
+ParserError:
+Line |
+   1 |  (get-avdgwip).RemoteAddress -outvariable address | get-avdgwapi
+     |                              ~~~~~~~~~~~~
+     | Unexpected token '-outvariable' in expression or statement.
+
+**********************
+Command start time: 20211215194200
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object RemoteAddress | get-avdgwapi -avdgwip $_
+>> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215194213
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress | get-avdgwapi -avdgwip $_
+>> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215194218
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress | get-avdgwapi -avdgwip $.
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+get-avdgwapi: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+
+get-avdgwapi: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+**********************
+Command start time: 20211215194219
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(Invoke-WebRequest): "Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed.""
+
+Invoke-WebRequest: 
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+
+Invoke-WebRequest:
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+>> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+
+get-avdgwlocation: 
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+
+get-avdgwlocation:
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+**********************
+Command start time: 20211215194232
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress | get-avdgwapi -avdgwip $._
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+get-avdgwapi: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+
+get-avdgwapi: The input object cannot be bound to any parameters for the command either because the command does not take pipeline input or the input and its properties do not match any of the parameters that take pipeline input.
+**********************
+Command start time: 20211215194232
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(Invoke-WebRequest): "Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed.""
+
+Invoke-WebRequest: 
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+
+Invoke-WebRequest:
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+>> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+
+get-avdgwlocation: 
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+
+get-avdgwlocation:
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+**********************
+Command start time: 20211215194249
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress | get-avdgwapi -avdgwip $($_)
+>> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215194257
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress | get-avdgwapi -avdgwip
+>> TerminatingError(get-avdgwapi): "Missing an argument for parameter 'avdgwip'. Specify a parameter of type 'System.Array' and try again."
+
+get-avdgwapi: Missing an argument for parameter 'avdgwip'. Specify a parameter of type 'System.Array' and try again.
+
+get-avdgwapi: Missing an argument for parameter 'avdgwip'. Specify a parameter of type 'System.Array' and try again.
+**********************
+Command start time: 20211215194313
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress -PipelineVariable $remoteaddress| get-avdgwapi -avdgwip $remoteaddress
+>> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215194319
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress -PipelineVariable $remoteaddress
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+RemoteAddress
+-------------
+52.189.233.158
+
+**********************
+Command start time: 20211215194322
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $remoteaddress
+**********************
+Command start time: 20211215194328
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $RemoteAddress
+**********************
+Command start time: 20211215194346
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress -PipelineVariable remoteaddress| get-avdgwapi -avdgwip $remoteaddress
+>> TerminatingError(get-avdgwapi): "Cannot bind argument to parameter 'avdgwip' because it is null."
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+
+get-avdgwapi: Cannot bind argument to parameter 'avdgwip' because it is null.
+**********************
+Command start time: 20211215194351
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $remoteaddress
+**********************
+Command start time: 20211215194400
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress -PipelineVariable remoteaddress
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+RemoteAddress
+-------------
+52.189.233.158
+
+**********************
+Command start time: 20211215194403
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $remoteaddress
+**********************
+Command start time: 20211215194408
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwip | select-object -Property RemoteAddress -PipelineVariable r
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+
+RemoteAddress
+-------------
+52.189.233.158
+
+**********************
+Command start time: 20211215194410
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $r
+**********************
+Command start time: 20211215194447
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $avdgwip = get-avdgwip
+[AVD Gateway Details]
+AVD Gateway IP: 52.189.233.158
+**********************
+Command start time: 20211215194451
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> $avdgwip
+
+LocalAddress                        LocalPort RemoteAddress                       RemotePort State       AppliedSetting
+------------                        --------- -------------                       ---------- -----       --------------
+10.1.1.28                           61742     52.189.233.158                      443        Established Internet
+
+**********************
+Command start time: 20211215194512
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwapi -avdgwip $avdgwip.RemoteAddress
+>> TerminatingError(Invoke-WebRequest): "Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed.""
+
+Invoke-WebRequest: 
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+
+Invoke-WebRequest:
+Line |
+  10 |  … Request  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Header …
+     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind parameter 'Uri'. Cannot convert value "https:///api/health" to type "System.Uri". Error: "Invalid URI: The hostname could not be parsed."
+>> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+
+get-avdgwlocation: 
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+
+get-avdgwlocation:
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+**********************
+Command start time: 20211215194521
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwapi -avdgwip $avdgwip
+**********************
+Command start time: 20211215194521
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+
+get-avdgwlocation: 
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+
+get-avdgwlocation:
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+**********************
+Command start time: 20211215194646
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> function get-avdgwapi {
+    [CmdletBinding()]Param(
+        [Parameter(Mandatory = $true)]
+        [array]$avdgwip,
+        [string]$avdgwenvironment = "wvd"
+    )
+    
+    # Retrieve the current AVD Gateway and region from Header
+    $avdgwip | foreach-object -ErrorAction Continue {
+        If ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -ne 200) {
+            Write-Verbose "[AVD Gateway API health endpoint not available]"
+            Write-Verbose "[Remote IP: $_.RemoteAddress] [Status Code: $_.StatusCode] [Status Description: $_.StatusDescription] [Response: $_.Response]"
+        }
+        elseif ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -eq 200) {
+            [PSCustomObject]@{
+                RemoteAddress = $_.RemoteAddress
+                AVDRegionCode = $_.Headers.'x-ms-wvd-service-region'
+                Content       = $_.Content
+                RegionURL     = (ConvertFrom-Json $_.Content).RegionUrl
+            }
+        }
+        "AVD Gateway Region: " + (get-avdgwlocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureRegion | Write-Host -ForegroundColor Green
+    }
+
+    
+    "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-Host -ForegroundColor Green
+    "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-Host -ForegroundColor Green
+    "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-Host -ForegroundColor Green
+
+    return $avdgwapi
+}
+**********************
+Command start time: 20211215194657
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwapi -avdgwip $avdgwip
+**********************
+Command start time: 20211215194658
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> TerminatingError(get-avdgwlocation): "Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string."
+
+get-avdgwlocation: 
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+
+get-avdgwlocation:
+Line |
+  22 |  … ocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureR …
+     |                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot bind argument to parameter 'avdgwregioncode' because it is an empty string.
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+**********************
+Command start time: 20211215194706
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwlocation
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215194808
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> function get-avdgwapi {
+    [CmdletBinding()]Param(
+        [Parameter(Mandatory = $true)]
+        [array]$avdgwip,
+        [string]$avdgwenvironment = "wvd"
+    )
+    
+    # Retrieve the current AVD Gateway and region from Header
+    $avdgwip | foreach-object -ErrorAction Continue {
+        If ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -ne 200) {
+            Write-Verbose "[AVD Gateway API health endpoint not available]"
+            Write-Verbose "[Remote IP: $_.RemoteAddress] [Status Code: $_.StatusCode] [Status Description: $_.StatusDescription] [Response: $_.Response]"
+        }
+        elseif ((Invoke-WebRequest  -Uri ('https://' + $_.RemoteAddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue | Select-Object StatusCode) -eq 200) {
+            [PSCustomObject]@{
+                RemoteAddress = $_.RemoteAddress
+                AVDRegionCode = $_.Headers.'x-ms-wvd-service-region'
+                Content       = $_.Content
+                RegionURL     = (ConvertFrom-Json $_.Content).RegionUrl
+            }
+            "AVD Gateway Region: " + (get-avdgwlocation -avdgwregioncode $_.Headers.'x-ms-wvd-service-region').AzureRegion | Write-Host -ForegroundColor Green
+        }
+        
+    }
+
+    
+    "AVD Gateway Region: " + $avdgwapi.Headers.'x-ms-wvd-service-region' | write-Host -ForegroundColor Green
+    "AVD Gateway Region URL: " + $avdgwinfo.RegionUrl | write-Host -ForegroundColor Green
+    "AVD Gateway Cluster URL: " + $avdgwinfo.ClusterUrl | write-Host -ForegroundColor Green
+
+    return $avdgwapi
+}
+**********************
+Command start time: 20211215194810
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwlocation
+>> TerminatingError(): "The pipeline has been stopped."
+>> TerminatingError(): "The pipeline has been stopped."
+**********************
+Command start time: 20211215194814
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> get-avdgwapi -avdgwip $avdgwip
+AVD Gateway Region:
+AVD Gateway Region URL:
+AVD Gateway Cluster URL:
+**********************
+Command start time: 20211216182030
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> msedge --kiosk
+
+msedge: The term 'msedge' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+msedge: The term 'msedge' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+**********************
+Command start time: 20211216182038
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> msedge.exe --kiosk
+
+msedge.exe: The term 'msedge.exe' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+msedge.exe: The term 'msedge.exe' is not recognized as a name of a cmdlet, function, script file, or executable program.
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+**********************
+Command start time: 20211216182048
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --kiosk
+**********************
+Command start time: 20211216182105
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --kiosk https://www.google.com
+>> TerminatingError(Start-Process): "A positional parameter cannot be found that accepts argument 'https://www.google.com'."
+
+Start-Process: A positional parameter cannot be found that accepts argument 'https://www.google.com'.
+
+Start-Process: A positional parameter cannot be found that accepts argument 'https://www.google.com'.
+**********************
+Command start time: 20211216182113
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --kiosk 'https://www.google.com'
+>> TerminatingError(Start-Process): "A positional parameter cannot be found that accepts argument 'https://www.google.com'."
+
+Start-Process: A positional parameter cannot be found that accepts argument 'https://www.google.com'.
+
+Start-Process: A positional parameter cannot be found that accepts argument 'https://www.google.com'.
+**********************
+Command start time: 20211216182118
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --kiosk /?
+>> TerminatingError(Start-Process): "A positional parameter cannot be found that accepts argument '/?'."
+
+Start-Process: A positional parameter cannot be found that accepts argument '/?'.
+
+Start-Process: A positional parameter cannot be found that accepts argument '/?'.
+**********************
+Command start time: 20211216182123
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe /?
+**********************
+Command start time: 20211216182213
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --start-fullscreen
+**********************
+Command start time: 20211216182243
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe -start-fullscreen
+>> TerminatingError(Start-Process): "A parameter cannot be found that matches parameter name 'start-fullscreen'."
+
+Start-Process: A parameter cannot be found that matches parameter name 'start-fullscreen'.
+
+Start-Process: A parameter cannot be found that matches parameter name 'start-fullscreen'.
+**********************
+Command start time: 20211216182250
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --start-fullscreen --kiosk
+>> TerminatingError(Start-Process): "A positional parameter cannot be found that accepts argument '--kiosk'."
+
+Start-Process: A positional parameter cannot be found that accepts argument '--kiosk'.
+
+Start-Process: A positional parameter cannot be found that accepts argument '--kiosk'.
+**********************
+Command start time: 20211216182255
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --start-fullscreen www.google.com
+>> TerminatingError(Start-Process): "A positional parameter cannot be found that accepts argument 'www.google.com'."
+
+Start-Process: A positional parameter cannot be found that accepts argument 'www.google.com'.
+
+Start-Process: A positional parameter cannot be found that accepts argument 'www.google.com'.
+**********************
+Command start time: 20211216182303
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --start-fullscreen:www.google.com
+**********************
+Command start time: 20211216182314
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe www.google.com
+**********************
+Command start time: 20211216182330
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe startfullscreen
+**********************
+Command start time: 20211216182340
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe start-fullscreen
+**********************
+Command start time: 20211216182350
+**********************
+PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --start-fullscreen

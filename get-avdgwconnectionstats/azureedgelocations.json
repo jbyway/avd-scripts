@@ -508,7 +508,7 @@
     "City": "Perth",
     "Country": "Australia",
     "AzureRegion": "Australia Southeast",
-    "Geography": "Asia"
+    "Geography": "Australia"
   },
   {
     "RegionCode": "PHL",
@@ -662,7 +662,7 @@
     "City": "Sydney",
     "Country": "Australia",
     "AzureRegion": "Australia East",
-    "Geography": null
+    "Geography": "Australia"
   },
   {
     "RegionCode": "TLV",
