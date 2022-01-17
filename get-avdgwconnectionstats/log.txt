@@ -1281,3 +1281,31 @@ PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe start-f
 Command start time: 20211216182350
 **********************
 PS C:\GitHubRepos\avd-scripts\get-avdgwconnectionstats> start msedge.exe --start-fullscreen
+**********************
+PowerShell transcript start
+Start time: 20220117162721
+Username: SOUTHPACIFIC\jbyway
+RunAs User: SOUTHPACIFIC\jbyway
+Configuration Name: 
+Machine: DESKTOP-4IJOG2K (Microsoft Windows NT 10.0.22538.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command Import-Module 'c:\Users\jbyway\.vscode\extensions\ms-vscode.powershell-2021.12.0\modules\PowerShellEditorServices\PowerShellEditorServices.psd1'; Start-EditorServices -HostName 'Visual Studio Code Host' -HostProfileId 'Microsoft.VSCode' -HostVersion '2021.12.0' -AdditionalModules @('PowerShellEditorServices.VSCode') -BundledModulesPath 'c:\Users\jbyway\.vscode\extensions\ms-vscode.powershell-2021.12.0\modules' -EnableConsoleRepl -StartupBanner '=====> PowerShell Integrated Console v2021.12.0 <=====
+' -LogLevel 'Normal' -LogPath 'c:\Users\jbyway\.vscode\extensions\ms-vscode.powershell-2021.12.0\logs\1642385901-568ddd1a-52fc-487d-a134-6f9c972ff3f01642384815721\EditorServices.log' -SessionDetailsPath 'c:\Users\jbyway\.vscode\extensions\ms-vscode.powershell-2021.12.0\sessions\PSES-VSCode-7396-913443' -FeatureFlags @() 
+Process ID: 12980
+PSVersion: 7.2.1
+PSEdition: Core
+GitCommitId: 7.2.1
+OS: Microsoft Windows 10.0.22538
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.10032.0, 6.0.0, 6.1.0, 6.2.0, 7.0.0, 7.1.0, 7.2.1
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+[Discovering current MSRD Process ID]
+MSRDC Client Process ID: 16548
+[MSRDC Established TCP Connections]
+Remote IP: 52.189.233.158
+**********************
+PowerShell transcript end
+End time: 20220117162723
+**********************

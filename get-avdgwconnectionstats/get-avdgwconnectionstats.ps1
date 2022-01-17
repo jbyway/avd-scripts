@@ -6,12 +6,33 @@ function get-avdconnectionstats {
     [cmdletbinding()]
     Param(
         [bool]$GenerateHTMLReport = $true,
-        [switch]$ExtendedTest,
-        [string]$avdgwenvironment = 'wvd' # allow for multiple Azure cloud environments
+        [switch]$ExtendedTest= $false,
+        [int]$count = 20,
+        [string]$avdgwenvironment = "wvd", # allow for multiple Azure cloud environments
+        [System.IO.FileInfo]$Path = ([Environment]::GetFolderPath("Desktop"))
     )
 
-    $avdgwip = get-avdgwip
+    # Check PowerShell Version is v7 or higher and prompt user to continue if not as some modules may not be available
+    if ($PSVersionTable.PSVersion.Major -lt 7) {
+            Write-Host 'This script requires PowerShell v7 or higher to run.' 
+            while($(Read-Host "Continue? [Y]es or Ctrl-C to Cancel").ToLower() -ne 'y') {}
+        }
+    
+    if ($ExtendedTest -eq $true) {
+        $count = 100 # Run 100 iterations to get a good sample of the data
+    }
+   
+
+    [array]$avdgwip = get-avdgwip
     $avdgwapi = get-avdgwapi -avdgwip $avdgwip[0] -avdgwenvironment $avdgwenvironment
+
+    $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0] -q $count
+
+    $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count $count
+    
+    if ($GenerateHTMLReport -eq $true) {
+        Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi[0]
+    }
 
 
 }
@@ -44,7 +65,7 @@ function get-avdgwip {
     
     }
     
-    return $avdgwip
+    return [object]$avdgwip
 
 }
 
@@ -52,7 +73,7 @@ function get-avdgwip {
 function get-avdgwapi {
     [CmdletBinding()]Param(
         [Parameter(Mandatory = $true)]
-        [array]$avdgwip,
+        [object]$avdgwip,
         [string]$avdgwenvironment = "wvd"
     )
     
@@ -108,10 +129,10 @@ function get-avdgwapichoice {
 # Larger -q value will take longer to perform but provide more accurate results
 function Invoke-PathPing {
     param([string]$avdgwip,
-        [int]$q = 100 
+        [int]$count = 100 
     )
     
-    PATHPING -q $q -4 -n $avdgwip | ForEach-Object {
+    PATHPING -q $count -4 -n $avdgwip | ForEach-Object {
         if ($_.Trim() -match "Tracing route to .*") {
             Write-Host $_ -ForegroundColor Yellow
         } 
@@ -150,7 +171,7 @@ function Invoke-TestConnection {
         [cmdletbinding()]
         [Parameter(Mandatory = $true)]
         [array]$PathPingStats,
-        [int]$count = 10
+        [int]$count = 20
     )
     
     
@@ -231,7 +252,7 @@ function Get-HTMLReport {
 
 
     # Create the HTML report
-    New-HTML -TitleText "AVD Connection Stats" -Online -FilePath .\avd-connection-stats.html {
+    New-HTML -TitleText "AVD Connection Stats" -Online -FilePath ([Environment]::GetFolderPath("Desktop") + "\AVDConnectionStats-$(get-date -format dd-MMM-yyyy-THHmm).html"){
         New-HTMLSection -HeaderText 'AVD Gateway Details' {
             New-HTMLList -Type Ordered {
                 New-HTMLListItem -Text ('AVD Gateway Region: ' + ((get-avdgwlocation -avdgwregioncode $avdgwapi.AVDRegionCode).RegionName)) -FontWeight Bold
@@ -377,21 +398,11 @@ function get-azureedgelocation {
     }
 }
 
-Start-Transcript -Path .\log.txt -Append -IncludeInvocationHeader
-
-
-$avdgwip = get-avdgwip
-$avdgwapi = get-avdgwapi -avdgwip $avdgwip #-avdgwenvironment "wvd" # For now only use the first IP address of any connections found
-
-
-
-$PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0] -q 50
-
-$hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count 30
+#Start-Transcript -Path .\log.txt -Append -IncludeInvocationHeader
 
 
 
 
-Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi[0]
 
-Stop-Transcript
+
+#Stop-Transcript
