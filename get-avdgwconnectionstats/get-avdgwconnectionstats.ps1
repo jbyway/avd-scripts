@@ -26,7 +26,7 @@ function get-avdconnectionstats {
     [array]$avdgwip = get-avdgwip
     $avdgwapi = get-avdgwapi -avdgwip $avdgwip[0] -avdgwenvironment $avdgwenvironment
 
-    $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0] -q $count
+    $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0] -count $count
 
     $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count $count
     
