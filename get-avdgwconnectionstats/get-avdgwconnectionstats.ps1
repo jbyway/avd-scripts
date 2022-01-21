@@ -1,4 +1,25 @@
 
+<#
+    .SYNOPSIS
+        Returns the latency and quality of connection to the currently connected AVD Gateway.
+    .DESCRIPTION
+        Identifies the currently connected AVD Gateway and returns the latency and checks for any hops that are potentially causing packet loss.
+        Identifies the region of the AVD gateway and your routing path to it. 
+    .PARAMETER Count
+        The number of pings and packets to send. If not set use default of 20. 
+    .PARAMETER ExtendedTest
+        If set to true, the extended test is run. This will generate 100 packets and will take an extended amount of time to complete.
+    .PARAMETER avdgwenvironment
+        The AVD Gateway environment to test. If not set, the default is 'wvd' for the Azure Global environment. Only for use in non-standard environments. 
+
+#>
+
+Param(
+    [int]$count,
+    [string]$avdgwenvironment='wvd',
+    [switch]$ExtendedTest=$false
+)
+
 
 # Determines the current MSRDC processes and returns any active AVD Gateway IPs and the Process ID of the MSRDC Client
 function get-avdconnectionstats {
@@ -6,15 +27,15 @@ function get-avdconnectionstats {
     [cmdletbinding()]
     Param(
         [bool]$GenerateHTMLReport = $true,
-        [switch]$ExtendedTest= $false,
-        [int]$count = 20,
+        [switch]$ExtendedTest,
+        [int]$count = 20, #default
         [string]$avdgwenvironment = "wvd", # allow for multiple Azure cloud environments
         [System.IO.FileInfo]$Path = ([Environment]::GetFolderPath("Desktop"))
     )
 
     # Check PowerShell Version is v7 or higher and prompt user to continue if not as some modules may not be available
     if ($PSVersionTable.PSVersion.Major -lt 7) {
-            Write-Host 'This script requires PowerShell v7 or higher to run.' 
+            Write-Host 'This script requires PowerShell v7 or higher to run correctly. Please upgrade your PowerShell installation.' 
             while($(Read-Host "Continue? [Y]es or Ctrl-C to Cancel").ToLower() -ne 'y') {}
         }
     
@@ -24,16 +45,22 @@ function get-avdconnectionstats {
    
 
     [array]$avdgwip = get-avdgwip
-    $avdgwapi = get-avdgwapi -avdgwip $avdgwip[0] -avdgwenvironment $avdgwenvironment
-
-    $PathPingStats = Invoke-PathPing -avdgwip $avdgwip[0] -count $count
+    $avdgwapi = get-avdgwapi -avdgwip $avdgwip -avdgwenvironment $avdgwenvironment
+    if ($avdgwapi.Count -eq 0) {
+        Write-Host 'No AVD Gateway IPs found. Please ensure you are connected to an AVD session and/or have entered hte correct AVD Gateway environment.' -ForegroundColor Red
+        Write-Host 'If you are connected via RDP Shortpath then you may need to reconnect to your session and try again' -ForegroundColor Red
+        Write-Host 'Exiting script!' -ForegroundColor Red
+        exit 1
+    }
+    else {
+    $PathPingStats = Invoke-PathPing -avdgwip $avdgwapi[0].RemoteAddress -count $count
 
     $hoprtt = Invoke-TestConnection -PathPingStats $PathPingStats -count $count
     
     if ($GenerateHTMLReport -eq $true) {
-        Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwip[0] -avdgwapi $avdgwapi[0]
+        Get-HTMLreport -PathPingStats $PathPingStats -hoprtt $hoprtt -avdgwip $avdgwapi[0].RemoteAddress -avdgwapi $avdgwapi[0]
     }
-
+    }
 
 }
 
@@ -55,7 +82,7 @@ function get-avdgwip {
     }
        
     if (-not((Get-NetTCPConnection -OwningProcess (Get-Process -Name msrdc).id -state Established -ErrorAction Continue) | select-object -Property RemoteAddress -Unique)) {
-        Write-Error "No active connections found for MSRDC - exiting script"
+        Write-Error "No active AVD Gateway TCP connections found for MSRDC - exiting script"
         exit 1
     }
     else {
@@ -65,7 +92,7 @@ function get-avdgwip {
     
     }
     
-    return [object]$avdgwip
+    return [array]$avdgwip
 
 }
 
@@ -73,62 +100,43 @@ function get-avdgwip {
 function get-avdgwapi {
     [CmdletBinding()]Param(
         [Parameter(Mandatory = $true)]
-        [object]$avdgwip,
+        [array]$avdgwip,
         [string]$avdgwenvironment = "wvd"
     )
     
-    foreach ($remoteaddress in $avdgwip) {
-        Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } | foreach-object {
-            if ($_.StatusCode -eq 200) {
-                #((Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" }).StatusCode -eq 200) {
-                
+    foreach ($remoteaddress in $avdgwip) { 
+        
+        #Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } | foreach-object {
+        try {
+            #Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } 
+            
+                Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } | foreach-object { 
                 [PSCustomObject]@{
-                    RemoteAddress = $remoteaddress
-                    AVDRegionCode = [string]$_.Headers.'x-ms-wvd-service-region'
-                    Content       = [object]$_.Content
-                    RegionURL     = [string](ConvertFrom-Json ($_.Content)).RegionUrl
+                    'RemoteAddress' = $remoteaddress;
+                    'AVDRegionCode' = [string]$_.Headers.'x-ms-wvd-service-region';
+                    'RegionURL'     = [string](ConvertFrom-Json ($_.Content)).RegionUrl;
+                    'Content'       = [object]$_.Content
                 }
-                    
+                Write-Host 'AVD Gateway Remote Address: ' $remoteaddress -ForegroundColor Green
+                Write-Host 'AVD Gateway Region: ' $_.Headers.'x-ms-wvd-service-region' -ForegroundColor Green
+                Write-Host 'AVD Gateway Region URL: ' (ConvertFrom-Json ($_.Content)).RegionUrl -ForegroundColor Green
             }
-            else {
-                Write-Host ($remoteaddress).Trim()' does not appear to be a valid AVD Gateway IP. Skipping...' -foregroundcolor Yellow
-            }
+            
+                
+                
         }
-    }
-}
-
-# Tests each IP from the MSRDC process and determines if a valid AVD Gateway or not and returns each result. Temporary solution to test multiple AVD Gateways. 
-function test-avdgwapi {
-    #not implemented
-    Param(
-        [Object]$avdgwip
-    )
-    $ErrorActionPreference = 'SilentlyContinue'
-    Invoke-WebRequest  -Uri ('https://' + $avdgwip + '/api/health') -Headers @{Host = "rdgateway.wvd.microsoft.com" } -SkipHttpErrorCheck -ErrorAction Continue
-}
-
-# Provides the call to the test-avdgwapi function and returns the results using the IPs of each connection by the MSRDC process - temporary function
-function get-avdgwapichoice {
-    #Not implemented
-    Param (
-        [Object]$avdgwip
-    )
-
-    $a = @()
-    $avdgwip | ForEach-Object {
-        $a += test-avdgwapi -avdgwip $_.
-        $a
+        catch {
+            Write-Host 'Detected connection to' $remoteaddress 'but it appears to be invalid. Skipping...' -ForegroundColor Yellow
+        }   
     }
 
-
-
-}
+}   
 
 # Invoke-PathPing performs a pathping to the AVD Gateway IP passed in as $RemoteHost parameter
 # Defining -q will allow you to specify the number of pings to perform on each hop of the traceroute. Default = 5 pings
 # Larger -q value will take longer to perform but provide more accurate results
 function Invoke-PathPing {
-    param([string]$avdgwip,
+    param($avdgwip,
         [int]$count = 100 
     )
     
@@ -170,7 +178,7 @@ function Invoke-TestConnection {
     param (
         [cmdletbinding()]
         [Parameter(Mandatory = $true)]
-        [array]$PathPingStats,
+        $PathPingStats,
         [int]$count = 20
     )
     
@@ -256,7 +264,7 @@ function Get-HTMLReport {
         New-HTMLSection -HeaderText 'AVD Gateway Details' {
             New-HTMLList -Type Ordered {
                 New-HTMLListItem -Text ('AVD Gateway Region: ' + ((get-avdgwlocation -avdgwregioncode $avdgwapi.AVDRegionCode).RegionName)) -FontWeight Bold
-                New-HTMLListItem -Text ('AVD Gateway IP: ' + $avdgwip)
+                New-HTMLListItem -Text ('AVD Gateway IP: ' + $avdgwapi.RemoteAddress)
                 #New-HTMLListItem -Text ('Average Latency to AVD Gateway: ' + $hoprtt[-1].AverageRTT + ' ms')
                 New-HTMLListItem -Text "The region and location information provided is approximate and may not be accurate"
                 New-HTMLListItem -Text "AVD Gateway location information is provided by the AVD Gateway API"
@@ -397,6 +405,13 @@ function get-azureedgelocation {
 
     }
 }
+
+if ($ExtendedTest -eq $true) {
+    $count = 100 # Run 100 iterations to get a good sample of the data
+}
+
+#get-avdconnectionstats -count $count -avdgwenvironment $avdgwenvironment
+get-avdconnectionstats -count $count -avdgwenvironment $avdgwenvironment
 
 #Start-Transcript -Path .\log.txt -Append -IncludeInvocationHeader
 

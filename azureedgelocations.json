@@ -1,0 +1,744 @@
+[
+  {
+    "RegionCode": "AKL",
+    "City": "Auckland",
+    "Country": "New Zealand",
+    "AzureRegion": "New Zealand North",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "ATA",
+    "City": "Atlanta",
+    "Country": "Georgia",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "ATH",
+    "City": "Athens",
+    "Country": "Greece",
+    "AzureRegion": "Greece Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "BCN",
+    "City": "Barcelona",
+    "Country": "Spain",
+    "AzureRegion": "Spain Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "BER",
+    "City": "Berlin",
+    "Country": "Germany",
+    "AzureRegion": "Germany West Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "BKK",
+    "City": "Bangkok",
+    "Country": "Thailand",
+    "AzureRegion": "South East Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "BL",
+    "City": "Ashburn",
+    "Country": "Virginia",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "BN",
+    "City": "Boydton",
+    "Country": "Virginia",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "BNA",
+    "City": "Nashville",
+    "Country": "Tennessee",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "BNE",
+    "City": "Brisbane",
+    "Country": "Australia",
+    "AzureRegion": "Australia East",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "BOG",
+    "City": "Bogota",
+    "Country": "Colombia",
+    "AzureRegion": "Latin America",
+    "Geography": null
+  },
+  {
+    "RegionCode": "BOM",
+    "City": "Mumbai",
+    "Country": "India",
+    "AzureRegion": "West India",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "BOS",
+    "City": "Boston",
+    "Country": "Massachusetts",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "BRU",
+    "City": "Brussels",
+    "Country": "Belgium",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "BUD",
+    "City": "Budapest",
+    "Country": "Hungary",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "BUE",
+    "City": "Buenos Aires",
+    "Country": "Argentina",
+    "AzureRegion": "Latin America",
+    "Geography": null
+  },
+  {
+    "RegionCode": "BUH",
+    "City": "Bucharest",
+    "Country": "Romania",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "CAI",
+    "City": "Cairo",
+    "Country": "Egypt",
+    "AzureRegion": "Africa",
+    "Geography": null
+  },
+  {
+    "RegionCode": "CH",
+    "City": "Chicago",
+    "Country": "Illinois",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "CHG",
+    "City": "Chicago",
+    "Country": "Illinois",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "CPH",
+    "City": "Copenhagen",
+    "Country": "Denmark",
+    "AzureRegion": "Denmark East",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "CPQ",
+    "City": "Campinas",
+    "Country": "Brazil",
+    "AzureRegion": "South Brazil",
+    "Geography": "Latin America"
+  },
+  {
+    "RegionCode": "CPT",
+    "City": "Cape Town",
+    "Country": "South Africa",
+    "AzureRegion": "South Africa North",
+    "Geography": null
+  },
+  {
+    "RegionCode": "CYS",
+    "City": "Cheyenne",
+    "Country": "Wyoming",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "DAL",
+    "City": "Dallas",
+    "Country": "Texas",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "DB",
+    "City": "Dublin",
+    "Country": "Ireland",
+    "AzureRegion": "North Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "DEL",
+    "City": "New Delhi",
+    "Country": "India",
+    "AzureRegion": "West India",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "DEN",
+    "City": "Denver",
+    "Country": "Colorado",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "DFW",
+    "City": "Dallas",
+    "Country": "Texas",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "DNA",
+    "City": "Denver",
+    "Country": "Colorado",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "DUS",
+    "City": "Duesseldorf",
+    "Country": "Germany",
+    "AzureRegion": "Germany West Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "DXB",
+    "City": "Dubai",
+    "Country": "United Arab Emirates",
+    "AzureRegion": "United Arab Emirates North",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "EWR",
+    "City": "Newark",
+    "Country": "New Jersey",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "FRA",
+    "City": "Frankfurt",
+    "Country": "Germany",
+    "AzureRegion": "Germany West Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "GVA",
+    "City": "Geneva",
+    "Country": "Switzerland",
+    "AzureRegion": "Switzerland North",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "HEL",
+    "City": "Helsinki",
+    "Country": "Finland",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "HK",
+    "City": "Hong Kong",
+    "Country": "Hong Kong SAR",
+    "AzureRegion": "East Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "HKB",
+    "City": "Hong Kong",
+    "Country": "Hong Kong SAR",
+    "AzureRegion": "East Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "HKG",
+    "City": "Chai Wan",
+    "Country": "Hong Kong SAR",
+    "AzureRegion": "East Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "HNL",
+    "City": "Honolulu",
+    "Country": "Hawaii",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "HOU",
+    "City": "Houston",
+    "Country": "Texas",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "HYD",
+    "City": "Hyderabad",
+    "Country": "India",
+    "AzureRegion": "Central India",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "IEV",
+    "City": "Kiev",
+    "Country": "Ukraine",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "IST",
+    "City": "Istanbul",
+    "Country": "Turkey",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "JAX",
+    "City": "Jacksonville",
+    "Country": "Florida",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "JKT",
+    "City": "Jakarta",
+    "Country": "Indonesia",
+    "AzureRegion": "Indonesia Central",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "JNB",
+    "City": "Johannesburg",
+    "Country": "South Africa",
+    "AzureRegion": "South Africa North",
+    "Geography": null
+  },
+  {
+    "RegionCode": "KUL",
+    "City": "Kuala Lumpur",
+    "Country": "Malaysia",
+    "AzureRegion": "Malaysia West",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "LAS",
+    "City": "Las Vegas",
+    "Country": "Nevada",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "LAX",
+    "City": "Los Angeles",
+    "Country": "California",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "LIS",
+    "City": "Lisbon",
+    "Country": "Portugal",
+    "AzureRegion": "North Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "LON",
+    "City": "London",
+    "Country": "United Kingdom",
+    "AzureRegion": "UK South",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "LOS",
+    "City": "Lagos",
+    "Country": "Nigeria",
+    "AzureRegion": "Africa",
+    "Geography": null
+  },
+  {
+    "RegionCode": "LTS",
+    "City": "London",
+    "Country": "United Kingdom",
+    "AzureRegion": "UK South",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "MAA",
+    "City": "Chennai",
+    "Country": "India",
+    "AzureRegion": "Central India",
+    "Geography": null
+  },
+  {
+    "RegionCode": "MAD",
+    "City": "Madrid",
+    "Country": "Spain",
+    "AzureRegion": "Spain Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "MAN",
+    "City": "Manchester",
+    "Country": "United Kingdom",
+    "AzureRegion": "UK West",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "MEL",
+    "City": "Melbourne",
+    "Country": "Australia",
+    "AzureRegion": "Australia Southeast",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "MEX",
+    "City": "Queretaro",
+    "Country": "Mexico",
+    "AzureRegion": "Mexico Central",
+    "Geography": null
+  },
+  {
+    "RegionCode": "MIA",
+    "City": "Miami",
+    "Country": "Florida",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "MIL",
+    "City": "Milan",
+    "Country": "Italy",
+    "AzureRegion": "Italy North",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "MNL",
+    "City": "Manila",
+    "Country": "Philippines",
+    "AzureRegion": "Southeast Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "MOW",
+    "City": "Moscow",
+    "Country": "Russia",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "MRS",
+    "City": "Marseilles",
+    "Country": "France",
+    "AzureRegion": "France Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "MSP",
+    "City": "Minneapolis",
+    "Country": "Minnesota",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "MUC",
+    "City": "Munich",
+    "Country": "Germany",
+    "AzureRegion": "Germany West Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "NBO",
+    "City": "Nairobi",
+    "Country": "Kenya",
+    "AzureRegion": "Africa",
+    "Geography": null
+  },
+  {
+    "RegionCode": "NYC",
+    "City": "New York City",
+    "Country": "New York",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "OSA",
+    "City": "Osaka",
+    "Country": "Japan",
+    "AzureRegion": "Japan West",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "OSL",
+    "City": "Oslo",
+    "Country": "Norway",
+    "AzureRegion": "Norway East",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "PAR",
+    "City": "Paris",
+    "Country": "France",
+    "AzureRegion": "France Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "PDX",
+    "City": "Portland",
+    "Country": "Oregon",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "PER",
+    "City": "Perth",
+    "Country": "Australia",
+    "AzureRegion": "Australia Southeast",
+    "Geography": "Australia"
+  },
+  {
+    "RegionCode": "PHL",
+    "City": "Philadelphia",
+    "Country": "Pennsylvania",
+    "AzureRegion": "USA",
+    "Geography": "East US"
+  },
+  {
+    "RegionCode": "PHX",
+    "City": "Phoenix",
+    "Country": "Arizona",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "PR",
+    "City": "San Juan",
+    "Country": "Puerto Rico",
+    "AzureRegion": "Latin America",
+    "Geography": null
+  },
+  {
+    "RegionCode": "PRA",
+    "City": "Saint Denis",
+    "Country": "France",
+    "AzureRegion": "France Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "PRG",
+    "City": "Prague",
+    "Country": "Czech RepubliC",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "PUS",
+    "City": "Busan",
+    "Country": "Korea",
+    "AzureRegion": "Korea South",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "RBA",
+    "City": "Rabat",
+    "Country": "Morocco",
+    "AzureRegion": "Africa",
+    "Geography": null
+  },
+  {
+    "RegionCode": "RIO",
+    "City": "Rio De Janeiro",
+    "Country": "Brazil",
+    "AzureRegion": "South Brazil",
+    "Geography": "Latin America"
+  },
+  {
+    "RegionCode": "ROM",
+    "City": "Rome",
+    "Country": "Italy",
+    "AzureRegion": "Italy North",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "SAN",
+    "City": "San Diego",
+    "Country": "California",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "SAO",
+    "City": "Sao Paulo",
+    "Country": "Brazil",
+    "AzureRegion": "South Brazil",
+    "Geography": null
+  },
+  {
+    "RegionCode": "SCL",
+    "City": "Santiago",
+    "Country": "Chile",
+    "AzureRegion": "Chile Central",
+    "Geography": "Latin America"
+  },
+  {
+    "RegionCode": "SG",
+    "City": "Singapore",
+    "Country": "Singapore",
+    "AzureRegion": "Southeast Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "SGE",
+    "City": "Singapore",
+    "Country": "Singapore",
+    "AzureRegion": "Southeast Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "SGN",
+    "City": "Ho Chi Minh City",
+    "Country": "Vietnam",
+    "AzureRegion": "Southeast Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "SIN",
+    "City": "Singapore",
+    "Country": "Singapore",
+    "AzureRegion": "Southeast Asia",
+    "Geography": null
+  },
+  {
+    "RegionCode": "SJC",
+    "City": "San Jose",
+    "Country": "California",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "SLA",
+    "City": "Seoul",
+    "Country": "Korea",
+    "AzureRegion": "Korea Central",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "SN",
+    "City": "San Antonio",
+    "Country": "Texas",
+    "AzureRegion": "USA",
+    "Geography": "Central US"
+  },
+  {
+    "RegionCode": "SOF",
+    "City": "Sofia",
+    "Country": "Bulgaria",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "STO",
+    "City": "Stockholm",
+    "Country": "Sweden",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "SYD",
+    "City": "Sydney",
+    "Country": "Australia",
+    "AzureRegion": "Australia East",
+    "Geography": "Australia"
+  },
+  {
+    "RegionCode": "TLV",
+    "City": "Tel Aviv",
+    "Country": "Israel",
+    "AzureRegion": "Israel Central",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "TPE",
+    "City": "Taipei",
+    "Country": "Taiwan",
+    "AzureRegion": "Taiwan North",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "TYO",
+    "City": "Tokyo",
+    "Country": "Japan",
+    "AzureRegion": "Japan East",
+    "Geography": "Asia"
+  },
+  {
+    "RegionCode": "VIE",
+    "City": "Vienna",
+    "Country": "Austria",
+    "AzureRegion": "Austria East",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "WAW",
+    "City": "Warsaw",
+    "Country": "Poland",
+    "AzureRegion": "Poland Central",
+    "Geography": "Europe"
+  },
+  {
+    "RegionCode": "WST",
+    "City": "Seattle",
+    "Country": "Washington",
+    "AzureRegion": "USA",
+    "Geography": "West US"
+  },
+  {
+    "RegionCode": "YMQ",
+    "City": "Montreal",
+    "Country": "Canada",
+    "AzureRegion": "Canada East",
+    "Geography": null
+  },
+  {
+    "RegionCode": "YTO",
+    "City": "Toronto",
+    "Country": "Canada",
+    "AzureRegion": "Canada Central",
+    "Geography": null
+  },
+  {
+    "RegionCode": "YVR",
+    "City": "Vancouver",
+    "Country": "Canada",
+    "AzureRegion": "Canada West",
+    "Geography": null
+  },
+  {
+    "RegionCode": "ZAG",
+    "City": "Zagreb",
+    "Country": "Croatia",
+    "AzureRegion": "West Europe",
+    "Geography": null
+  },
+  {
+    "RegionCode": "ZRH",
+    "City": "Zurich",
+    "Country": "Switzerland",
+    "AzureRegion": "Switzerland North",
+    "Geography": "Europe"
+  }
+]
