@@ -15,7 +15,7 @@
 #>
 
 Param(
-    [int]$count,
+    [int]$count=20,
     [string]$avdgwenvironment='wvd',
     [switch]$ExtendedTest=$false
 )
@@ -42,12 +42,11 @@ function get-avdconnectionstats {
     if ($ExtendedTest -eq $true) {
         $count = 100 # Run 100 iterations to get a good sample of the data
     }
-   
 
     [array]$avdgwip = get-avdgwip
     $avdgwapi = get-avdgwapi -avdgwip $avdgwip -avdgwenvironment $avdgwenvironment
     if ($avdgwapi.Count -eq 0) {
-        Write-Host 'No AVD Gateway IPs found. Please ensure you are connected to an AVD session and/or have entered hte correct AVD Gateway environment.' -ForegroundColor Red
+        Write-Host 'No AVD Gateway IPs found. Please ensure you are connected to an AVD session and/or have entered the correct AVD Gateway environment.' -ForegroundColor Red
         Write-Host 'If you are connected via RDP Shortpath then you may need to reconnect to your session and try again' -ForegroundColor Red
         Write-Host 'Exiting script!' -ForegroundColor Red
         exit 1
@@ -70,7 +69,7 @@ function get-avdgwip {
     Param()
    
     # Get Process ID of MSRDC and IP address of the AVD Gateway in use by any sessions
-    Write-Host "[Discovering current MSRD Process ID]" -ForegroundColor Green
+    Write-Host "[Discovering current MSRD Process ID]" -ForegroundColor Yellow
     if (-not(Get-Process -Name msrdc).id) {
         # No MSRDC Client process found terminate script
         Write-Host "No active MSRDC process detected... exiting script" -ForegroundColor Red
@@ -87,7 +86,7 @@ function get-avdgwip {
     }
     else {
         $avdgwip = (Get-NetTCPConnection -OwningProcess (Get-Process -Name msrdc).id -state Established -ErrorAction Continue).RemoteAddress | select-Object <#-Property RemoteAddress#> -Unique
-        Write-Host "[MSRDC Established TCP Connections]`r" -ForegroundColor Green
+        Write-Host "[MSRDC Established TCP Connections]`r" -ForegroundColor Yellow
         $avdgwip | foreach-object { "Remote IP: " + $_ + "`r" | Write-Host -ForegroundColor Green }
     
     }
@@ -104,7 +103,7 @@ function get-avdgwapi {
         [string]$avdgwenvironment = "wvd"
     )
     
-    foreach ($remoteaddress in $avdgwip) { 
+    foreach ($remoteaddress in $avdgwip)  { 
         
         #Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } | foreach-object {
         try {
@@ -117,16 +116,16 @@ function get-avdgwapi {
                     'RegionURL'     = [string](ConvertFrom-Json ($_.Content)).RegionUrl;
                     'Content'       = [object]$_.Content
                 }
-                Write-Host 'AVD Gateway Remote Address: ' $remoteaddress -ForegroundColor Green
-                Write-Host 'AVD Gateway Region: ' $_.Headers.'x-ms-wvd-service-region' -ForegroundColor Green
-                Write-Host 'AVD Gateway Region URL: ' (ConvertFrom-Json ($_.Content)).RegionUrl -ForegroundColor Green
+                Write-Host 'AVD Gateway Remote Address:' $remoteaddress -ForegroundColor Green
+                Write-Host 'AVD Gateway Region:' $_.Headers.'x-ms-wvd-service-region' -ForegroundColor Green
+                Write-Host 'AVD Gateway Region URL:' (ConvertFrom-Json ($_.Content)).RegionUrl -ForegroundColor Green
             }
             
                 
                 
         }
         catch {
-            Write-Host 'Detected connection to' $remoteaddress 'but it appears to be invalid. Skipping...' -ForegroundColor Yellow
+            Write-Host 'Detected connection to' $remoteaddress 'but it appears to not be an AVD Gateway so will skip it...' -ForegroundColor Yellow
         }   
     }
 
@@ -142,7 +141,7 @@ function Invoke-PathPing {
     
     PATHPING -q $count -4 -n $avdgwip | ForEach-Object {
         if ($_.Trim() -match "Tracing route to .*") {
-            Write-Host $_ -ForegroundColor Yellow
+            Write-Host "`r[$_]" -ForegroundColor Yellow
         } 
         elseif ($_.Trim() -match "^\d{1,}\s+\d{1,}ms|^\d{1,}\s+---") {
             # Match the statistics output of pathping for each hop
@@ -169,7 +168,7 @@ function Invoke-PathPing {
             Write-Host $_ -ForegroundColor Green
         }
         elseif ($_.Trim() -match "Computing statistics for .*") {
-            Write-Host $_ -ForegroundColor Yellow
+            Write-Host "[$_]`r" -ForegroundColor Yellow
         } 
     }
 }
@@ -182,12 +181,12 @@ function Invoke-TestConnection {
         [int]$count = 20
     )
     
-    
-    Write-Host "Beginning Test-Connection for each hop...Please wait" -ForegroundColor Green
+    Write-Host "`r[Performing $count pings to each network hop of the connection]" -ForegroundColor Yellow
+    #Write-Host "`rTesting each hop for response time. Performing" $count " attempts ...Please wait" -ForegroundColor Yellow
     
     Try {
         Test-Connection -ComputerName ($PathPingStats | Where-object S2LLSPercent -ne 100).HopIP -Count $count | ForEach-Object {
-            
+            if ($_.Ping -eq 1) {$Jitter = 0} else {$Jitter = ($_.Latency - $latency)} # Determine the jitter between the current latency and the previous latency. First result will be result of first ping
             [PSCustomObject]@{
                 'Ping'                 = $_.Ping;
                 'Source'               = $_.Source;
@@ -196,14 +195,18 @@ function Invoke-TestConnection {
                 'Destination'          = (Get-Hostname -ip $_.Destination);
                 'Status'               = $_.Status;
                 #Work to do on these next 2 values to be more accurate
+                'Jitter'               = $Jitter;
                 'StandardDeviationRTT' = ([Math]::Round(($_.Latency | Measure-Object -StandardDeviation).StandardDeviation, 2)); # Std Deviation of all the latency values and round to 2 decimal places
                 'AverageRTT'           = ([Math]::Round(($_.Latency | Measure-Object -Average).Average, 2)) # Average of all the latency values and round to 2 decimal places
             }
+            Write-Host "Attempt:"$_.Ping ":"$_.DisplayAddress":"$_.Latency"ms: Jitter:"$Jitter"ms:" $_.Status -ForegroundColor Green 
+            $latency = $_.Latency
+            
         }
-        Write-Host "Test-Connection complete" -ForegroundColor Green
+        Write-Host "[Test-Connection complete]`r" -ForegroundColor Yellow
     }
     Catch {
-        Write-Host "Test-Connection failed" -ForegroundColor Red
+        Write-Host "[Test-Connection failed]" -ForegroundColor Red
         Throw $_.Exception.Message
     }
 }
@@ -216,11 +219,14 @@ function Get-Hostname {
         [string]$ip
     )
     Try {
+        $ErrorActionPreference = 'SilentlyContinue'
         (Resolve-DnsName $ip -QuickTimeout -Type PTR -TcpOnly)[0].NameHost # Get the hostname for the IP address return first result
     }
     Catch {
+        Write-Host "[No DNS PTR record found for $ip, will use IP instead]" -ForegroundColor Yellow
+        $ErrorActionPreference = 'Stop'
         $ip # Return the IP address if the hostname lookup fails 
-
+        
     }
     
 }
@@ -241,24 +247,28 @@ function Get-HTMLReport {
 
     Try {
         $HTMLModule = "PSWriteHTML"
-        Write-Host "Verify PSWriteHTML Module is loaded" -ForegroundColor Green
+        Write-Host "[Verifying PSWriteHTML module is loaded and install/import if required]" -ForegroundColor Yellow
         If (-not(Get-Module -name $HTMLModule)) {
             If (Get-Module -ListAvailable | Where-Object { $_.Name -eq $HTMLModule }) {
-                Write-Host "PSWriteHTML module found, importing into current user scope" -ForegroundColor Yellow
+                Write-Host "[Importing module into current user scope]" -ForegroundColor Yellow
                 Import-Module -Name $HTMLModule
+                Write-HOst "[$HTMLModule module successfully imported]" -ForegroundColor Green
             }
             else {
-                Write-Host
+                Write-Host "[Downloading and installing $HTMLModule module - please accept any install prompts]" -ForegroundColor Yellow
                 Install-Module -Name PSWriteHTML -Scope CurrentUser -AllowClobber -Force
+                Write-Host "[$HTMLModule module was successfully installed]" -ForegroundColor Green
             } 
         }
     }
     Catch {
-        Write-Host "PSWriteHTML module not installed" -ForegroundColor Red
+        Write-Host "[An error occurred while attempting to load the $HTMLModule module. Please attempt a manual install of the module and try again]" -ForegroundColor Red
+        Write-Host "'Install-Module -Name $HTMLModule -Scope CurrentUser -AllowClobber -Force'" -ForegroundColor Yellow
         Throw $_.Exception.Message
     }
 
-
+    Write-Host "[Generating HTML report]" -ForegroundColor Yellow
+    Write-Host "[Saving to"([Environment]::GetFolderPath("Desktop") + "\AVDConnectionStats-$(get-date -format dd-MMM-yyyy-THHmm).html")"]" -ForegroundColor Yellow
     # Create the HTML report
     New-HTML -TitleText "AVD Connection Stats" -Online -FilePath ([Environment]::GetFolderPath("Desktop") + "\AVDConnectionStats-$(get-date -format dd-MMM-yyyy-THHmm).html"){
         New-HTMLSection -HeaderText 'AVD Gateway Details' {
@@ -278,7 +288,7 @@ function Get-HTMLReport {
         #Values are in milliseconds and currently set low for testing purposes
 
         New-HTMLSection -HeaderText 'RTT (ms) latency to AVD Gateway' -CanCollapse {
-            New-HTMLTable -DataTable ($hoprtt | Select-Object -Property Ping, Source, Destination, @{L = 'RTT (ms)'; E = { $_.RTT } }, HopIP, Status) {
+            New-HTMLTable -DataTable ($hoprtt | Select-Object -Property Ping, Source, Destination, @{L = 'RTT (ms)'; E = { $_.RTT } }, @{L = 'Jitter (ms)'; E = { $_.Jitter } }, HopIP, Status) {
                 New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator lt -Value 40 -BackgroundColor LimeGreen -Color White
                 New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator ge -Value 40 -BackgroundColor CarrotOrange -Color White
                 New-HTMLTableCondition -Name 'RTT (ms)' -ComparisonType number -Operator ge -Value 80 -BackgroundColor TorchRed -Color White 
@@ -353,7 +363,7 @@ function get-avdgwlocation {
         [object]$avdgwregioncode
     )
     # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
-    
+    <# Following section is removed for now as replacing with direct query to json on Github. 
     if (-not(Test-Path -Path .\avdgatewaylocations.json -PathType Leaf)) {
         try {
             Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
@@ -364,7 +374,18 @@ function get-avdgwlocation {
             throw $_.ErrorDetails.Message
         }
     }
-    Get-Content .\avdgatewaylocations.json | convertfrom-json  | where { $_.RegionCode -eq $avdgwregioncode }
+    #>
+    try {
+        # Following line not needed when using direct query to json on Github
+        #Get-Content .\avdgatewaylocations.json | convertfrom-json  | Where-Object { $_.RegionCode -eq $avdgwregioncode }
+        (Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json).Content | convertfrom-json | Where-Object { $_.RegionCode -eq $avdgwregioncode }
+    }
+    catch {
+        Write-Error "Error: Unable to retrieve Azure Gateway Locations" 
+        throw $_.Exception.Message
+        throw $_.ErrorDetails.Message
+    }
+
 }
 
 function get-azureedgelocation {
@@ -378,7 +399,8 @@ function get-azureedgelocation {
     #$avdgwapi.Headers.'x-ms-wvd-service-region'
     
 
-    
+   <#
+   # Removed the following code as it was easier to query the json directly from the Github file 
     if (-not(Test-Path -Path .\azureedgelocations.json -PathType Leaf)) {
         try {
             Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
@@ -388,12 +410,25 @@ function get-azureedgelocation {
             throw $_.Exception.Message
         }
     }
+    #>
+
+    # If hop is an Azure Edge location then return the location details
     If (($PathPingStats -match "ntwk.msn.net").Count -eq 1) {
         $edgecode = (($PathPingStats -split { $_ -eq "." })[-4]) -replace ('\d{1,3}', "")
-        $edgenodelocation = Get-Content .\azureedgelocations.json | Convertfrom-json | where { $_.RegionCode -eq $edgecode }
-        return $edgenodelocation
+        try {
+        $edgenodelocation = (Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json).Content | Convertfrom-json | where { $_.RegionCode -eq $edgecode }
+        }
+        catch {
+            Write-Host "Error: Unable to retrieve Azure Edge Locations"
+            throw $_.Exception.Message
+        }
+        # Following line is to get the edge location name if using code above to download the json file
+        # $edgenodelocation = Get-Content .\azureedgelocations.json | Convertfrom-json | where { $_.RegionCode -eq $edgecode }
+       
+       return $edgenodelocation
     }
     else {
+        # Not an Azure Edge Node so return N/A
         [PSCustomObject]@{
             RegionCode = "N/A"
             RegionName = "N/A"
@@ -401,23 +436,14 @@ function get-azureedgelocation {
             City       = "N/A"
         }
         return $edgenodelocation
-        # Not an Azure Edge Node
+        
 
     }
 }
 
 if ($ExtendedTest -eq $true) {
-    $count = 100 # Run 100 iterations to get a good sample of the data
+    $count = 100 # Run 100 iterations. This will run for far longer time so should be done when wanting to perform extended test.
 }
 
-#get-avdconnectionstats -count $count -avdgwenvironment $avdgwenvironment
+
 get-avdconnectionstats -count $count -avdgwenvironment $avdgwenvironment
-
-#Start-Transcript -Path .\log.txt -Append -IncludeInvocationHeader
-
-
-
-
-
-
-#Stop-Transcript
