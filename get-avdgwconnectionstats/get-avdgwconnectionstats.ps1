@@ -127,7 +127,7 @@ function get-avdgwapi {
                 
         }
         catch {
-            Write-Host 'Detected a connection to' $remoteaddress 'but it does not appear to be an AVD Gateway. Skipping it...' -ForegroundColor Yellow
+            Write-Host "`nDetected a connection to" $remoteaddress "but it does not appear to be an AVD Gateway. Skipping it..." -ForegroundColor Yellow
         }   
     }
 
