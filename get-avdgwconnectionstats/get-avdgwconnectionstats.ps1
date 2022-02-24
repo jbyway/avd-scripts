@@ -127,7 +127,7 @@ function get-avdgwapi {
                 
         }
         catch {
-            Write-Host "`nDetected a connection to" $remoteaddress "but it does not appear to be an AVD Gateway. Skipping it..." -ForegroundColor Yellow
+            Write-Host "`nDetected a connection to" $remoteaddress "but it does not appear to be an AVD Gateway. Skipping it...`n" -ForegroundColor Yellow
         }   
     }
 
@@ -141,10 +141,10 @@ function Invoke-PathPing {
     param($avdgwip,
         [int]$count = 100 
     )
-    
+    Write-Host "`n[PathPing] - Verifying connectivity from your client to the AVD Gateway $avdgwip" -ForegroundColor Yellow
     PATHPING -q $count -4 -n $avdgwip | ForEach-Object {
         if ($_.Trim() -match "Tracing route to .*") {
-            Write-Host "`n[$_]" -ForegroundColor Yellow
+            Write-Host "[$_]" -ForegroundColor Yellow
         } 
         elseif ($_.Trim() -match "^\d{1,}\s+\d{1,}ms|^\d{1,}\s+---|=\s+\d+%\s+\|") {
             # Match the statistics output of pathping for each hop
@@ -192,7 +192,7 @@ function Invoke-TestConnection {
         [int]$count = 20
     )
     
-    Write-Host "`n[Performing $count ping attempts against each network hop to the AVD Gateway. Please wait...]" -ForegroundColor Yellow
+    Write-Host "`n[Test-Connection] - Performing $count ping attempts against each network hop to the AVD Gateway. Please wait..." -ForegroundColor Yellow
     #Write-Host "`rTesting each hop for response time. Performing" $count " attempts ...Please wait" -ForegroundColor Yellow
     
     Try {
