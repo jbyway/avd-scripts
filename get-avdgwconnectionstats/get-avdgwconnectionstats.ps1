@@ -142,7 +142,7 @@ function Invoke-PathPing {
         [int]$count = 100 
     )
     Write-Host "`n[PathPing] - Verifying connectivity from your client to the AVD Gateway $avdgwip" -ForegroundColor Yellow
-    PATHPING -q $count -4 -n $avdgwip | ForEach-Object {
+    PATHPING -q $count -4 $avdgwip | ForEach-Object {
         if ($_.Trim() -match "Tracing route to .*") {
             Write-Host "[$_]" -ForegroundColor Yellow
         } 
@@ -157,7 +157,7 @@ function Invoke-PathPing {
             }
             else {
                 Write-Host $_ -ForegroundColor Green
-                $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hopip = ($_.Trim()) -Replace '\/\s{0,3}', '/' -Replace '=', '' -Replace '|', '' -Replace '---', 0 -split "\s{1,}" | where-object { $_ }
+                $hop, $RTT, $s2hls, $s2hlsperc, $s2lls, $s2llsperc, $hostname, $hopip = ($_.Trim()) -Replace '\/\s{0,3}', '/' -Replace '=', '' -Replace '|', '' -Replace '\[', '' -Replace ']', '' -Replace '---', 0 -split "\s{1,}" | where-object { $_ }
                 
                 [PSCustomObject]@{
                     HopCount          = [int]$hop;
@@ -166,6 +166,7 @@ function Invoke-PathPing {
                     S2HLSPercent      = [int]$s2hlsperc.Trim('%');
                     S2LLS             = $s2lls;
                     S2LLSPercent      = [int]$s2llsperc.Trim('%');
+                    HostName          = $hostname;
                     HopIP             = [string]$hopip.Trim('[', ']');
                     SampleCount       = [int]$count;
                     HopName           = (Get-Hostname -ip $hopip);
