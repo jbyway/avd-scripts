@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
         Returns the latency and quality of connection to the currently connected AVD Gateway.
@@ -92,6 +91,7 @@ function get-avdgwip {
     }
     
     return [array]$avdgwip
+
 
 }
 
@@ -384,6 +384,7 @@ function Get-HTMLReport {
 
 }
 
+
 function get-avdgwlocation {
     param (
         [cmdletbinding()]
@@ -473,5 +474,16 @@ if ($ExtendedTest -eq $true) {
     $count = 100 # Run 100 iterations. This will run for far longer time so should be done when wanting to perform extended test.
 }
 
+function get-modulesusedforpackage {
+    Import-Module PSWriteHTML
+    Import-Module NetTCPIP
+    Import-Module Microsoft.PowerShell.Management
+    Import-Module System.Management.Automation
+    
+
+    
+}
+
 
 get-avdconnectionstats -count $count -avdgwenvironment $avdgwenvironment
+

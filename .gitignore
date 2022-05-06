@@ -8,3 +8,4 @@ test.json
 avdgwlocations.json
 *.txt
 get-avdgwconnectionstats/function Invoke-PathPing.ps1
+get-avdgwconnectionstats/package.psd1
