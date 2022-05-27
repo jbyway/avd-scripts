@@ -109,7 +109,7 @@ function get-avdgwapi {
         try {
             #Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } 
             
-            Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } | foreach-object { 
+            Invoke-WebRequest  -Uri ('https://' + $remoteaddress + '/api/health') -Headers @{Host = "rdgateway.$avdgwenvironment.microsoft.com" } -NoProxy | foreach-object { 
                 [PSCustomObject]@{
                     'RemoteAddress' = $remoteaddress;
                     'AVDRegionCode' = [string]$_.Headers.'x-ms-wvd-service-region';
@@ -193,7 +193,6 @@ function Invoke-TestConnection {
     )
     
     Write-Host "`n[Test-Connection] - Performing $count ping attempts against each network hop to the AVD Gateway. Please wait..." -ForegroundColor Yellow
-    #Write-Host "`rTesting each hop for response time. Performing" $count " attempts ...Please wait" -ForegroundColor Yellow
     
     Try {
         Test-Connection -ComputerName ($PathPingStats | Where-object S2LLSPercent -ne 100).HopIP -Count $count | ForEach-Object {
@@ -230,13 +229,16 @@ function Get-Hostname {
         [string]$ip
     )
     Try {
-        $ErrorActionPreference = 'SilentlyContinue'
-        (Resolve-DnsName $ip -QuickTimeout -Type PTR -TcpOnly)[0].NameHost # Get the hostname for the IP address return first result
+        $ErrorActionPreference = 'Stop'
+        $dns = ,((Resolve-DnsName $ip -QuickTimeout -Type PTR -DnsOnly -TcpOnly).NameHost) # Get the hostname for the IP address return first result
+        return $dns[0]
     }
     Catch {
-        Write-Host "[No DNS PTR record found for $ip, will use IP instead]" -ForegroundColor Yellow
+        write-host "[No DNS PTR record found for $ip, will use IP instead]" -ForegroundColor Yellow -InformationAction Continue
+        
         $ErrorActionPreference = 'Stop'
-        $ip # Return the IP address if the hostname lookup fails 
+        return $ip
+         # Return the IP address if the hostname lookup fails 
         
     }
     
@@ -384,21 +386,10 @@ function get-avdgwlocation {
         [object]$avdgwregioncode
     )
     # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
-    <# Following section is removed for now as replacing with direct query to json on Github. 
-    if (-not(Test-Path -Path .\avdgatewaylocations.json -PathType Leaf)) {
-        try {
-            Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json -OutFile ./avdgatewaylocations.json
-        }
-        catch {
-            Write-Error "Error: Unable to retrieve Azure Gateway Locations" 
-            throw $_.Exception.Message
-            throw $_.ErrorDetails.Message
-        }
-    }
-    #>
+
     try {
         # Following line not needed when using direct query to json on Github
-        #Get-Content .\avdgatewaylocations.json | convertfrom-json  | Where-Object { $_.RegionCode -eq $avdgwregioncode }
+       
         (Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/avdgatewaylocations.json).Content | convertfrom-json | Where-Object { $_.RegionCode -eq $avdgwregioncode }
     }
     catch {
@@ -418,21 +409,7 @@ function get-azureedgelocation {
     )
     # Determine the path in which client takes to the AVD Gateway determine closest Azure Front Door Edge location used and AVD Gateway Region connected to
     #$avdgwapi.Headers.'x-ms-wvd-service-region'
-    
-
-    <#
-   # Removed the following code as it was easier to query the json directly from the Github file 
-    if (-not(Test-Path -Path .\azureedgelocations.json -PathType Leaf)) {
-        try {
-            Invoke-WebRequest -uri https://raw.githubusercontent.com/jbyway/avd-scripts/main/get-avdgwconnectionstats/azureedgelocations.json -OutFile ./azureedgelocations.json
-        }
-        catch {
-            Write-Host "Error: Unable to retrieve Azure Edge Locations"
-            throw $_.Exception.Message
-        }
-    }
-    #>
-
+   
     # If hop is an Azure Edge location then return the location details
     If (($PathPingStats -match "ntwk.msn.net").Count -eq 1) {
         $edgecode = (($PathPingStats -split { $_ -eq "." })[-4]) -replace ('\d{1,3}', "")
