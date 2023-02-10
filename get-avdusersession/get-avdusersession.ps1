@@ -35,10 +35,8 @@ if ($Force -and -not $Confirm) {
 function Login {
     [CmdletBinding(SupportsShouldProcess)]
     Param(
-        [guid]$SubscriptionId
+        $SubscriptionId
     )
-    
-
     try {
         if (!($context = (Get-AzContext))) {
             if ($SubscriptionId) {
@@ -115,7 +113,7 @@ Function Get-UserSession {
         )]
         [string]$hostpoolname,
         [switch]$NoLogoffMessage, # If set to true then the user will be warned that their session is about to be logged off and a delay will be added to allow them to save their work
-        [switch]$logoff, # If set to true then the user will be logged off automatically and no prompt will be shown
+        [switch]$ForceLogoff, # If set to true then no confirmation dialogues will be shown
         [switch]$force)  # If set to true then the session will be forcibly logged off
 
     $UserName = @()
@@ -137,10 +135,25 @@ Function Get-UserSession {
         write-output $UserName
         
         if (!$logoff) {
-           
+           ####### need to do work out what I ws doing here
         }
     }
-        
+    $hostpools.Values | foreach-object {
+        write-host 'start'
+        write-host $_.HostpoolName
+        write-host $_.ResourceGroupName
+        try {
+            Get-AzWvdUserSession -HostPoolName $_.HostpoolName -ResourceGroupName $_.ResourceGroupName -SubscriptionId $_.SubscriptionId -filter "userprincipalname eq 'upn@domain.com'" | foreach-object {
+                write-host $_.SessionHostName
+                write-host $_.UserSessionId
+            }
+        }
+        catch {
+            write-host 'Error Occurred finding user sessions on $_.HostpoolName'
+            write-host $_.Exception.Message
+            SilentlyContinue
+        }
+    }
         
     # If the logoff switch is set to true then run the logoff function
     if ($logoff.IsPresent -and $logoff) {
@@ -168,11 +181,11 @@ Function Get-UserSession {
         break
     }
 }
-}
+
 else {
     write-output "No sessions found for $($userprincipalname)."
 }
-}
+
 
 # Function to log off a user
 Function LogOff-user {
@@ -379,23 +392,7 @@ $hostpools = @{
 
 
 
-$hostpools['Win11-21H2-AADJ-M2-AUS'].ResourceGroupName
+$hostpools['hostpoolname'].ResourceGroupName
 
 
 
-$hostpools.Values | foreach-object {
-    write-host 'start'
-    write-host $_.HostpoolName
-    write-host $_.ResourceGroupName
-    try {
-        Get-AzWvdUserSession -HostPoolName $_.HostpoolName -ResourceGroupName $_.ResourceGroupName -SubscriptionId $_.SubscriptionId -filter "userprincipalname eq 'labuser1@avd.ms'" | foreach-object {
-            write-host $_.SessionHostName
-            write-host $_.UserSessionId
-        }
-    }
-    catch {
-        write-host 'Error Occurred finding user sessions on $_.HostpoolName'
-        write-host $_.Exception.Message
-        SilentlyContinue
-    }
-}
