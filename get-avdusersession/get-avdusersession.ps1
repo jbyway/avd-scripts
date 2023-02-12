@@ -68,7 +68,7 @@ function Login {
 }
 
 
-function hello {
+Function hello {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     Param(
         [Parameter(
@@ -102,16 +102,17 @@ Function Get-UserSession {
             ErrorMessage = "{0} is not a valid UPN try in format user@avd.ms")]
         [string]$userprincipalname,
         [Parameter(
-            Mandatory,
+            Mandatory=$false,
             HelpMessage = "Enter the resource group for the host pool"
         )]
         [string]$resourcegroupname,
   
         [Parameter(
-            Mandatory,
+            Mandatory=$false,
             HelpMessage = "Enter the host pool name"
         )]
-        [string]$hostpoolname,
+        $hostpools,
+        $SubscriptionId,
         [switch]$NoLogoffMessage, # If set to true then the user will be warned that their session is about to be logged off and a delay will be added to allow them to save their work
         [switch]$ForceLogoff, # If set to true then no confirmation dialogues will be shown
         [switch]$force)  # If set to true then the session will be forcibly logged off
@@ -120,7 +121,7 @@ Function Get-UserSession {
     
     # Get the list of all active sessions on the Azure Virtual Desktops
     # If the user is logged in, return the session information
-    if ((Get-AzWVDUserSession -ResourceGroupName $resourcegroupname -HostPoolName $hostpoolname).where({ $_.UserPrincipalName -match $userprincipalname }) | Select-Object SessionState, UserPrincipalName, CreateTime, @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } } , @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } } -outvariable UserName) {
+   # if ((Get-AzWVDUserSession -ResourceGroupName $resourcegroupname -HostPoolName $hostpoolname).where({ $_.UserPrincipalName -match $userprincipalname }) | Select-Object SessionState, UserPrincipalName, CreateTime, @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } } , @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } } -outvariable UserName) {
     
         #Single line text
         #  Write-Output "$($Username.UserPrincipalName) and is $(($UserName.SessionState).ToString().ToUpper()) on to the following session host: $(($UserName.Name).Split('/')[1]) with Session ID: $((($UserName.Name).Split('/')[2]))"
@@ -132,20 +133,21 @@ Function Get-UserSession {
         #Write-Output "$($Username | fl SessionState, UserPrincipalName, CreateTime, @{ Name='SessionHost'; Expression= {$_.Name.Split('/')[1]} } , @{ Name='SessionID'; Expression= {$_.Name.Split('/')[2]}})"
      
         Write-Output "The following session details were found for $userprincipalname"
-        write-output $UserName
+        #write-output $UserName
         
-        if (!$logoff) {
+    #    if (!$logoff) {
            ####### need to do work out what I ws doing here
-        }
-    }
+     #   }
+    #}
     $hostpools.Values | foreach-object {
-        write-host 'start'
-        write-host $_.HostpoolName
-        write-host $_.ResourceGroupName
+        write-host "Checking hostpool: $($_.HostpoolName)"
+        write-host "Checking resourcegroup: $($_.ResourceGroupName)"
         try {
-            Get-AzWvdUserSession -HostPoolName $_.HostpoolName -ResourceGroupName $_.ResourceGroupName -SubscriptionId $_.SubscriptionId -filter "userprincipalname eq 'upn@domain.com'" | foreach-object {
-                write-host $_.SessionHostName
-                write-host $_.UserSessionId
+            Get-AzWvdUserSession -HostPoolName $_.HostpoolName -ResourceGroupName $_.ResourceGroupName -SubscriptionId $SubscriptionId -filter "userprincipalname eq '$($userprincipalname)'" | foreach-object {
+                Select-Object SessionState, UserPrincipalName, CreateTime, @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } }, 
+                @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } }, @{ Name = 'HostpoolName'; Expression = { $_.HostPoolName } } -OutVariable UserName
+                Write-Output "The following session details were found for $userprincipalname"
+                write-Output $UserName
             }
         }
         catch {
@@ -258,7 +260,7 @@ Function LogOff-user {
 }
 
 # Retrieve the list of host pools in the subscription and return the details in a hashtable
-function Get-AVDHostPools ($SubscriptionId) {
+Function Get-AVDHostPools ($SubscriptionId) {
     
 
     $hostpools = @{}
@@ -271,6 +273,7 @@ function Get-AVDHostPools ($SubscriptionId) {
         }
         $hostpools[$_.Name] = $hostpool
     }
+    return $hostpools
 }
 
 function Get-UserResponse {
