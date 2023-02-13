@@ -40,17 +40,17 @@ function Login {
     try {
         if (!($context = (Get-AzContext))) {
             if ($SubscriptionId) {
-                Write-Output "Attempting to connect to Azure Subscription $SubscriptionId"
+                write-host "Attempting to connect to Azure Subscription $SubscriptionId"
                 Connect-AzAccount -SubscriptionId $SubscriptionId  #Specific subscription context
                 return ($SubscriptionId = ((Get-AzContext).Subscription.Id))
             }
             elseif ($SubscriptionId -and ($context.Subscription.Id -ne $SubscriptionId)) {
-                Write-Output "Attempting to connect to Azure Subscription $SubscriptionId"
+                write-host "Attempting to connect to Azure Subscription $SubscriptionId"
                 Connect-AzAccount -SubscriptionId $SubscriptionId  #Specific subscription context
                 return ($SubscriptionId = ((Get-AzContext).Subscription.Id))
             }
             else {
-                Write-Output "Attempting to connect to Azure Subscription as default context"
+                write-host "Attempting to connect to Azure Subscription as default context"
                 Connect-AzAccount  #Non specific context
                 return ($SubscriptionId = ((Get-AzContext).Subscription.Id))
             }
@@ -80,20 +80,20 @@ Function hello {
     )
     
     
-    write-Output "string was $testing"
+    write-host "string was $testing"
     if ($first.IsPresent -or $first) {
         Write-Host "Input was used $first"
         Write-Host $first
     }
     if ($PSCmdlet.ShouldProcess("Do you want to continue?", "Confirm")) {
-        Write-Output "Continue is true"
+        write-host "Continue is true"
     }
     Write-Host "Input was used $first"
 }
 
 # Function to check if a user is logged in
 Function Get-UserSession {
-
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
     Param(
         [Parameter(
             Mandatory,
@@ -102,13 +102,13 @@ Function Get-UserSession {
             ErrorMessage = "{0} is not a valid UPN try in format user@avd.ms")]
         [string]$userprincipalname,
         [Parameter(
-            Mandatory=$false,
+            Mandatory = $false,
             HelpMessage = "Enter the resource group for the host pool"
         )]
         [string]$resourcegroupname,
   
         [Parameter(
-            Mandatory=$false,
+            Mandatory = $false,
             HelpMessage = "Enter the host pool name"
         )]
         $hostpools,
@@ -118,80 +118,68 @@ Function Get-UserSession {
         [switch]$force)  # If set to true then the session will be forcibly logged off
 
     $UserName = @()
-    
+    $SessionDetails = @()
+    $i = 1
     # Get the list of all active sessions on the Azure Virtual Desktops
     # If the user is logged in, return the session information
-   # if ((Get-AzWVDUserSession -ResourceGroupName $resourcegroupname -HostPoolName $hostpoolname).where({ $_.UserPrincipalName -match $userprincipalname }) | Select-Object SessionState, UserPrincipalName, CreateTime, @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } } , @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } } -outvariable UserName) {
+    # if ((Get-AzWVDUserSession -ResourceGroupName $resourcegroupname -HostPoolName $hostpoolname).where({ $_.UserPrincipalName -match $userprincipalname }) | Select-Object SessionState, UserPrincipalName, CreateTime, @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } } , @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } } -outvariable UserName) {
     
-        #Single line text
-        #  Write-Output "$($Username.UserPrincipalName) and is $(($UserName.SessionState).ToString().ToUpper()) on to the following session host: $(($UserName.Name).Split('/')[1]) with Session ID: $((($UserName.Name).Split('/')[2]))"
+    #Single line text
+    #  write-host "$($Username.UserPrincipalName) and is $(($UserName.SessionState).ToString().ToUpper()) on to the following session host: $(($UserName.Name).Split('/')[1]) with Session ID: $((($UserName.Name).Split('/')[2]))"
     
-        # Table output
-        #  write-output "$($Username | ft SessionState, UserPrincipalName, CreateTime, @{ Name='SessionHost'; Expression= {$_.Name.Split('/')[1]} } , @{ Name='SessionID'; Expression= {$_.Name.Split('/')[2]}} -Autosize)"
+    # Table output
+    #  write-host "$($Username | ft SessionState, UserPrincipalName, CreateTime, @{ Name='SessionHost'; Expression= {$_.Name.Split('/')[1]} } , @{ Name='SessionID'; Expression= {$_.Name.Split('/')[2]}} -Autosize)"
     
-        # List output
-        #Write-Output "$($Username | fl SessionState, UserPrincipalName, CreateTime, @{ Name='SessionHost'; Expression= {$_.Name.Split('/')[1]} } , @{ Name='SessionID'; Expression= {$_.Name.Split('/')[2]}})"
+    # List output
+    #write-host "$($Username | fl SessionState, UserPrincipalName, CreateTime, @{ Name='SessionHost'; Expression= {$_.Name.Split('/')[1]} } , @{ Name='SessionID'; Expression= {$_.Name.Split('/')[2]}})"
      
-        Write-Output "The following session details were found for $userprincipalname"
-        #write-output $UserName
+     
+    #write-host $UserName
         
     #    if (!$logoff) {
-           ####### need to do work out what I ws doing here
-     #   }
+    ####### need to do work out what I ws doing here
+    #   }
     #}
     $hostpools.Values | foreach-object {
-        write-host "Checking hostpool: $($_.HostpoolName)"
-        write-host "Checking resourcegroup: $($_.ResourceGroupName)"
+        write-host "Checking hostpool: $($_.HostpoolName)..."
+        #write-host "Checking resourcegroup: $($_.ResourceGroupName)"
         try {
-            Get-AzWvdUserSession -HostPoolName $_.HostpoolName -ResourceGroupName $_.ResourceGroupName -SubscriptionId $SubscriptionId -filter "userprincipalname eq '$($userprincipalname)'" | foreach-object {
-                Select-Object SessionState, UserPrincipalName, CreateTime, @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } }, 
-                @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } }, @{ Name = 'HostpoolName'; Expression = { $_.HostPoolName } } -OutVariable UserName
-                Write-Output "The following session details were found for $userprincipalname"
-                write-Output $UserName
+            $Sessions = Get-AzWvdUserSession -HostPoolName $_.HostpoolName -ResourceGroupName $_.ResourceGroupName -SubscriptionId $SubscriptionId -filter "userprincipalname eq '$($userprincipalname)'" 
+            if ($Sessions) { 
+                $SessionDetails += $Sessions | Select-Object SessionState, UserPrincipalName, CreateTime,
+                @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } },
+                @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } },
+                @{ Name = 'HostpoolName'; Expression = { $_.Name.Split('/')[0] } },
+                @{ Name = 'ResourceGroupName'; Expression = { $_.Id.Split('/')[4] } },
+                @{ Name = 'SubscriptionId'; Expression = { $_.Id.Split('/')[2] } },
+                @{ Name = 'Index'; Expression = { $i } } #Index for easy reference in the logoff function
+                $i++
+              
             }
         }
         catch {
             write-host 'Error Occurred finding user sessions on $_.HostpoolName'
-            write-host $_.Exception.Message
-            SilentlyContinue
-        }
+            write-host $_.Exception.Message -ErrorAction SilentlyContinue
+        }    
     }
         
-    # If the logoff switch is set to true then run the logoff function
-    if ($logoff.IsPresent -and $logoff) {
-        #If the logoff switch is set to true then run the logoff function
-        Write-Output "Preparing to log user session off"
-        $SessionId = $UserName.SessionID
-        $sessionhost = $UserName.SessionHost
-        LogOff-User -NoLogoffMessage $NoLogoffMessage -force $force -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -sessionhost $sessionhost -SessionId $SessionId
-    }
-    elseif (!$logoff) {
-        # Else prompt the user to decide if they want to log the user off
-        # If the logoff switch is not set to true then prompt the user to decide if they want to log the user off
-        $logoffresponse = Get-UserResponse -question "Do you wish to log $userprincipalname off?"                
-    } 
-      
-    if ($logoffresponse) {
-        # If the user enters yes then run the logoff function
-        Write-Output "Preparing to log user session off."
-        $SessionId = $UserName.SessionID
-        $sessionhost = $UserName.SessionHost
-        LogOff-User -NoLogoffMessage $NoLogoffMessage -force $force -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -sessionhost $sessionhost -SessionId $SessionId
+    if ($SessionDetails) {
+        #write-host "The following session details were found for $userprincipalname"
+        
+        return $SessionDetails
     }
     else {
-        Write-Output "$userprincipalname will not be logged off. Exiting script"
+        write-host "No sessions found for $userprincipalname"
         break
     }
+    
 }
 
-else {
-    write-output "No sessions found for $($userprincipalname)."
-}
 
 
 # Function to log off a user
 Function LogOff-user {
-    [CmdletBinding(SupportsShouldProcess)]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     Param(
         [Parameter(
             Mandatory = $false,
@@ -200,62 +188,71 @@ Function LogOff-user {
         [Parameter(
             Mandatory = $false,
             HelpMessage = "Use this switch to logoff users without prompting for confirmation")]
-        [switch]$logoff,
+        [bool]$NoConfirm,
         [Parameter(
             Mandatory = $false,
             HelpMessage = "Use this switch to warn users that their session is about to be logged off")]
-        [switch]$NoLogoffMessage,    
-        
-        [int]$SessionId,    
-        [string]$hostpoolname,
-        [string]$resourcegroupname,
-        [string]$sessionhost,
+        [switch]$NoLogoffMessage,
+        [switch]$ForceLogoff,   
+        [array]$SessionDetails,
         [bool]$OfficeContainer = $false,
         [bool]$ProfileContainer = $false,
         [string]$delaylogoff = "5s" # use to delay the logoff of the user. This is useful if you want to warn the user before logging them off
     )
   
     #Check if the user should receive a warning prior to logging them off
-    $NoLogoffMessage = Get-UserResponse -question "Do you wish to warn the user before logging them off?"
+    #$NoLogoffMessage = Get-UserResponse -question "Do you wish to warn the user before logging them off?"
 
     # If the user is logged in, log them off
+    Write-host "Preparing to log off the following sessions for $($SessionDetails[0].UserPrincipalName):"
+    $SessionDetails | ft * -Autosize
+    $SessionDetails | Foreach-object {
     If ($NoLogoffMessage) {
         try {
-            Send-AzWvdUserSessionMessage -HostPoolName $hostpoolname -ResourceGroupName $resourcegroupname -UserSessionId $SessionId -SessionHostName $sessionhost -MessageBody "Your session will be disconnected in $delaylogoff. Please save your work." -MessageTitle "Logoff Warning"
-            Write-Output "User Given 3 minute warning to logoff - Script will sleep for 3 minutes"
+            Send-AzWvdUserSessionMessage -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -UserSessionId $_.SessionId -SessionHostName $_.sessionhost -MessageBody "Your session will be disconnected in $delaylogoff. Please save your work." -MessageTitle "Logoff Warning"
+            write-host "User Given 3 minute warning to logoff - Script will sleep for 3 minutes"
             Start-Sleep $delaylogoff #for now will set to 3mins change this prior or change to parameter and variable to be dynamic
         }
         catch {
             Write-Error "An error occurred when attempting to notify the user of the logoff, Do you wish to continue with the logoff anyway?"
             if ($ContinueLogoff) {
-                Write-Output "Continuing with logoff"
+                write-host "Continuing with logoff"
                 try {
-                    Remove-AzWvdUserSession -HostPoolName $hostpoolname -ResourceGroupName $resourcegroupname -SessionHostName $sessionhost -Id $SessionId -force:$force
+                    Remove-AzWvdUserSession -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -SessionHostName $_.sessionhost -Id $_.SessionId -force:$force
+                    write-host "User logged off successfully."
                 }
                 catch {
-                    Write-output "There was an error logging the user off, the script will now quit"
+                    write-host "There was an error logging the user off, the script will now quit"
                     Write-Host "Error: [$($_.Exception.Message)]"
                     break                
                 }
             }
         }
     }
+    else {
+        try {
+            #$logofftarget = Get-AzWvdUserSession -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -SessionHostName $_.sessionhost -Id $_.SessionId
+            $logofftarget = "Hostpool: $($_.Hostpoolname) || SessionHost: $($_.SessionHost) || SessionID: $($_.SessionID)"
+            if ($PSCmdlet.ShouldProcess($logofftarget, "Logoff user")) {
+                Remove-AzWvdUserSession -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -SessionHostName $_.sessionhost -Id $_.SessionId -force:$force
+                write-host "User logged off successfully."    
+            }
+            
+        }
+        catch {
+            write-host "There was an error logging the user off, the script will now quit"
+            Write-Host "Error: [$($_.Exception.Message)]"
+            break
+        }
+    }
+
+}
     
-    Write-Output "Logging off User"
-    try {
-        Remove-AzWvdUserSession -HostPoolName $hostpoolname -ResourceGroupName $resourcegroupname -SessionHostName $sessionhost -Id $SessionId -force:$force
-    }
-    catch {
-        Write-output "There was an error logging the user off, the script will now quit"
-        Write-Host "Error: [$($_.Exception.Message)]"
-        break
-    }
-    Write-Output "User logged off successfully."
 
     Start-Sleep 5s
 
   
-    $response = Get-UserResponse -question "Do you wish to delete the user profile? Enter Y or N"
+    #$response = Get-UserResponse -question "Do you wish to delete the user profile? Enter Y or N"
 
 }
 
@@ -264,7 +261,7 @@ Function Get-AVDHostPools ($SubscriptionId) {
     
 
     $hostpools = @{}
-
+    Write-Host "Retrieving host pool details..."
     Get-AzWvdHostPool -SubscriptionId $SubscriptionId | ForEach-Object {
         $hostpool = @{
             SubscriptionId    = $_.Id.Split('/')[2]
@@ -312,26 +309,26 @@ function Delete-Profile {
 
     # Delete the user profile in the storage container file share
     if (Test-Path -Path (join-path -path "\\test" -ChildPath $Userprincipalname.split('@')[0] -AdditionalChildPath 'myfile.vhdx')) {
-        Write-Output "User profile found"
+        write-host "User profile found"
         try {
             if ($ProfileContainer) { 
                 Remove-Item -Path (join-path -path "\\test" -ChildPath $Userprincipalname.split('@')[0] -AdditionalChildPath 'myfile.vhdx') -Force
-                Write-Output "User profile deleted successfully"
+                write-host "User profile deleted successfully"
             }
             if ($OfficeContainer) {
                 Remove-Item -Path (join-path -path "\\test" -ChildPath $Userprincipalname.split('@')[0] -AdditionalChildPath 'myfile.vhdx') -Force
-                Write-Output "User profile deleted successfully"
+                write-host "User profile deleted successfully"
             }
     
         }
         catch {
-            Write-Output "There was an error deleting the user profile, the script will now quit"
+            write-host "There was an error deleting the user profile, the script will now quit"
             Write-Host "Error: [$($_.Exception.Message)]"
             break
         }
     }
     else {
-        Write-Output "User profile not found"
+        write-host "User profile not found"
     }
 
 
@@ -364,7 +361,7 @@ if (!$hostpoolname) {
     
 }
 
-
+Get-AVDSession -userprincipalname $userprincipalname -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -force $true
 
 # Check if the user is logged in only
 Get-UserSession -userprincipalname $userprincipalname -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -force $true
