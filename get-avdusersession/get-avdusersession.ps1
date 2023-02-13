@@ -298,7 +298,7 @@ $hostpools = Get-AVDHostPools -SubscriptionId $SubscriptionId
 write-host "Found $($hostpools.Count) host pools in the subscription"
 
 #Get User sessions
-$SessionDetails = Get-UserSession -userprincipalname $userprincipalname -hostpools $hostpools
+$SessionDetails = Get-UserSession -userprincipalname $userprincipalname -hostpools $hostpools -SubscriptionId $SubscriptionId
 
 #Get which session would like to logoff
 Write-Host "Which session would you like to logoff?"
@@ -306,7 +306,7 @@ $SessionDetails | ft Index, HostpoolName, SessionId, SessionState, CreateTime, S
 $selectedindexes = Read-Host "Enter the index values separated by a comma or leave empty for all sessions (e.g. 1, 2, 3)"
 $selectedIndexes = $selectedIndexes.Split(",") | ForEach-Object { $_.Trim() }
 $selectedsession = @()
-if ($selectedindexes -eq "") {
+if ($selectedindexes -eq $null) {
     foreach ($selectedindexvalue in $selectedindexes) {
         $selectedsession +=  $SessionDetails | select-object | where-object { $_.Index -eq $selectedindexvalue }
         Logoff-user -SessionDetails $selectedsession
