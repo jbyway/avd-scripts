@@ -38,7 +38,7 @@ function Login {
         $SubscriptionId
     )
     try {
-        if (!($context = (Get-AzContext))) {
+        if (!($context = (Get-AzContext).Subscription.Id)) {
             if ($SubscriptionId) {
                 write-host "Attempting to connect to Azure Subscription $SubscriptionId"
                 Connect-AzAccount -SubscriptionId $SubscriptionId  #Specific subscription context
@@ -57,7 +57,7 @@ function Login {
         }
         else {
             Write-Host "Already connected to Azure Subscription"
-            $context
+            return $context
         }
     }
     catch {
@@ -67,29 +67,6 @@ function Login {
     }
 }
 
-
-Function hello {
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
-    Param(
-        [Parameter(
-            Mandatory = $false,
-            HelpMessage = "here's sometext")]
-        [switch]$first,
-        #[string]$testing,
-        [switch]$Force #you don't need to set this value
-    )
-    
-    
-    write-host "string was $testing"
-    if ($first.IsPresent -or $first) {
-        Write-Host "Input was used $first"
-        Write-Host $first
-    }
-    if ($PSCmdlet.ShouldProcess("Do you want to continue?", "Confirm")) {
-        write-host "Continue is true"
-    }
-    Write-Host "Input was used $first"
-}
 
 # Function to check if a user is logged in
 Function Get-UserSession {
@@ -120,28 +97,9 @@ Function Get-UserSession {
     $UserName = @()
     $SessionDetails = @()
     $i = 1
-    # Get the list of all active sessions on the Azure Virtual Desktops
-    # If the user is logged in, return the session information
-    # if ((Get-AzWVDUserSession -ResourceGroupName $resourcegroupname -HostPoolName $hostpoolname).where({ $_.UserPrincipalName -match $userprincipalname }) | Select-Object SessionState, UserPrincipalName, CreateTime, @{ Name = 'SessionHost'; Expression = { $_.Name.Split('/')[1] } } , @{ Name = 'SessionID'; Expression = { $_.Name.Split('/')[2] } } -outvariable UserName) {
     
-    #Single line text
-    #  write-host "$($Username.UserPrincipalName) and is $(($UserName.SessionState).ToString().ToUpper()) on to the following session host: $(($UserName.Name).Split('/')[1]) with Session ID: $((($UserName.Name).Split('/')[2]))"
-    
-    # Table output
-    #  write-host "$($Username | ft SessionState, UserPrincipalName, CreateTime, @{ Name='SessionHost'; Expression= {$_.Name.Split('/')[1]} } , @{ Name='SessionID'; Expression= {$_.Name.Split('/')[2]}} -Autosize)"
-    
-    # List output
-    #write-host "$($Username | fl SessionState, UserPrincipalName, CreateTime, @{ Name='SessionHost'; Expression= {$_.Name.Split('/')[1]} } , @{ Name='SessionID'; Expression= {$_.Name.Split('/')[2]}})"
-     
-     
-    #write-host $UserName
-        
-    #    if (!$logoff) {
-    ####### need to do work out what I ws doing here
-    #   }
-    #}
     $hostpools.Values | foreach-object {
-        write-host "Checking hostpool: $($_.HostpoolName)..."
+        write-host -NoNewline "Checking hostpool: $($_.HostpoolName)..."
         #write-host "Checking resourcegroup: $($_.ResourceGroupName)"
         try {
             $Sessions = Get-AzWvdUserSession -HostPoolName $_.HostpoolName -ResourceGroupName $_.ResourceGroupName -SubscriptionId $SubscriptionId -filter "userprincipalname eq '$($userprincipalname)'" 
@@ -154,7 +112,10 @@ Function Get-UserSession {
                 @{ Name = 'SubscriptionId'; Expression = { $_.Id.Split('/')[2] } },
                 @{ Name = 'Index'; Expression = { $i } } #Index for easy reference in the logoff function
                 $i++
-              
+                Write-Host "Found $($Sessions.Count) session(s)"
+            }
+            else {
+                Write-Host "No sessions found."
             }
         }
         catch {
@@ -164,7 +125,6 @@ Function Get-UserSession {
     }
         
     if ($SessionDetails) {
-        #write-host "The following session details were found for $userprincipalname"
         
         return $SessionDetails
     }
@@ -187,16 +147,10 @@ Function LogOff-user {
         [switch]$Force,
         [Parameter(
             Mandatory = $false,
-            HelpMessage = "Use this switch to logoff users without prompting for confirmation")]
-        [bool]$NoConfirm,
-        [Parameter(
-            Mandatory = $false,
             HelpMessage = "Use this switch to warn users that their session is about to be logged off")]
         [switch]$NoLogoffMessage,
         [switch]$ForceLogoff,   
         [array]$SessionDetails,
-        [bool]$OfficeContainer = $false,
-        [bool]$ProfileContainer = $false,
         [string]$delaylogoff = "5s" # use to delay the logoff of the user. This is useful if you want to warn the user before logging them off
     )
   
@@ -206,34 +160,21 @@ Function LogOff-user {
     # If the user is logged in, log them off
     Write-host "Preparing to log off the following sessions for $($SessionDetails[0].UserPrincipalName):"
     $SessionDetails | ft * -Autosize
-    $SessionDetails | Foreach-object {
-    If ($NoLogoffMessage) {
-        try {
-            Send-AzWvdUserSessionMessage -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -UserSessionId $_.SessionId -SessionHostName $_.sessionhost -MessageBody "Your session will be disconnected in $delaylogoff. Please save your work." -MessageTitle "Logoff Warning"
-            write-host "User Given 3 minute warning to logoff - Script will sleep for 3 minutes"
-            Start-Sleep $delaylogoff #for now will set to 3mins change this prior or change to parameter and variable to be dynamic
+
+    if (!$NoLogoffMessage.IsPresent -and !$NoLogoffMessage.Value) {
+        $SessionDetails | foreach-object {
+            Send-AzWvdUserSessionMessage -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -UserSessionId $_.SessionId -SessionHostName $_.sessionhost -MessageBody "Your session will be logged off in $delaylogoff. Please save your work." -MessageTitle "Logoff Warning"
+            write-host "User Given $delaylogoff warning to logoff - Script will sleep for $delaylogoff"
         }
-        catch {
-            Write-Error "An error occurred when attempting to notify the user of the logoff, Do you wish to continue with the logoff anyway?"
-            if ($ContinueLogoff) {
-                write-host "Continuing with logoff"
-                try {
-                    Remove-AzWvdUserSession -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -SessionHostName $_.sessionhost -Id $_.SessionId -force:$force
-                    write-host "User logged off successfully."
-                }
-                catch {
-                    write-host "There was an error logging the user off, the script will now quit"
-                    Write-Host "Error: [$($_.Exception.Message)]"
-                    break                
-                }
-            }
-        }
+        Start-Sleep $delaylogoff #for now will set to 3mins change this prior or change to parameter and variable to be dynamic
     }
-    else {
+
+    $SessionDetails | Foreach-object {
         try {
             #$logofftarget = Get-AzWvdUserSession -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -SessionHostName $_.sessionhost -Id $_.SessionId
             $logofftarget = "Hostpool: $($_.Hostpoolname) || SessionHost: $($_.SessionHost) || SessionID: $($_.SessionID)"
             if ($PSCmdlet.ShouldProcess($logofftarget, "Logoff user")) {
+
                 Remove-AzWvdUserSession -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -SessionHostName $_.sessionhost -Id $_.SessionId -force:$force
                 write-host "User logged off successfully."    
             }
@@ -245,8 +186,6 @@ Function LogOff-user {
             break
         }
     }
-
-}
     
 
     Start-Sleep 5s
@@ -269,11 +208,12 @@ Function Get-AVDHostPools ($SubscriptionId) {
             ResourceGroupName = $_.Id.Split('/')[4]
         }
         $hostpools[$_.Name] = $hostpool
+        Write-Host "Found host pool: $($_.Name)..."
     }
     return $hostpools
 }
 
-function Get-UserResponse {
+function Get-UserResponse { #Not currently in use
     Param(
         [string]$response,
         [string]$question
@@ -296,29 +236,25 @@ function Get-UserResponse {
 
 # Function to delete the user profile
 function Delete-Profile {
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     Param(
-        [int]$SessionId,    
-        [string]$hostpoolname,
-        [string]$resourcegroupname,
-        [bool]$Force = $True,
-        [bool]$NoLogoffMessage = $True,
-        [string]$sessionhost,
-        [bool]$OfficeContainer = $false,
-        [bool]$ProfileContainer = $false
+        
+        [string]$UserprincipalName,
+        [string]$ProfileSharePath = "c:\temptemp\" #Change this to match your profile share path
     )
 
-    # Delete the user profile in the storage container file share
-    if (Test-Path -Path (join-path -path "\\test" -ChildPath $Userprincipalname.split('@')[0] -AdditionalChildPath 'myfile.vhdx')) {
+    # Delete the user profile in the storage container file share you will need to change the path to match (likely just path to the file share)
+    $userprofilepath = join-path -path $ProfileSharePath -ChildPath "$($UserprincipalName.split('@')[0])*\"
+    if (test-path($userprofilepath)) { #Check the share and see if files exist
         write-host "User profile found"
         try {
-            if ($ProfileContainer) { 
-                Remove-Item -Path (join-path -path "\\test" -ChildPath $Userprincipalname.split('@')[0] -AdditionalChildPath 'myfile.vhdx') -Force
+            $readydelete = Get-ChildItem -Path $userprofilepath -Recurse
+            $readydelete | foreach-object {
+            if ($PSCmdlet.ShouldProcess($_, "Delete user profile")) {
+                Remove-Item -Path $_ -Recurse -Force:$Force
                 write-host "User profile deleted successfully"
             }
-            if ($OfficeContainer) {
-                Remove-Item -Path (join-path -path "\\test" -ChildPath $Userprincipalname.split('@')[0] -AdditionalChildPath 'myfile.vhdx') -Force
-                write-host "User profile deleted successfully"
-            }
+        }
     
         }
         catch {
@@ -348,51 +284,62 @@ function get-useraccount {
 }
 
 # Get the user principal name if not passed in
-if (!userprincipalname) {
+if (!$userprincipalname) {
     $userprincipalname = get-useraccount
 }
 
+# Get the subscription ID if not passed in
 if ((Get-AzContext).Subscription -ne $SubscriptionId) {
     $SubscriptionId = Login -SubscriptionId $SubscriptionId
 }
 
-if (!$hostpoolname) {
-    # Get all hostpools if not passed in
-    
+#Get Hostpools
+$hostpools = Get-AVDHostPools -SubscriptionId $SubscriptionId
+write-host "Found $($hostpools.Count) host pools in the subscription"
+
+#Get User sessions
+$SessionDetails = Get-UserSession -userprincipalname $userprincipalname -hostpools $hostpools
+
+#Get which session would like to logoff
+Write-Host "Which session would you like to logoff?"
+$SessionDetails | ft Index, HostpoolName, SessionId, SessionState, CreateTime, SessionHost -AutoSize
+$selectedindexes = Read-Host "Enter the index values separated by a comma or leave empty for all sessions (e.g. 1, 2, 3)"
+$selectedIndexes = $selectedIndexes.Split(",") | ForEach-Object { $_.Trim() }
+$selectedsession = @()
+if ($selectedindexes -eq "") {
+    foreach ($selectedindexvalue in $selectedindexes) {
+        $selectedsession +=  $SessionDetails | select-object | where-object { $_.Index -eq $selectedindexvalue }
+        Logoff-user -SessionDetails $selectedsession
+    }
+}
+else {
+    Logoff-User -SessionDetails $SessionDetails
 }
 
-Get-AVDSession -userprincipalname $userprincipalname -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -force $true
+#Delete the user profile
 
-# Check if the user is logged in only
-Get-UserSession -userprincipalname $userprincipalname -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -force $true
+Delete-Profile -UserprincipalName $userprincipalname
+
+
+
+
+
+
+#start the script
+
+
+#Get-UserSession -userprincipalname $userprincipalname -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -force $true
 
 #Run logoff manually if you want to set the parameters
-LogOff-user -NoLogoffMessage $true -force $false -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -sessionhost $sessionhost -SessionId $SessionId
-
-
-
-<#
+#LogOff-user -NoLogoffMessage $true -force $false -resourcegroupname $resourceGroupName -hostpoolname $hostpoolname -sessionhost $sessionhost -SessionId $SessionId
 
 
 
 
 
 
-# $hp = @{HostpoolName= $hostpools[8].Name; ResourceGroupName = $hostpools[8].Id.split('/')[4]; SubscriptionId= $hostpools[8].Id.split('/')[2]}
-
-get-azwvdhostpool | select-object -property @{Name='SubscriptionId'; Expression= {$_.Id.split('/')[2]}}, @{Name='HostPoolName'; Expression= {$_.Name}}, @{Name='ResourceGroupName'; Expression= {$_.Id.split('/')[4]}} | Get-AzWvdUserSession -SubscriptionId {$_.SubscriptionId} -HostPoolName {$_HostPoolName} -ResourceGroupName {$_.ResourceGroupName}
-
-$hostpools = @{
-
-#$hp = get-azwvdhostpool | select-object -property @{Name='SubscriptionId'; Expression= {$_.Id.split('/')[2]}}, @{Name='HostPoolName'; Expression= {$_.Name}}, @{Name='ResourceGroupName'; Expression= {$_.Id.split('/')[4]}}
-
-#>
 
 
-
-
-
-$hostpools['hostpoolname'].ResourceGroupName
 
 
 
