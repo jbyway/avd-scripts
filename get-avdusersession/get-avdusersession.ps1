@@ -23,12 +23,16 @@ Param (
     $UserSession = $null,
     [switch]$Force, # Alternate to Confirm switch to not confirm user input and default actions
     [switch]$ForceLogoff, # Use this switch to logoff users in the event of a stuck session
-    [switch]$NoLogoffMessage # Use this switch to silently log off users without a warning message"
+    [switch]$NoLogoffMessage =$false # Use this switch to silently log off users without a warning message"
 )
 
 # Handle for users who don't want to be prompted for input and may use Force switch instead of Confirm
 if ($Force -and -not $Confirm) {
     $ConfirmPreference = 'None'
+}
+
+if (!$NoLogoffMessage.IsPresent -and !$NoLogoffMessage.Value) {
+    $NologoffMessageValue = $true
 }
 
 #Check if logged into Azure Subscription already and if not then prompt to authenticate, accept a subscriptionId
@@ -309,11 +313,11 @@ $selectedsession = @()
 if ($selectedindexes -eq $null) {
     foreach ($selectedindexvalue in $selectedindexes) {
         $selectedsession +=  $SessionDetails | select-object | where-object { $_.Index -eq $selectedindexvalue }
-        Logoff-user -SessionDetails $selectedsession
+        Logoff-user -SessionDetails $selectedsession -NoLogoffMessage:$NologoffMessageValue
     }
 }
 else {
-    Logoff-User -SessionDetails $SessionDetails
+    Logoff-User -SessionDetails $SessionDetails -NoLogoffMessage:$NologoffMessageValue
 }
 
 #Delete the user profile
