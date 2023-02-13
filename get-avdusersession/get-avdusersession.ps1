@@ -4,14 +4,17 @@
     Function to check if a user is logged in and if so return the session information and prompt to log off the user`
     and offer the ability to delete their FSLogix profile once logged off. 
     .EXAMPLE
-    Get-UserSession -userprincipalname
+    Get-UserSession -userprincipalname user@domain.com
+    .EXAMPLE
+    .\Get-avdusersession.ps1 -userprincipalname user@domain.com
+
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
 Param (
     [Parameter(Position = 0, Mandatory = $false, HelpMessage = "Enter username in valid UPN format")]
-    [ValidatePattern('@avd.ms', ErrorMessage = "{0} is not a valid UPN try in format user@domain.com")]
-    [string]$userprincipalname, # Enter the UserPrincipal name of the user you wish to search for ie user@contoso.com
+    [ValidatePattern(('\@avd.ms$')  , ErrorMessage = "{0} is not a valid UPN, try in format user@domain.com")]
+    [string]$userprincipalname, # Enter the UserPrincipal name of the user you wish to search for ie user@contoso.com, change this to match your domain
     [Parameter(Mandatory = $false, HelpMessage = "Enter the resource group for the host pool or leave 
         empty to return all known host pool environments")]
     [string]$resourcegroupname, #Specify the resource group name you wish to search
@@ -24,6 +27,8 @@ Param (
     [switch]$Force, # Alternate to Confirm switch to not confirm user input and default actions
     [switch]$ForceLogoff, # Use this switch to logoff users in the event of a stuck session
     [switch]$NoLogoffMessage =$false # Use this switch to silently log off users without a warning message"
+    
+
 )
 
 # Handle for users who don't want to be prompted for input and may use Force switch instead of Confirm
@@ -31,9 +36,7 @@ if ($Force -and -not $Confirm) {
     $ConfirmPreference = 'None'
 }
 
-if (!$NoLogoffMessage.IsPresent -and !$NoLogoffMessage.Value) {
-    $NologoffMessageValue = $true
-}
+
 
 #Check if logged into Azure Subscription already and if not then prompt to authenticate, accept a subscriptionId
 function Login {
@@ -79,8 +82,8 @@ Function Get-UserSession {
         [Parameter(
             Mandatory,
             HelpMessage = "Enter a valid UPN for the user")]
-        [ValidatePattern('@avd.ms',
-            ErrorMessage = "{0} is not a valid UPN try in format user@avd.ms")]
+        [ValidatePattern('\@avd.ms$',
+            ErrorMessage = "{0} is not a valid UPN try in format user@domain.com")]
         [string]$userprincipalname,
         [Parameter(
             Mandatory = $false,
@@ -152,7 +155,7 @@ Function LogOff-user {
         [Parameter(
             Mandatory = $false,
             HelpMessage = "Use this switch to warn users that their session is about to be logged off")]
-        [switch]$NoLogoffMessage,
+        [switch]$NoLogoffMessage =$false,
         [switch]$ForceLogoff,   
         [array]$SessionDetails,
         [string]$delaylogoff = "5s" # use to delay the logoff of the user. This is useful if you want to warn the user before logging them off
@@ -165,14 +168,17 @@ Function LogOff-user {
     Write-host "Preparing to log off the following sessions for $($SessionDetails[0].UserPrincipalName):"
     $SessionDetails | ft * -Autosize
 
-    if (!$NoLogoffMessage.IsPresent -and !$NoLogoffMessage.Value) {
+    if (!$NoLogoffMessage -and !$NoLogoffMessage.Value) {
         $SessionDetails | foreach-object {
+           if ($PSCmdlet.ShouldProcess('Session', 'Send Logoff Warning')){ 
             Send-AzWvdUserSessionMessage -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -UserSessionId $_.SessionId -SessionHostName $_.sessionhost -MessageBody "Your session will be logged off in $delaylogoff. Please save your work." -MessageTitle "Logoff Warning"
             write-host "User Given $delaylogoff warning to logoff - Script will sleep for $delaylogoff"
         }
+    
         Start-Sleep $delaylogoff #for now will set to 3mins change this prior or change to parameter and variable to be dynamic
+        }
     }
-
+    $ConfirmPreference = 'High' #Reset back to high to ensure the user is prompted to confirm the logoff
     $SessionDetails | Foreach-object {
         try {
             #$logofftarget = Get-AzWvdUserSession -HostPoolName $_.hostpoolname -ResourceGroupName $_.resourcegroupname -SessionHostName $_.sessionhost -Id $_.SessionId
@@ -313,11 +319,11 @@ $selectedsession = @()
 if ($selectedindexes -eq $null) {
     foreach ($selectedindexvalue in $selectedindexes) {
         $selectedsession +=  $SessionDetails | select-object | where-object { $_.Index -eq $selectedindexvalue }
-        Logoff-user -SessionDetails $selectedsession -NoLogoffMessage:$NologoffMessageValue
+        Logoff-user -SessionDetails $selectedsession -NoLogoffMessage:$NologoffMessage
     }
 }
 else {
-    Logoff-User -SessionDetails $SessionDetails -NoLogoffMessage:$NologoffMessageValue
+    Logoff-User -SessionDetails $SessionDetails -NoLogoffMessage:$NoLogoffMessage
 }
 
 #Delete the user profile
