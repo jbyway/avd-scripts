@@ -190,8 +190,8 @@ function start-windowssetup
     if ($ScanOnly) {
         # Run the setup verification
         Write-Output "Running setup verification"
-
-        $process = (. (Join-Path $tempfolderPath "serviceui.exe") "-process:explorer.exe $($setupPath) $($argumentList)")
+        $serviceui = Join-Path $tempfolderPath "serviceui.exe"
+        $process = (.$serviceui -process:explorer.exe $setupPath $argumentList)
         #$process = (start-process $setupPath -ArgumentList $argumentList -Wait -PassThru)
         $process
         get-windowsupdateresult $process.ExitCode 
