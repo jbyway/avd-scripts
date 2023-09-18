@@ -204,6 +204,10 @@ function start-windowssetup
         Get-WindowsUpdateMedia -downloadUrl $downloadUrl
          
     }
+    
+    if (!($sessionId = (get-process explorer -ErrorAction SilentlyContinue).SessionId)) {
+        $sessionId = 0
+    }
 
     if ($ScanOnly) {
         # Run the setup verification
@@ -212,8 +216,10 @@ function start-windowssetup
         #$process = (start-process $setupPath -ArgumentList $argumentList -Wait -PassThru)
         #$process
 
-        #Psexec to allow interaction with user session
-        $sessionId = (get-process explorer).SessionId
+        #Psexec to allow interaction with user session check for explorer process and get the session id otherwise return 0 for console
+     
+        
+
         $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
 
         get-windowsupdateresult $process.ExitCode 
@@ -229,7 +235,6 @@ function start-windowssetup
                 #start-process $setupPath -ArgumentList $argumentlist -PassThru
 
                 #Psexec to allow interaction with user session
-                $sessionId = (get-process explorer).SessionId
                 $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
             }
             else {
@@ -247,7 +252,7 @@ function start-windowssetup
             #start-process $setupPath -ArgumentList $argumentlist -PassThru
 
              #Psexec to allow interaction with user session
-             $sessionId = (get-process explorer).SessionId
+             
              $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
         }
     }
