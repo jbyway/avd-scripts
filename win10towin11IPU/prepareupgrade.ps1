@@ -5,15 +5,15 @@ param (
     [Parameter(Mandatory = $false)]
     [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
-    [switch]$quiet,
+    [bool]$quiet,
     [Parameter(ParameterSetName = 'SkipFinalize', Mandatory)]
-    [switch]$SkipFinalize,
+    [bool]$SkipFinalize,
     [Parameter(ParameterSetName = 'Finalize', Mandatory)]
-    [switch]$Finalize,
+    [bool]$Finalize,
     [Parameter(ParameterSetName = 'ScanOnly', Mandatory)]
-    [switch]$ScanOnly,
+    [bool]$ScanOnly,
     [Parameter(Mandatory = $false)]
-    [switch]$dynamicUpdate
+    [bool]$dynamicUpdate
 )
 
 function Get-WindowsUpdateMedia
@@ -165,21 +165,21 @@ function start-windowssetup
     [Parameter(Mandatory = $false)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
-    [switch]$quiet,
+    [bool]$quiet,
     [Parameter(Mandatory = $false)]
-    [switch]$SkipFinalize,
+    [bool]$SkipFinalize,
     [Parameter(Mandatory = $false)]
-    [switch]$Finalize,
+    [bool]$Finalize,
     [Parameter(Mandatory = $false)]
-    [switch]$ScanOnly,
+    [bool]$ScanOnly,
     [Parameter(Mandatory = $false)]
-    [switch]$dynamicUpdate
+    [bool]$dynamicUpdate
 ) {
 
     $argumentList = "/auto upgrade /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
 
     write-output $argumentList
-    #exit
+    exit
     # Check for download media and download if not found
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
