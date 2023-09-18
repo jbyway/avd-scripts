@@ -196,8 +196,8 @@ function start-windowssetup
         #$process
 
         #Psexec
-        c:\packages\psexec.exe -accepteula -nobanner -s -i -d $setupPath $argumentList
-        
+        c:\packages\psexec.exe -accepteula -nobanner -h -s -i $setupPath $argumentList
+
         get-windowsupdateresult $process.ExitCode 
         write-output $process.ExitCode
         # Good scan result = 0xc1900210
