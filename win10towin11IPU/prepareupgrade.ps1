@@ -176,7 +176,7 @@ function start-windowssetup
     [bool]$dynamicUpdate
 ) {
 
-    $argumentList = "/auto upgrade /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
+    $argumentList = "/auto upgrade /showoobe none /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
 
     write-output $argumentList
     
@@ -191,7 +191,8 @@ function start-windowssetup
         # Run the setup verification
         Write-Output "Running setup verification"
 
-        $process = (start-process $setupPath -ArgumentList $argumentList -Wait -PassThru)
+        $process = (start-process (Join-Path $tempfolderPath "serviceui.exe") -ArgumentList -process:explorer.exe $setupPath $argumentList)
+        #$process = (start-process $setupPath -ArgumentList $argumentList -Wait -PassThru)
         get-windowsupdateresult $process.ExitCode 
         write-output $process.ExitCode
         # Good scan result = 0xc1900210
@@ -199,7 +200,8 @@ function start-windowssetup
     else {
         if (Test-Path -path (Join-Path $tempfolderPath "scanonlyresult.txt")) {
             if ((Get-Content $tempfolderPath\scanonlyresult.txt) -match "No issues found") {
-                Write-Output "No issues found"
+                Write-Output "No issues found - beginning upgrade"
+                set-windowsmediacleanuptask
                 # If no issues found in previous scan then run the update
                 start-process $setupPath -ArgumentList $argumentlist -PassThru
             }
@@ -239,4 +241,5 @@ function set-windowsmediacleanuptask
 # Remove-Item -Path $tempFolder -Force -Recurse
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet ([System.Convert]::ToBoolean($quiet)) -SkipFinalize ([System.Convert]::ToBoolean($SkipFinalize)) -Finalize ([System.Convert]::ToBoolean($Finalize)) -ScanOnly ([System.Convert]::ToBoolean($ScanOnly)) -dynamicUpdate ([System.Convert]::ToBoolean($dynamicUpdate))
+start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_)
+
