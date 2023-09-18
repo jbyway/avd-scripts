@@ -1,0 +1,82 @@
+{
+   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+   "contentVersion": "1.0.0.0",
+   "parameters": {
+      "location": {
+         "type": "string",
+         "defaultValue": "australiaeast"
+      },
+      "vmName": {
+         "type": "string"
+      },
+      "downloadUrl": {
+         "type": "string"
+      },
+      "scriptUri": {
+         "type": "string"
+      },
+      "quiet": {
+         "type": "bool",
+         "defaultValue": false
+      },
+      "SkipFinalize": {
+         "type": "bool",
+         "defaultValue": false
+      },
+      "Finalize": {
+         "type": "bool",
+         "defaultValue": false
+      },
+      "ScanOnly": {
+         "type": "bool",
+         "defaultValue": false
+      },
+      "dynamicUpdate": {
+         "type": "bool",
+         "defaultValue": false
+      }
+   },
+   "resources": [
+      {
+         "type": "Microsoft.Compute/virtualMachines/runCommands",
+         "name": "[concat(parameters('vmName'),'/secondRunCommand')]",
+         "apiVersion": "2023-03-01",
+         "location": "[parameters('location')]",
+         "properties": {
+            "source": {
+               "scriptUri": "[parameters('scriptUri')]"
+            },
+            "parameters": [
+               {
+                  "name": "downloadUrl",
+                  "value": "[parameters('downloadUrl')]"
+               },
+               {
+                  "name": "quiet",
+                  "type": "string",
+                  "value": "[if(parameters('quiet'), 'true', json('null'))]"
+               },
+               {
+                  "name": "scanonly",
+                  "type": "string",
+                  "value": "[if(parameters('ScanOnly'), 'true', json('null'))]"
+               }
+            ],
+            "timeoutInSeconds": 60
+         }
+      }
+   ]
+}
+
+
+
+    [Parameter(Mandatory = $false)]
+    [switch]$quiet,
+    [Parameter(ParameterSetName = 'SkipFinalize', Mandatory)]
+    [switch]$SkipFinalize,
+    [Parameter(ParameterSetName = 'Finalize', Mandatory)]
+    [switch]$Finalize,
+    [Parameter(ParameterSetName = 'ScanOnly', Mandatory)]
+    [switch]$ScanOnly,
+    [Parameter(Mandatory = $false)]
+    [switch]$dynamicUpdate
