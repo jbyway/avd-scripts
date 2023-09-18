@@ -11,3 +11,4 @@ get-avdgwconnectionstats/function Invoke-PathPing.ps1
 .vscode/launch.json
 id
 testparams.txt
+*.kql

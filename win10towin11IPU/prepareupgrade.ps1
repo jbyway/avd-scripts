@@ -13,7 +13,9 @@ param (
     [Parameter(Mandatory = $false)]
     $ScanOnly = $false,
     [Parameter(Mandatory = $false)]
-    $dynamicUpdate = $false
+    $dynamicUpdate = $false,
+    [Parameter(Mandatory = $false)]
+    [uri]$pstoolsdownloaddurl = "https://download.sysinternals.com/files/PSTools.zip"
 )
 
 function Get-WindowsUpdateMedia
@@ -21,7 +23,9 @@ function Get-WindowsUpdateMedia
     [Parameter(Mandatory = $false)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
-    [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia")
+    [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
+    [Parameter(Mandatory = $false)]
+    [uri]$pstoolsdownloaddurl = "https://download.sysinternals.com/files/PSTools.zip"
 ) {
     Begin {
 
@@ -54,7 +58,7 @@ function Get-WindowsUpdateMedia
         
         try {
             #Download PSExec
-            $webclient.DownloadFile("https://download.sysinternals.com/files/PSTools.zip", $tempFolderPath + "\PSTools.zip")
+            $webclient.DownloadFile($pstoolsdownloaddurl, $tempFolderPath + "\PSTools.zip")
         }
         catch {
             Write-Output "Error downloading file"
@@ -95,13 +99,15 @@ function test-windowssetup
     [Parameter(Mandatory = $false)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
-    [string]$argumentList
+    [string]$argumentList,
+    [Parameter(Mandatory = $false)]
+    [uri]$pstoolsdownloaddurl = "https://download.sysinternals.com/files/PSTools.zip"
 ) {
 
     #Create temp folder if it doesn't already exist
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
-          Get-WindowsUpdateMedia -downloadUrl $downloadUrl
+          Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloaddurl $pstoolsdownloaddurl
         
     }
 
@@ -201,7 +207,7 @@ function start-windowssetup
     # Check for download media and download if not found
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
-        Get-WindowsUpdateMedia -downloadUrl $downloadUrl
+        Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloaddurl $pstoolsdownloaddurl
          
     }
     
@@ -213,15 +219,10 @@ function start-windowssetup
         # Run the setup verification
         Write-Output "Running setup verification"
 
-        #$process = (start-process $setupPath -ArgumentList $argumentList -Wait -PassThru)
-        #$process
-
         #Psexec to allow interaction with user session check for explorer process and get the session id otherwise return 0 for console
-     
-        
-
         $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
 
+        # Get the scan only result code and write to the log file
         get-windowsupdateresult $process.ExitCode 
         write-output $process.ExitCode
         # Good scan result = 0xc1900210
@@ -277,5 +278,5 @@ function set-windowsmediacleanuptask
 # Remove-Item -Path $tempFolder -Force -Recurse
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_)
+start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_) -pstoolsdownloaddurl $pstoolsdownloaddurl
 

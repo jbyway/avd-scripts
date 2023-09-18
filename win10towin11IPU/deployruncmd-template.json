@@ -15,6 +15,10 @@
       "scriptUri": {
          "type": "string"
       },
+      "pstoolsdownloadurl": {
+         "type": "string",
+         "defaultValue": "https://download.sysinternals.com/files/PSTools.zip"
+      },
       "quiet": {
          "type": "bool",
          "defaultValue": false
@@ -50,6 +54,10 @@
                {
                   "name": "downloadUrl",
                   "value": "[parameters('downloadUrl')]"
+               },
+               {
+                  "name": "pstoolsdownloadurl",
+                  "value": "[parameters('pstoolsdownloadurl')]"
                },
                {
                   "name": "quiet",
