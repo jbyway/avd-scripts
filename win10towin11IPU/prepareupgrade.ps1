@@ -163,11 +163,11 @@ function start-windowssetup
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
     [switch]$quiet,
-    [Parameter(ParameterSetName = 'SkipFinalize', Mandatory)]
+    [Parameter(Mandatory = $false)]
     [switch]$SkipFinalize,
-    [Parameter(ParameterSetName = 'Finalize', Mandatory)]
+    [Parameter(Mandatory = $false)]
     [switch]$Finalize,
-    [Parameter(ParameterSetName = 'ScanOnly', Mandatory)]
+    [Parameter(Mandatory = $false)]
     [switch]$ScanOnly,
     [Parameter(Mandatory = $false)]
     [switch]$dynamicUpdate
@@ -235,4 +235,4 @@ function set-windowsmediacleanuptask
 # Remove-Item -Path $tempFolder -Force -Recurse
 
 # Run the script
-#start-windowssetup -downloadUrl $downloadUrl -quiet:$quiet -SkipFinalize:$SkipFinalize -Finalize:$Finalize -ScanOnly:$ScanOnly -dynamicUpdate:$dynamicUpdate
+start-windowssetup -downloadUrl $downloadUrl -quiet:$quiet -SkipFinalize:$SkipFinalize -Finalize:$Finalize -ScanOnly:$ScanOnly -dynamicUpdate:$dynamicUpdate

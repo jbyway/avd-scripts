@@ -44,7 +44,8 @@
          "location": "[parameters('location')]",
          "properties": {
             "source": {
-               "scriptUri": "[parameters('scriptUri')]"
+               "scriptUri": "[concat(parameters('scriptUri'), '; start-windowssetup')]",
+               "script": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('scriptUri'), '; start-windowssetup')]"
             },
             "parameters": [
                {
@@ -53,30 +54,16 @@
                },
                {
                   "name": "quiet",
-                  "type": "string",
                   "value": "[if(parameters('quiet'), 'true', json('null'))]"
                },
                {
                   "name": "scanonly",
-                  "type": "string",
                   "value": "[if(parameters('ScanOnly'), 'true', json('null'))]"
                }
             ],
-            "timeoutInSeconds": 60
+            "timeoutInSeconds": 600
          }
       }
    ]
 }
 
-
-
-    [Parameter(Mandatory = $false)]
-    [switch]$quiet,
-    [Parameter(ParameterSetName = 'SkipFinalize', Mandatory)]
-    [switch]$SkipFinalize,
-    [Parameter(ParameterSetName = 'Finalize', Mandatory)]
-    [switch]$Finalize,
-    [Parameter(ParameterSetName = 'ScanOnly', Mandatory)]
-    [switch]$ScanOnly,
-    [Parameter(Mandatory = $false)]
-    [switch]$dynamicUpdate
