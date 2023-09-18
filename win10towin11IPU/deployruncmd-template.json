@@ -53,23 +53,23 @@
                },
                {
                   "name": "quiet",
-                  "value": "[if(parameters('quiet'), '$true', json('null'))]"
+                  "value": "[if(parameters('quiet'), 'true', json('null'))]"
                },
                {
                   "name": "scanonly",
-                  "value": "[if(parameters('ScanOnly'), '$true', json('null'))]"
+                  "value": "[if(parameters('ScanOnly'), 'true', json('null'))]"
                },
                {
                   "name": "skipfinalize",
-                  "value": "[if(parameters('SkipFinalize'), '$true', json('null'))]"
+                  "value": "[if(parameters('SkipFinalize'), 'true', json('null'))]"
                },
                {
                   "name": "finalize",
-                  "value": "[if(parameters('Finalize'), '$true', json('null'))]"
+                  "value": "[if(parameters('Finalize'), 'true', json('null'))]"
                },
                {
                   "name": "dynamicupdate",
-                  "value": "[if(parameters('dynamicUpdate'), '$true', json('null'))]"
+                  "value": "[if(parameters('dynamicUpdate'), 'true', json('null'))]"
                }
             ],
             "timeoutInSeconds": 600
