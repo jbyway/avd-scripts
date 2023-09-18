@@ -5,15 +5,15 @@ param (
     [Parameter(Mandatory = $false)]
     [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
-    [bool]$quiet = $false,
+    $quiet = $false,
     [Parameter(Mandatory = $false)]
-    [bool]$SkipFinalize = $false,
+    $SkipFinalize = $false,
     [Parameter(Mandatory = $false)]
-    [bool]$Finalize = $false,
+    $Finalize = $false,
     [Parameter(Mandatory = $false)]
-    [bool]$ScanOnly = $false,
+    $ScanOnly = $false,
     [Parameter(Mandatory = $false)]
-    [bool]$dynamicUpdate = $false
+    $dynamicUpdate = $false
 )
 
 function Get-WindowsUpdateMedia
@@ -239,4 +239,4 @@ function set-windowsmediacleanuptask
 # Remove-Item -Path $tempFolder -Force -Recurse
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet $quiet -SkipFinalize $SkipFinalize -Finalize $Finalize -ScanOnly $ScanOnly -dynamicUpdate $dynamicUpdate
+start-windowssetup -downloadUrl $downloadUrl -quiet [System.Convert]::ToBoolean($quiet) -SkipFinalize [System.Convert]::ToBoolean($SkipFinalize) -Finalize [System.Convert]::ToBoolean($Finalize) -ScanOnly [System.Convert]::ToBoolean($ScanOnly) -dynamicUpdate [System.Convert]::ToBoolean($dynamicUpdate)
