@@ -6,11 +6,11 @@ param (
     [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
     [bool]$quiet,
-    [Parameter(ParameterSetName = 'SkipFinalize', Mandatory)]
+    [Parameter(Mandatory = $false)]
     [bool]$SkipFinalize,
-    [Parameter(ParameterSetName = 'Finalize', Mandatory)]
+    [Parameter(Mandatory = $false)]
     [bool]$Finalize,
-    [Parameter(ParameterSetName = 'ScanOnly', Mandatory)]
+    [Parameter(Mandatory = $false)]
     [bool]$ScanOnly,
     [Parameter(Mandatory = $false)]
     [bool]$dynamicUpdate
