@@ -63,7 +63,7 @@ function Get-WindowsUpdateMedia
 
         try {
             #Extract PSExec
-            Expand-Archive -Path ($tempFolderPath + "PSTools.zip") -DestinationPath ($tempFolderPath + "PSTools") -Force
+            Expand-Archive -Path ($tempFolderPath + "\PSTools.zip") -DestinationPath ($tempFolderPath + "\PSTools") -Force
         }
         catch {
             Write-Output "Error extracting file"
