@@ -235,4 +235,4 @@ function set-windowsmediacleanuptask
 # Remove-Item -Path $tempFolder -Force -Recurse
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet:$quiet -SkipFinalize:$SkipFinalize -Finalize:$Finalize -ScanOnly:$ScanOnly -dynamicUpdate:$dynamicUpdate
+#start-windowssetup -downloadUrl $downloadUrl -quiet:$quiet -SkipFinalize:$SkipFinalize -Finalize:$Finalize -ScanOnly:$ScanOnly -dynamicUpdate:$dynamicUpdate
