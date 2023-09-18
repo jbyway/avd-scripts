@@ -234,13 +234,5 @@ function set-windowsmediacleanuptask
 #Clean up the temp folder
 # Remove-Item -Path $tempFolder -Force -Recurse
 
-
-function test 
-([switch]$quiet) {
-    if ($quiet) {
-        write-output "quiet"
-    }
-    else {
-        write-output "not quiet"
-    }
-}
+# Run the script
+start-windowssetup -downloadUrl $downloadUrl -quiet:$quiet -SkipFinalize:$SkipFinalize -Finalize:$Finalize -ScanOnly:$ScanOnly -dynamicUpdate:$dynamicUpdate
