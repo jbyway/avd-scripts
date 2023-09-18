@@ -191,8 +191,9 @@ function start-windowssetup
         # Run the setup verification
         Write-Output "Running setup verification"
 
-        $process = (start-process (Join-Path $tempfolderPath "serviceui.exe") -ArgumentList -process:explorer.exe $setupPath $argumentList)
+        $process = (. (Join-Path $tempfolderPath "serviceui.exe") '-process:explorer.exe $setupPath $argumentList')
         #$process = (start-process $setupPath -ArgumentList $argumentList -Wait -PassThru)
+        $process
         get-windowsupdateresult $process.ExitCode 
         write-output $process.ExitCode
         # Good scan result = 0xc1900210
