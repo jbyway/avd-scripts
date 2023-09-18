@@ -83,8 +83,8 @@ function test-windowssetup
     #Create temp folder if it doesn't already exist
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
-        #  Get-WindowsUpdateMedia -downloadUrl $downloadUrl
-        write-output "hi"
+          Get-WindowsUpdateMedia -downloadUrl $downloadUrl
+        
     }
 
     # Get the setup.exe path
@@ -239,4 +239,4 @@ function set-windowsmediacleanuptask
 # Remove-Item -Path $tempFolder -Force -Recurse
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet:$quiet -SkipFinalize:$SkipFinalize -Finalize:$Finalize -ScanOnly:$ScanOnly -dynamicUpdate:$dynamicUpdate
+start-windowssetup -downloadUrl [uri]$downloadUrl -quiet:$quiet -SkipFinalize:$SkipFinalize -Finalize:$Finalize -ScanOnly:$ScanOnly -dynamicUpdate:$dynamicUpdate
