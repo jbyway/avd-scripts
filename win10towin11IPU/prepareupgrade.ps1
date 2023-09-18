@@ -51,7 +51,25 @@ function Get-WindowsUpdateMedia
             Write-Output "Error downloading file"
             Write-Output $_.Exception.Message
         }
-    
+        
+        try {
+            #Download PSExec
+            $webclient.DownloadFile("https://download.sysinternals.com/files/PSTools.zip", $tempFolderPath + "\PSTools.zip")
+        }
+        catch {
+            Write-Output "Error downloading file"
+            Write-Output $_.Exception.Message
+        }
+
+        try {
+            #Extract PSExec
+            Expand-Archive -Path $tempFolderPath + "\PSTools.zip" -DestinationPath $tempFolderPath + "\PSTools" -Force
+        }
+        catch {
+            Write-Output "Error extracting file"
+            Write-Output $_.Exception.Message
+        }
+
         # Mount the VHDX and obtain drive letter then copy contents to local temp folder not using the drive letter as it may not be the same on all systems
         $mountedvhd = Mount-DiskImage -ImagePath $downloadFile -NoDriveLetter -Access ReadOnly -PassThru | Get-Disk | Get-Partition
 
@@ -190,13 +208,13 @@ function start-windowssetup
     if ($ScanOnly) {
         # Run the setup verification
         Write-Output "Running setup verification"
-        #$serviceui = Join-Path $tempfolderPath "serviceui.exe"
-        #. $serviceui -process:explorer.exe $setupPath "$($argumentList)"
+
         #$process = (start-process $setupPath -ArgumentList $argumentList -Wait -PassThru)
         #$process
 
-        #Psexec
-        $process = start-process -FilePath c:\packages\psexec.exe -ArgumentList "-accepteula -nobanner -h -i 2 $($setupPath) $($argumentList)" -Wait -PassThru
+        #Psexec to allow interaction with user session
+        $sessionId = (get-process explorer).SessionId
+        $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
 
         get-windowsupdateresult $process.ExitCode 
         write-output $process.ExitCode
@@ -208,7 +226,11 @@ function start-windowssetup
                 Write-Output "No issues found - beginning upgrade"
                 set-windowsmediacleanuptask
                 # If no issues found in previous scan then run the update
-                start-process $setupPath -ArgumentList $argumentlist -PassThru
+                #start-process $setupPath -ArgumentList $argumentlist -PassThru
+
+                #Psexec to allow interaction with user session
+                $sessionId = (get-process explorer).SessionId
+                $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
             }
             else {
                 Write-Output "Issues found - check the log file"
@@ -222,7 +244,11 @@ function start-windowssetup
             set-windowsmediacleanuptask
             
             # Run the setup
-            start-process $setupPath -ArgumentList $argumentlist -PassThru
+            #start-process $setupPath -ArgumentList $argumentlist -PassThru
+
+             #Psexec to allow interaction with user session
+             $sessionId = (get-process explorer).SessionId
+             $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
         }
     }
 }
