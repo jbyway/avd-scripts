@@ -44,8 +44,7 @@
          "location": "[parameters('location')]",
          "properties": {
             "source": {
-               "scriptUri": "[concat(parameters('scriptUri'), '; start-windowssetup')]",
-               "script": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ', parameters('scriptUri'), '; start-windowssetup')]"
+               "scriptUri": "[parameters('scriptUri')]"
             },
             "parameters": [
                {
@@ -54,11 +53,11 @@
                },
                {
                   "name": "quiet",
-                  "value": "[if(parameters('quiet'), 'true', json('null'))]"
+                  "value": "[if(parameters('quiet'), '$true', json('null'))]"
                },
                {
                   "name": "scanonly",
-                  "value": "[if(parameters('ScanOnly'), 'true', json('null'))]"
+                  "value": "[if(parameters('ScanOnly'), '$true', json('null'))]"
                }
             ],
             "timeoutInSeconds": 600

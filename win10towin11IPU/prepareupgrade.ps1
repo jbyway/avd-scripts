@@ -124,6 +124,9 @@ function test-windowssetup
 
 function get-windowsupdateresult ($process) {
     
+    # Get the scan only result code
+    'Windows Setup Scan Result: 0x{0:x}' -f $process 
+
 
     # Check the exit code
     switch ($process) {
