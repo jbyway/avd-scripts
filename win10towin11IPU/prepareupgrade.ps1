@@ -196,7 +196,7 @@ function start-windowssetup
         #$process
 
         #Psexec
-        $process = start-process -FilePath c:\packages\psexec.exe -ArgumentList "-accepteula -nobanner -h -s -i $($setupPath) $($argumentList)" -Wait -PassThru
+        $process = start-process -FilePath c:\packages\psexec.exe -ArgumentList "-accepteula -nobanner -h -i 2 $($setupPath) $($argumentList)" -Wait -PassThru
 
         get-windowsupdateresult $process.ExitCode 
         write-output $process.ExitCode
