@@ -1,0 +1,78 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "type": "string",
+            "defaultValue": "te-test-2",
+            "metadata": {
+                "description": "Name of the virtual machine."
+            }
+        },
+		"location": {
+            "type": "string",
+            "defaultValue": "australiaeast"
+        },
+        "secureBootEnabled": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Specifies whether secure boot should be enabled on the virtual machine."
+            }
+        },
+        "vTpmEnabled": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Specifies whether vTPM should be enabled on the virtual machine."
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_D2ads_v5",
+            "metadata": {
+                "description": "Specifies the size of the virtual machine."
+            }
+        },
+        "numberofinstances": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of virtual machines to deploy."
+            }
+        },
+        "vmsuffix": {
+            "type": "int",
+            "defaultValue": "[int(last(split(parameters('vmName'), '-')))]",
+            "metadata": {
+                "description": "Suffix of the virtual machine in case of multiple instances."
+            }
+        }
+    },
+    "variables": {
+        "hardwareProfile": {
+            "vmSize": "[parameters('vmSize')]"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('vmName'), add(copyIndex(), parameters('vmsuffix')))]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "hardwareProfile": "[if(equals(parameters('vmSize'),''), json('null'), variables('hardwareProfile'))]",
+                "securityProfile": {
+                    "uefiSettings": {
+                        "secureBootEnabled": "[parameters('secureBootEnabled')]",
+                        "vTpmEnabled": "[parameters('vTpmEnabled')]"
+                    },
+                    "securityType": "TrustedLaunch"
+                }
+            },
+            "copy": {
+                "name": "vmLoop",
+                "count": "[parameters('numberofinstances')]"}
+        }
+    ]
+}
