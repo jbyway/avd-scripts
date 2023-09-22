@@ -22,7 +22,7 @@ param (
 
 function Get-WindowsUpdateMedia
 (
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
     [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
@@ -140,6 +140,9 @@ function test-windowssetup
         '-1047526898' {
             Write-Output "Insufficient free disk space to perform upgrade" -OutVariable scanonlymessage
         }
+        '-1047526911'{
+            Write-Output "Windows 11 is not available on this device - missing TPM2.0, enable Trusted Launch on VM first" -OutVariable scanonlymessage
+        }
         Default {
             Write-Output "Unknown outcome - check the log file" -OutVariable scanonlymessage
         }
@@ -170,6 +173,9 @@ function get-windowsupgradescanresult ($process) {
         }
         '-1047526898' {
             Write-Output "Insufficient free disk space to perform upgrade" -OutVariable scanonlymessage
+        }
+        '-1047526911'{
+            Write-Output "Does not meet system requirements for Windows 11 - missing TPM2.0, enable Trusted Launch on VM first" -OutVariable scanonlymessage
         }
         Default {
             Write-Output "Unknown outcome - check the log file" -OutVariable scanonlymessage
@@ -202,10 +208,10 @@ function start-windowssetup
     [bool]$dynamicUpdate,
     [Parameter(Mandatory = $false)]
     [bool]$upgradenow,
-    [Parameter]
+    [Parameter(Mandatory = $false)]
     [uri]$pstoolsdownloadurl
 ) {
-
+    # Create the argument list for setup based on the parameters passed to the function
     $argumentList = "/auto upgrade /showoobe none /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
 
     write-output $argumentList
@@ -214,12 +220,12 @@ function start-windowssetup
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
         Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloadurl $pstoolsdownloadurl
-         
     }
     
     # Check if user is logged in and perform silently if not otherwise run interactively if not set to use quiet switch
     if (!($sessionId = (get-process explorer -ErrorAction SilentlyContinue).SessionId)) {
         $sessionId = 0
+        $quiet = $true # Force quiet mode if no user logged in
     }
 
     if ($ScanOnly) {
@@ -227,7 +233,7 @@ function start-windowssetup
         Write-Output "Running setup verification"
 
         #Psexec to allow interaction with user session check for explorer process and get the session id otherwise return 0 for console
-        $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
+        $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru -WindowStyle Hidden
 
         # Get the scan only result code and write to the log file
         get-windowsupgradescanresult $process.ExitCode 
@@ -239,11 +245,10 @@ function start-windowssetup
             if ((Get-Content $tempfolderPath\scanonlyresult.txt) -match "No issues found") {
                 Write-Output "No issues found - beginning upgrade"
                 set-windowssetupcleanuptask
-                # If no issues found in previous scan then run the update
-                #start-process $setupPath -ArgumentList $argumentlist -PassThru
 
-                #Psexec to allow interaction with user session
-                $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait:$upgradenow -PassThru
+                # If no issues found in previous scan then run the update
+                # Psexec to allow interaction with user session check for explorer process and get the session id otherwise return 0 for console ($quiet -eq $false -and $sessionId -ne 0)
+                $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait:$upgradenow -PassThru -WindowStyle Hidden
             }
             else {
                 Write-Output "Issues found - check the log file"
