@@ -241,7 +241,7 @@ function start-windowssetup
                 #start-process $setupPath -ArgumentList $argumentlist -PassThru
 
                 #Psexec to allow interaction with user session
-                $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
+                $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait:$upgradenow -PassThru
             }
             else {
                 Write-Output "Issues found - check the log file"
@@ -259,7 +259,7 @@ function start-windowssetup
 
              #Psexec to allow interaction with user session
              
-             $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
+             $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait:$upgradenow -PassThru
         }
     }
 }

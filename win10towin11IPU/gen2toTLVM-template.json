@@ -42,7 +42,7 @@
             }
         },
         "vmsuffix": {
-            "type": "int",
+            "type": "string",
             "defaultValue": "[int(last(split(parameters('vmName'), '-')))]",
             "metadata": {
                 "description": "Suffix of the virtual machine in case of multiple instances."
@@ -52,13 +52,14 @@
     "variables": {
         "hardwareProfile": {
             "vmSize": "[parameters('vmSize')]"
-        }
+        },
+        "vmsuffix": "[int(last(split(parameters('vmName'), '-')))]"
     },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2022-11-01",
-            "name": "[concat(parameters('vmName'), add(copyIndex(), parameters('vmsuffix')))]",
+            "name": "[concat(parameters('vmName'), add(copyIndex(), variables('vmsuffix')))]",
             "location": "[parameters('location')]",
             "properties": {
                 "hardwareProfile": "[if(equals(parameters('vmSize'),''), json('null'), variables('hardwareProfile'))]",
