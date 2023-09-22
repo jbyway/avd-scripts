@@ -63,7 +63,8 @@
                     },
                     "securityType": "TrustedLaunch"
                 },
-                "storageprofile": {}
+                "storageprofile": {},
+                "networkProfile": {}
             },
             "copy": {
                 "name": "vmLoop",
