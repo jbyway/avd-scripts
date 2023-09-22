@@ -9,7 +9,7 @@
                 "description": "Name of the virtual machine."
             }
         },
-		"location": {
+        "location": {
             "type": "string",
             "defaultValue": "australiaeast"
         },
@@ -40,13 +40,6 @@
             "metadata": {
                 "description": "Number of virtual machines to deploy."
             }
-        },
-        "vmsuffix": {
-            "type": "string",
-            "defaultValue": "[int(last(split(parameters('vmName'), '-')))]",
-            "metadata": {
-                "description": "Suffix of the virtual machine in case of multiple instances."
-            }
         }
     },
     "variables": {
@@ -73,7 +66,8 @@
             },
             "copy": {
                 "name": "vmLoop",
-                "count": "[parameters('numberofinstances')]"}
+                "count": "[parameters('numberofinstances')]"
+            }
         }
     ]
 }
