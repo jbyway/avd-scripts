@@ -43,10 +43,10 @@
         }
     },
     "variables": {
+        "vmsuffix": "[int(last(split(parameters('vmName'), '-')))]",
         "hardwareProfile": {
             "vmSize": "[parameters('vmSize')]"
-        },
-        "vmsuffix": "[int(last(split(parameters('vmName'), '-')))]"
+        }
     },
     "resources": [
         {
@@ -62,7 +62,8 @@
                         "vTpmEnabled": "[parameters('vTpmEnabled')]"
                     },
                     "securityType": "TrustedLaunch"
-                }
+                },
+                "storageprofile": {}
             },
             "copy": {
                 "name": "vmLoop",
