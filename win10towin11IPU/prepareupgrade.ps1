@@ -15,7 +15,9 @@ param (
     [Parameter(Mandatory = $false)]
     $dynamicUpdate = $false,
     [Parameter(Mandatory = $false)]
-    [uri]$pstoolsdownloadurl = "https://download.sysinternals.com/files/PSTools.zip"
+    [uri]$pstoolsdownloadurl = "https://download.sysinternals.com/files/PSTools.zip",
+    [Parameter(Mandatory = $false)]
+    $upgradenow = $false
 )
 
 function Get-WindowsUpdateMedia
@@ -146,7 +148,7 @@ function test-windowssetup
 
 }
 
-function get-windowsupdateresult ($process) {
+function get-windowsupgradescanresult ($process) {
     
     # Get the scan only result code
     'Windows Setup Scan Result: 0x{0:x}' -f $process 
@@ -197,7 +199,9 @@ function start-windowssetup
     [Parameter(Mandatory = $false)]
     [bool]$ScanOnly,
     [Parameter(Mandatory = $false)]
-    [bool]$dynamicUpdate
+    [bool]$dynamicUpdate,
+    [Parameter(Mandatory = $false)]
+    [bool]$upgradenow
 ) {
 
     $argumentList = "/auto upgrade /showoobe none /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
@@ -211,6 +215,7 @@ function start-windowssetup
          
     }
     
+    # Check if user is logged in and perform silently if not otherwise run interactively if not set to use quiet switch
     if (!($sessionId = (get-process explorer -ErrorAction SilentlyContinue).SessionId)) {
         $sessionId = 0
     }
@@ -223,7 +228,7 @@ function start-windowssetup
         $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait -PassThru
 
         # Get the scan only result code and write to the log file
-        get-windowsupdateresult $process.ExitCode 
+        get-windowsupgradescanresult $process.ExitCode 
         write-output $process.ExitCode
         # Good scan result = 0xc1900210
     }
@@ -231,7 +236,7 @@ function start-windowssetup
         if (Test-Path -path (Join-Path $tempfolderPath "scanonlyresult.txt")) {
             if ((Get-Content $tempfolderPath\scanonlyresult.txt) -match "No issues found") {
                 Write-Output "No issues found - beginning upgrade"
-                set-windowsmediacleanuptask
+                set-windowssetupcleanuptask
                 # If no issues found in previous scan then run the update
                 #start-process $setupPath -ArgumentList $argumentlist -PassThru
 
@@ -247,7 +252,7 @@ function start-windowssetup
             Write-Output "No scanonlyresult.txt file found - will continue with upgrade"
             
             # Create task to delete the temp media after 5 days
-            set-windowsmediacleanuptask
+            set-windowssetupcleanuptask
             
             # Run the setup
             #start-process $setupPath -ArgumentList $argumentlist -PassThru
@@ -259,7 +264,7 @@ function start-windowssetup
     }
 }
 
-function set-windowsmediacleanuptask 
+function set-windowssetupcleanuptask 
 ( 
     [Parameter(Mandatory = $false)]
     [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia")
@@ -274,9 +279,8 @@ function set-windowsmediacleanuptask
     $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -Settings $settings
     Register-ScheduledTask -TaskName "Cleanup Windows Update Media" -InputObject $task -Force
 }
-#Clean up the temp folder
-# Remove-Item -Path $tempFolder -Force -Recurse
+
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_) -pstoolsdownloadurl $pstoolsdownloadurl
+start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_) -pstoolsdownloadurl $pstoolsdownloadurl -upgradenow $upgradenow.ToBoolean($_)
 
