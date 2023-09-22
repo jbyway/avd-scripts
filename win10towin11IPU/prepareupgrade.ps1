@@ -201,7 +201,9 @@ function start-windowssetup
     [Parameter(Mandatory = $false)]
     [bool]$dynamicUpdate,
     [Parameter(Mandatory = $false)]
-    [bool]$upgradenow
+    [bool]$upgradenow,
+    [Parameter]
+    [uri]$pstoolsdownloadurl
 ) {
 
     $argumentList = "/auto upgrade /showoobe none /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
