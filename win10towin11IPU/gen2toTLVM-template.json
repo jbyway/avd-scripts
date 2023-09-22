@@ -4,7 +4,7 @@
     "parameters": {
         "vmName": {
             "type": "string",
-            "defaultValue": "te-test-2",
+            "defaultValue": "test-2",
             "metadata": {
                 "description": "Name of the virtual machine."
             }
@@ -33,17 +33,9 @@
             "metadata": {
                 "description": "Specifies the size of the virtual machine."
             }
-        },
-        "numberofinstances": {
-            "type": "int",
-            "defaultValue": 1,
-            "metadata": {
-                "description": "Number of virtual machines to deploy."
-            }
         }
     },
     "variables": {
-        "vmsuffix": "[int(last(split(parameters('vmName'), '-')))]",
         "hardwareProfile": {
             "vmSize": "[parameters('vmSize')]"
         }
@@ -52,7 +44,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2022-11-01",
-            "name": "[concat(parameters('vmName'), add(copyIndex(), variables('vmsuffix')))]",
+            "name": "[parameters('vmName')]",
             "location": "[parameters('location')]",
             "properties": {
                 "hardwareProfile": "[if(equals(parameters('vmSize'),''), json('null'), variables('hardwareProfile'))]",
@@ -62,13 +54,7 @@
                         "vTpmEnabled": "[parameters('vTpmEnabled')]"
                     },
                     "securityType": "TrustedLaunch"
-                },
-                "storageprofile": {},
-                "networkProfile": {}
-            },
-            "copy": {
-                "name": "vmLoop",
-                "count": "[parameters('numberofinstances')]"
+                }
             }
         }
     ]
