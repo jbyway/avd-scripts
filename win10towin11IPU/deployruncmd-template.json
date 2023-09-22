@@ -38,6 +38,10 @@
       "dynamicUpdate": {
          "type": "bool",
          "defaultValue": false
+      },
+      "upgradenow": {
+         "type": "bool",
+         "defaultValue": false
       }
    },
    "resources": [
@@ -78,9 +82,13 @@
                {
                   "name": "dynamicupdate",
                   "value": "[parameters('dynamicUpdate')]"
+               },
+               {
+                  "name": "upgradenow",
+                  "value": "[parameters('upgradenow')]"
                }
             ],
-            "timeoutInSeconds": 600
+            "timeoutInSeconds": 6000
          }
       }
    ]

@@ -31,6 +31,9 @@
         },
         "dynamicUpdate": {
             "value": false
+        },
+        "upgradenow": {
+            "value": false
         }
     }
 }
