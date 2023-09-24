@@ -34,6 +34,12 @@
         },
         "upgradenow": {
             "value": false
+        },
+        "outputBlobError": {
+            "value": ""
+        },
+        "outputBlobUri": {
+            "value": ""
         }
     }
 }

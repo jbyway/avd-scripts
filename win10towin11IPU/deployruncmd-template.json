@@ -42,6 +42,12 @@
       "upgradenow": {
          "type": "bool",
          "defaultValue": false
+      },
+      "outputBlobUri": {
+         "type": "string"
+      },
+      "outputBlobError": {
+         "type": "string"
       }
    },
    "resources": [
@@ -89,7 +95,9 @@
                   "value": "[parameters('upgradenow')]"
                }
             ],
-            "timeoutInSeconds": 6000
+            "timeoutInSeconds": 3600,
+            "outputBlobUri": "[parameters('outputBlobUri')]",
+            "outputBlobError": "[parameters('outputBlobError')]"
          }
       }
    ]
