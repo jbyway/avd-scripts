@@ -46,7 +46,7 @@
       "outputBlobUri": {
          "type": "string"
       },
-      "outputBlobError": {
+      "errorBlobUri": {
          "type": "string"
       }
    },
@@ -62,7 +62,7 @@
             },
             "timeoutInSeconds": 3600,
             "outputBlobUri": "[parameters('outputBlobUri')]",
-            "outputBlobError": "[parameters('outputBlobError')]",
+            "errorBlobUri": "[parameters('errorBlobUri')]",
             "treatFailureAsDeploymentFailure": true,
             "parameters": [
                {
@@ -96,14 +96,6 @@
                {
                   "name": "upgradenow",
                   "value": "[parameters('upgradenow')]"
-               },
-               {
-                  "name": "outputBlobUri",
-                  "value": "[parameters('outputBlobUri')]"
-               },
-               {
-                  "name": "outputBlobError",
-                  "value": "[parameters('outputBlobError')]"
                }
             ]
          }
