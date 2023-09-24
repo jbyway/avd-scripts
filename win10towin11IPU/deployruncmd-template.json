@@ -60,6 +60,9 @@
             "source": {
                "scriptUri": "[parameters('scriptUri')]"
             },
+            "timeoutInSeconds": 3600,
+            "outputBlobUri": "[parameters('outputBlobUri')]",
+            "outputBlobError": "[parameters('outputBlobError')]",
             "treatFailureAsDeploymentFailure": true,
             "parameters": [
                {
@@ -93,13 +96,17 @@
                {
                   "name": "upgradenow",
                   "value": "[parameters('upgradenow')]"
+               },
+               {
+                  "name": "outputBlobUri",
+                  "value": "[parameters('outputBlobUri')]"
+               },
+               {
+                  "name": "outputBlobError",
+                  "value": "[parameters('outputBlobError')]"
                }
-            ],
-            "timeoutInSeconds": 3600,
-            "outputBlobUri": "[parameters('outputBlobUri')]",
-            "outputBlobError": "[parameters('outputBlobError')]"
+            ]
          }
       }
    ]
 }
-
