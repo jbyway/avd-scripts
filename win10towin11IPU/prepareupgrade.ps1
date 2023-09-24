@@ -15,7 +15,7 @@ param (
     [Parameter(Mandatory = $false)]
     $dynamicUpdate = $false,
     [Parameter(Mandatory = $false)]
-    [uri]$pstoolsdownloadurl = "https://download.sysinternals.com/files/PSTools.zip",
+    [uri]$pstoolsdownloadurl,
     [Parameter(Mandatory = $false)]
     $upgradenow = $false
 )
@@ -27,7 +27,7 @@ function Get-WindowsUpdateMedia
     [Parameter(Mandatory = $false)]
     [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
-    [uri]$pstoolsdownloadurl = "https://download.sysinternals.com/files/PSTools.zip"
+    [uri]$pstoolsdownloadurl
 ) {
     Begin {
 
@@ -103,7 +103,7 @@ function test-windowssetup
     [Parameter(Mandatory = $false)]
     [string]$argumentList,
     [Parameter(Mandatory = $false)]
-    [uri]$pstoolsdownloadurl = "https://download.sysinternals.com/files/PSTools.zip"
+    [uri]$pstoolsdownloadurl
 ) {
 
     #Create temp folder if it doesn't already exist

@@ -6,7 +6,8 @@
          "type": "string"
       },
       "vmName": {
-         "type": "string"
+         "type": "string",
+         "defaultValue": "vmName"
       },
       "downloadUrl": {
          "type": "string"
@@ -53,6 +54,7 @@
             "source": {
                "scriptUri": "[parameters('scriptUri')]"
             },
+            "treatFailureAsDeploymentFailure": true,
             "parameters": [
                {
                   "name": "downloadUrl",
