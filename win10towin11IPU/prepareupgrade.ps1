@@ -37,7 +37,8 @@ function Get-WindowsUpdateMedia
             $mountedmedia = New-Item -Path $tempFolderPath\mountedmedia -ItemType Directory -Force
             $install = New-Item -Path $tempFolderPath\install -ItemType Directory -Force
         }
-
+        write-output "Download URL: $downloadUrl"
+        write-output "PSTools Download URL: $pstoolsdownloadurl"
         # Create the download file path using the last segment of the download URL and the temp folder path
         $downloadFile = join-path $tempFolderPath $downloadurl.segments[-1]
 
