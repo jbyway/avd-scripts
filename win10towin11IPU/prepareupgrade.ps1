@@ -49,7 +49,7 @@ function Get-WindowsUpdateMedia
         # create the web client object for public download and download file this will be used to download the file quickly
         $webclient = New-Object Net.WebClient
 
-        # If proxy is required then leave the proxy address as default
+        # If proxy is required then leave the proxy address as default otherwise set to default
         if ($useproxy) {
             $webclient.Proxy = [System.Net.WebRequest]::GetSystemWebProxy()
             $webclient.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
