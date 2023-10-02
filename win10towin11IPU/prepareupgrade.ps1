@@ -17,7 +17,9 @@ param (
     [Parameter(Mandatory = $false)]
     [uri]$pstoolsdownloadurl,
     [Parameter(Mandatory = $false)]
-    $upgradenow = $false
+    $upgradenow = $false,
+    [Parameter(Mandatory = $false)]
+    $useproxy = $false
 )
 
 function Get-WindowsUpdateMedia
@@ -27,7 +29,9 @@ function Get-WindowsUpdateMedia
     [Parameter(Mandatory = $false)]
     [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
-    [uri]$pstoolsdownloadurl
+    [uri]$pstoolsdownloadurl,
+    [Parameter(Mandatory = $false)]
+    [bool]$useproxy = $false
 ) {
     Begin {
 
@@ -44,6 +48,15 @@ function Get-WindowsUpdateMedia
 
         # create the web client object for public download and download file this will be used to download the file quickly
         $webclient = New-Object Net.WebClient
+
+        # If proxy is required then leave the proxy address as default
+        if ($useproxy) {
+            $webclient.Proxy = [System.Net.WebRequest]::GetSystemWebProxy()
+            $webclient.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
+        }
+        else {
+            $webclient.Proxy = $null
+        }
     }
     Process {
 
@@ -61,6 +74,7 @@ function Get-WindowsUpdateMedia
         
         try {
             #Download PSExec
+            
             $webclient.DownloadFile($pstoolsdownloadurl, $tempFolderPath + "\PSTools.zip")
         }
         catch {
@@ -104,13 +118,15 @@ function test-windowssetup
     [Parameter(Mandatory = $false)]
     [string]$argumentList,
     [Parameter(Mandatory = $false)]
-    [uri]$pstoolsdownloadurl
+    [uri]$pstoolsdownloadurl,
+    [Parameter(Mandatory = $false)]
+    [bool]$useproxy
 ) {
 
     #Create temp folder if it doesn't already exist
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
-          Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloadurl $pstoolsdownloadurl
+          Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloadurl $pstoolsdownloadurl -useproxy $useproxy
         
     }
 
@@ -210,7 +226,9 @@ function start-windowssetup
     [Parameter(Mandatory = $false)]
     [bool]$upgradenow,
     [Parameter(Mandatory = $false)]
-    [uri]$pstoolsdownloadurl
+    [uri]$pstoolsdownloadurl,
+    [Parameter(Mandatory = $false)]
+    [bool]$useproxy
 ) {
     # Create the argument list for setup based on the parameters passed to the function
     $argumentList = "/auto upgrade /showoobe none /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
@@ -220,7 +238,7 @@ function start-windowssetup
     # Check for download media and download if not found
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
-        Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloadurl $pstoolsdownloadurl
+        Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloadurl $pstoolsdownloadurl -useproxy $useproxy
     }
     
     # Check if user is logged in and perform silently if not otherwise run interactively if not set to use quiet switch
@@ -290,5 +308,6 @@ function set-windowssetupcleanuptask
 
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_) -pstoolsdownloadurl $pstoolsdownloadurl -upgradenow $upgradenow.ToBoolean($_)
+start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_) -pstoolsdownloadurl $pstoolsdownloadurl -upgradenow $upgradenow.ToBoolean($_) -useproxy $useproxy.ToBoolean($_)
+
 
