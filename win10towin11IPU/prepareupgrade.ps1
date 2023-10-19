@@ -3,7 +3,7 @@ param (
     [Parameter(Mandatory = $false)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
-    [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
+    [string]$tempFolderPath = (Join-Path $Env:SystemDrive "tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
     $quiet = $false,
     [Parameter(Mandatory = $false)]
@@ -19,7 +19,9 @@ param (
     [Parameter(Mandatory = $false)]
     $upgradenow = $false,
     [Parameter(Mandatory = $false)]
-    $useproxy = $false
+    $useproxy = $false,
+    [Parameter(Mandatory = $false)]
+    $force = $false
 )
 
 function Get-WindowsUpdateMedia
@@ -27,7 +29,7 @@ function Get-WindowsUpdateMedia
     [Parameter(Mandatory = $true)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
-    [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
+    [string]$tempFolderPath = (Join-Path $Env:SystemDrive "tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
     [uri]$pstoolsdownloadurl,
     [Parameter(Mandatory = $false)]
@@ -35,12 +37,17 @@ function Get-WindowsUpdateMedia
 ) {
     Begin {
 
+        $mountedmedia = Join-Path $tempFolderPath "mountedmedia"
+        $install = Join-Path $tempFolderPath "install"
+
         #Create temp folder if it doesn't already exist
-        if (!(Test-Path -path $tempFolderPath)) {
+        if (!(Test-Path -path $install)) {
             New-Item -Path $tempFolderPath -ItemType Directory -Force | Out-Null
-            $mountedmedia = New-Item -Path $tempFolderPath\mountedmedia -ItemType Directory -Force
-            $install = New-Item -Path $tempFolderPath\install -ItemType Directory -Force
+            New-Item -Path $mountedmedia -ItemType Directory -Force | Out-Null
+            New-Item -Path $install -ItemType Directory -Force | Out-Null
         }
+        Write-Output "Temporary Media Location: $mountedmedia"
+        Write-Output "Temporary Install Media Path: $install"
         write-output "Download URL: $downloadUrl"
         write-output "PSTools Download URL: $pstoolsdownloadurl"
         # Create the download file path using the last segment of the download URL and the temp folder path
@@ -112,7 +119,7 @@ function Get-WindowsUpdateMedia
 function test-windowssetup 
 (
     [Parameter(Mandatory = $false)]
-    [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
+    [string]$tempFolderPath = (Join-Path $Env:SystemDrive  "tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
@@ -126,8 +133,7 @@ function test-windowssetup
     #Create temp folder if it doesn't already exist
     $setupPath = Join-Path $tempfolderPath "install\setup.exe"
     if (!(Test-Path -path ($setupPath = (Join-Path $tempfolderPath "install\setup.exe")))) {
-          Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloadurl $pstoolsdownloadurl -useproxy $useproxy
-        
+          Get-WindowsUpdateMedia -downloadUrl $downloadUrl -pstoolsdownloadurl $pstoolsdownloadurl -tempFolderPath $tempFolderPath -useproxy $useproxy
     }
 
     # Get the setup.exe path
@@ -151,17 +157,17 @@ function test-windowssetup
         '-1047526908' {
             Write-Output "Migration choice (auto upgrade) not available (probably the wrong SKU or architecture)" -OutVariable scanonlymessage
         }
-        '-1047526912' {
+        '-1047526911' {
             Write-Output "Does not meet system requirements for Windows 11" -OutVariable scanonlymessage
         }
         '-1047526898' {
             Write-Output "Insufficient free disk space to perform upgrade" -OutVariable scanonlymessage
         }
-        '-1047526911'{
+        '-1047526912'{
             Write-Output "Windows 11 is not available on this device - missing TPM2.0, enable Trusted Launch on VM first" -OutVariable scanonlymessage
         }
         Default {
-            Write-Output "Unknown outcome - check the log file" -OutVariable scanonlymessage
+            Write-Output "Unknown outcome - check the log files and confirm before running again with `$force = `$true parameter" -OutVariable scanonlymessage
         }
     }
     Write-Output $scanonlymessage
@@ -185,17 +191,17 @@ function get-windowsupgradescanresult ($process) {
         '-1047526908' {
             Write-Output "Migration choice (auto upgrade) not available (probably the wrong SKU or architecture)" -OutVariable scanonlymessage
         }
-        '-1047526912' {
+        '-1047526911' {
             Write-Output "Does not meet system requirements for Windows 11" -OutVariable scanonlymessage
         }
         '-1047526898' {
             Write-Output "Insufficient free disk space to perform upgrade" -OutVariable scanonlymessage
         }
-        '-1047526911'{
+        '-1047526912'{
             Write-Output "Does not meet system requirements for Windows 11 - missing TPM2.0, enable Trusted Launch on VM first" -OutVariable scanonlymessage
         }
         Default {
-            Write-Output "Unknown outcome - check the log file" -OutVariable scanonlymessage
+            Write-Output "Unknown outcome - check the log files and confirm before running again with `$force = `$true parameter" -OutVariable scanonlymessage
         }
     }
     
@@ -210,7 +216,7 @@ function get-windowsupgradescanresult ($process) {
 function start-windowssetup 
 (
     [Parameter(Mandatory = $false)]
-    [string]$tempFolderPath = ($Env:SystemDrive + "\tempWindows11InstallMedia"),
+    [string]$tempFolderPath = (Join-Path $Env:SystemDrive "tempWindows11InstallMedia"),
     [Parameter(Mandatory = $false)]
     [uri]$downloadUrl,
     [Parameter(Mandatory = $false)]
@@ -228,10 +234,13 @@ function start-windowssetup
     [Parameter(Mandatory = $false)]
     [uri]$pstoolsdownloadurl,
     [Parameter(Mandatory = $false)]
-    [bool]$useproxy
+    [bool]$useproxy,
+    [Parameter(Mandatory = $false)]
+    [bool]$force = $false
 ) {
+    $setuplogs = Join-Path $tempFolderPath "setuplogs"
     # Create the argument list for setup based on the parameters passed to the function
-    $argumentList = "/auto upgrade /showoobe none /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $($tempFolderPath)\setuplogs $(if ($quiet) { "/quiet" })"
+    $argumentList = "/auto upgrade /showoobe none /eula accept $(if ($dynamicUpdate) { "/dynamicupdate enable" } else { "/dynamicupdate disable"}) $(if ($SkipFinalize) { "/skipfinalize" }) $(if ($Finalize) { "/finalize" }) $(if ($ScanOnly) { "/compat scanonly" }) /copylogs $setuplogs $(if ($quiet) { "/quiet" })"
 
     write-output $argumentList
     
@@ -256,16 +265,18 @@ function start-windowssetup
 
         # Get the scan only result code and write to the log file
         get-windowsupgradescanresult $process.ExitCode 
-        write-output $process.ExitCode
-        # Good scan result = 0xc1900210
+        Write-Output "Completed upgrade scan - check logs for results"
+        Write-Output "Setup scan exit code: $($process.ExitCode)"
+        
+        # Good scan result = 0xc1900210 however other results may still allow upgrade so you can attempt to run with force option once confirmed
     }
-    else {
+    elseif ($upgradenow) {
         if (Test-Path -path (Join-Path $tempfolderPath "scanonlyresult.txt")) {
-            if ((Get-Content $tempfolderPath\scanonlyresult.txt) -match "No issues found") {
-                Write-Output "No issues found - beginning upgrade"
+            if (((Get-Content $tempfolderPath\scanonlyresult.txt) -match "No issues found") -or $force ) {  # Check for issues and if none found then run setup, or if $force = $true then do it anyway
+                Write-Output "Windows Upgrade is about to begin..."
                 set-windowssetupcleanuptask
 
-                # If no issues found in previous scan then run the update
+                # If no issues found in previous scan then run the update or if set to $force then also run upgrade
                 # Psexec to allow interaction with user session check for explorer process and get the session id otherwise return 0 for console ($quiet -eq $false -and $sessionId -ne 0)
                 $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait:$upgradenow -PassThru -WindowStyle Hidden
             }
@@ -280,13 +291,13 @@ function start-windowssetup
             # Create task to delete the temp media after 5 days
             set-windowssetupcleanuptask
             
-            # Run the setup
-            #start-process $setupPath -ArgumentList $argumentlist -PassThru
-
-             #Psexec to allow interaction with user session
+            #Psexec to allow interaction with user session
              
-             $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait:$upgradenow -PassThru
+            $process = start-process -FilePath $tempFolderPath\PSTools\psexec.exe -ArgumentList "-accepteula -nobanner -h -i $($sessionId) $($setupPath) $($argumentList)" -Wait:$upgradenow -PassThru
         }
+    }
+    else {
+        Write-Output "No action was taken - run with either `$scanonly or `$upgradenow set to `$true"
     }
 }
 
@@ -308,6 +319,6 @@ function set-windowssetupcleanuptask
 
 
 # Run the script
-start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_) -pstoolsdownloadurl $pstoolsdownloadurl -upgradenow $upgradenow.ToBoolean($_) -useproxy $useproxy.ToBoolean($_)
+start-windowssetup -downloadUrl $downloadUrl -quiet $quiet.ToBoolean($_) -SkipFinalize $SkipFinalize.ToBoolean($_) -Finalize $Finalize.ToBoolean($_) -ScanOnly $ScanOnly.ToBoolean($_) -dynamicUpdate $dynamicUpdate.ToBoolean($_) -pstoolsdownloadurl $pstoolsdownloadurl -upgradenow $upgradenow.ToBoolean($_) -useproxy $useproxy.ToBoolean($_) -force $force.ToBoolean($_)
 
 
